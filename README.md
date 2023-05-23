@@ -7,7 +7,9 @@
 
 4. The spritesheet is divided into 2 portions(Grayscale and Coloured) and only the index of the icon in the first portion is needed. It will be appropriately adjusted when needed.
 
-5. Remember to check the defines with comments in start_menu.c and start_menu.h
+5. Remember to check the defines with comments in start_menu.c and start_menu.h.
+
+6. The start menu's in places like the Battle Pyramid, Safari Zone, etc may look wonky. Changing the placement of options should help.
 
 
 # Pokémon Emerald
