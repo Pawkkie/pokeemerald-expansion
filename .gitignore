@@ -20,7 +20,6 @@
 sound/**/*.bin
 sound/songs/midi/*.s
 tools/agbcc
-Changelog.txt
 *.map
 *.ld
 *.bat
