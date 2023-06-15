@@ -318,7 +318,7 @@ static const u8 sContextMenuItems_RegisterKeyItem[] = {
 };
 
 static const u8 sContextMenuItems_BallsPocket[] = {
-    ACTION_GIVE,        ACTION_DUMMY,
+    ACTION_USE,         ACTION_GIVE,
     ACTION_TOSS,        ACTION_CANCEL
 };
 
