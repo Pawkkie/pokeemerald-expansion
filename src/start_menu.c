@@ -158,6 +158,7 @@ static bool8 FieldCB_ReturnToFieldStartMenu(void);
 // You won't really need to change any of these except spritePaletteTagId if you're using Merrp's DNS (change it to 0x8654) and want the icons to be excluded
 #define spritePaletteTagId 0x4654
 #define isSpriteAnIcon     data[7]      // I'm using the last slot in the icon's sprite data array
+#define iconSpriteId       1234
 
 // Any callback for an option requiring an icon should be included here
 #define callbackConditions (callback == StartMenuPokedexCallback \
@@ -1620,14 +1621,14 @@ void LoadStartMenuIcon(u8 iconId, u8 position)
         internalSpriteNum2 = CreateSprite(&iconSpriteTemplate, icon_xposition, icon_yposition, 0);
         if (internalSpriteNum2 != MAX_SPRITES)
         {
-            gSprites[internalSpriteNum2].isSpriteAnIcon = TRUE;
+            gSprites[internalSpriteNum2].isSpriteAnIcon = iconSpriteId;
             gSprites[internalSpriteNum2].oam.objMode = ST_OAM_OBJ_WINDOW;  // Lets the gba know that this object has a "filler sprite"
             AnimateSprite(&gSprites[internalSpriteNum2]);
         }
     }
 
     internalSpriteNum = CreateSprite(&iconSpriteTemplate, icon_xposition, icon_yposition, 0);
-    gSprites[internalSpriteNum].isSpriteAnIcon = TRUE;
+    gSprites[internalSpriteNum].isSpriteAnIcon = iconSpriteId;
     AnimateSprite(&gSprites[internalSpriteNum]);
 
     // Free up the anim table
@@ -1640,7 +1641,7 @@ static void DeleteAllStartMenuIcons(void)
 
     for (i = 0; i <= MAX_SPRITES; i++)
     {
-        if (gSprites[i].isSpriteAnIcon == TRUE) // Sprite is an icon for the start menu
+        if (gSprites[i].isSpriteAnIcon == iconSpriteId) // Sprite is an icon for the start menu
         {
             DestroySpriteAndFreeResources(&gSprites[i]);
         }
@@ -1656,7 +1657,7 @@ static void DeleteStartMenuIcon(u8 position)
 
     for (i = 0; i < MAX_SPRITES; i++)
     {
-        if (gSprites[i].y == icon_yposition && gSprites[i].isSpriteAnIcon == TRUE) // Sprite is an icon for the start menu
+        if (gSprites[i].y == icon_yposition && gSprites[i].isSpriteAnIcon == iconSpriteId) // Sprite is an icon for the start menu
         {
             DestroySpriteAndFreeResources(&gSprites[i]);
         }
@@ -1716,7 +1717,7 @@ bool8 IsAStartMenuIconAtPosition(u8 position)
 
     for (i = 0; i < MAX_SPRITES; i++)
     {
-        if (gSprites[i].y == icon_yposition && gSprites[i].isSpriteAnIcon == TRUE)
+        if (gSprites[i].y == icon_yposition && gSprites[i].isSpriteAnIcon == iconSpriteId)
         {
             // Sprite is an icon for the start menu
             return TRUE;
