@@ -1063,7 +1063,7 @@ static u8 SaveFileExistsCallback(void)
     }
     else
     {
-        ShowSaveMessage(gText_AlreadySavedFile, SaveConfirmOverwriteCallback);
+        sSaveDialogCallback = SaveSavingMessageCallback; // ShowSaveMessage(gText_AlreadySavedFile, SaveConfirmOverwriteCallback); // shows extra save confirmation
     }
 
     return SAVE_IN_PROGRESS;
