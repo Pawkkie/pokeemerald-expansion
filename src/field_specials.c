@@ -67,6 +67,7 @@
 #include "constants/metatile_labels.h"
 #include "palette.h"
 #include "battle_util.h"
+#include "event_data.h"
 
 #define TAG_ITEM_ICON 5500
 
@@ -1012,6 +1013,12 @@ static void PCTurnOnEffect(struct Task *task)
     u8 playerDirection;
     s8 dx = 0;
     s8 dy = 0;
+    
+    if (gSysPcFromPokenav == TRUE)
+    {
+        return;
+    }
+    
     if (task->tTimer == 6)
     {
         task->tTimer = 0;
@@ -1087,6 +1094,10 @@ static void PCTurnOffEffect(void)
 
     // Get where the PC should be, depending on where the player is looking.
     u8 playerDirection = GetPlayerFacingDirection();
+    if(gSysPcFromPokenav){
+        gSysPcFromPokenav = FALSE;
+        return;
+    }
 
     if (IsPlayerInFrontOfPC() == FALSE)
         return;
