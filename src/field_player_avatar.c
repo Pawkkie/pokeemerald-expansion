@@ -634,15 +634,42 @@ static void PlayerNotOnBikeMoving(u8 direction, u16 heldKeys)
         return;
     }
 
-    if (!(gPlayerAvatar.flags & PLAYER_AVATAR_FLAG_UNDERWATER) && (heldKeys & B_BUTTON) && FlagGet(FLAG_SYS_B_DASH)
-     && IsRunningDisallowed(gObjectEvents[gPlayerAvatar.objectEventId].currentMetatileBehavior) == 0)
-    {
+   if (!(gPlayerAvatar.flags & PLAYER_AVATAR_FLAG_UNDERWATER) && (gRunToggleBtnSet || FlagGet(FLAG_RUNNING_SHOES_TOGGLE) || (heldKeys & B_BUTTON))
+   && FlagGet(FLAG_SYS_B_DASH) && IsRunningDisallowed(gObjectEvents[gPlayerAvatar.objectEventId].currentMetatileBehavior) == 0)
+   {
+        if (gRunToggleBtnSet)
+        {
+            gRunToggleBtnSet = FALSE;
+            if (FlagGet(FLAG_RUNNING_SHOES_TOGGLE) == FALSE)
+            {
+                FlagSet(FLAG_RUNNING_SHOES_TOGGLE);
+                PlayerRun(direction);
+                gPlayerAvatar.flags |= PLAYER_AVATAR_FLAG_DASH;
+                return;
+            }
+            else
+            {
+                FlagClear(FLAG_RUNNING_SHOES_TOGGLE);
+                gRunToggleBtnSet = FALSE;
+                if (!(heldKeys & B_BUTTON))
+                {
+                    PlayerWalkNormal(direction);
+                }
+                else
+                {
+                    PlayerRun(direction);
+                    gPlayerAvatar.flags |= PLAYER_AVATAR_FLAG_DASH;
+                }
+                return;
+            } 
+        }
         PlayerRun(direction);
         gPlayerAvatar.flags |= PLAYER_AVATAR_FLAG_DASH;
         return;
     }
     else
     {
+        gRunToggleBtnSet = FALSE;
         PlayerWalkNormal(direction);
     }
 }
