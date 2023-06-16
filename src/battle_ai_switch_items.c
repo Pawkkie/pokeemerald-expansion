@@ -888,6 +888,7 @@ static u32 GetBestMonBatonPass(struct Pokemon *party, int firstId, int lastId, u
 static u32 GetBestMonTypeMatchup(struct Pokemon *party, int firstId, int lastId, u8 invalidMons, u32 opposingBattler)
 {
     int i, bits = 0;
+    bool8 checkedAllMonForSEMoves = FALSE; // We have checked all Pokemon in the party for if they have a super effective move
 
     while (bits != 0x3F) // All mons were checked.
     {
@@ -933,10 +934,15 @@ static u32 GetBestMonTypeMatchup(struct Pokemon *party, int firstId, int lastId,
                     break;
             }
 
-            if (i != MAX_MON_MOVES)
-                return bestMonId; // Has both the typing and at least one super effective move.
+            if (i != MAX_MON_MOVES || (checkedAllMonForSEMoves))
+                return bestMonId; // Has both the typing and at least one super effective move. // OR we're out of party members and this one has good typing
 
             bits |= gBitTable[bestMonId]; // Sorry buddy, we want something better.
+            if (bits == 0x3F && checkedAllMonForSEMoves == FALSE)  // If we already checked all for a super effective move, then use the one with the best typing
+            {
+                bits = 0;
+                checkedAllMonForSEMoves = TRUE;
+            }
         }
         else
         {
