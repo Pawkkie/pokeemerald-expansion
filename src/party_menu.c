@@ -1276,6 +1276,10 @@ void Task_HandleChooseMonInput(u8 taskId)
         case B_BUTTON: // Selected Cancel / pressed B
             HandleChooseMonCancel(taskId, slotPtr);
             break;
+        case SELECT_BUTTON: // Switching the order of Pokemon
+            if (gPartyMenu.action != PARTY_ACTION_SWITCH)
+                gTasks[taskId].func = CursorCb_Switch;
+            break;
         case START_BUTTON:
             if (sPartyMenuInternal->chooseHalf)
             {
@@ -1513,7 +1517,8 @@ static u16 PartyMenuButtonHandler(s8 *slotPtr)
 
     if (JOY_NEW(START_BUTTON))
         return START_BUTTON;
-
+    if (JOY_NEW(SELECT_BUTTON))
+        return SELECT_BUTTON;
     if (movementDir)
     {
         UpdateCurrentPartySelection(slotPtr, movementDir);
