@@ -907,14 +907,14 @@ static u32 GetBestMonTypeMatchup(struct Pokemon *party, int firstId, int lastId,
                 u8 defType1 = gSpeciesInfo[species].types[0];
                 u8 defType2 = gSpeciesInfo[species].types[1];
 
-                typeEffectiveness *= GetTypeModifier(atkType1, defType1);
+                typeEffectiveness = typeEffectiveness * UQ_4_12_TO_INT(GetTypeModifier(atkType1, defType1));
                 if (atkType2 != atkType1)
-                    typeEffectiveness *= GetTypeModifier(atkType2, defType1);
+                    typeEffectiveness = typeEffectiveness * UQ_4_12_TO_INT(GetTypeModifier(atkType2, defType1));
                 if (defType2 != defType1)
                 {
-                    typeEffectiveness *= GetTypeModifier(atkType1, defType2);
+                    typeEffectiveness = typeEffectiveness * UQ_4_12_TO_INT(GetTypeModifier(atkType1, defType2));
                     if (atkType2 != atkType1)
-                        typeEffectiveness *= GetTypeModifier(atkType2, defType2);
+                        typeEffectiveness = typeEffectiveness * UQ_4_12_TO_INT(GetTypeModifier(atkType2, defType2));
                 }
                 if (typeEffectiveness < bestResist)
                 {
@@ -927,6 +927,7 @@ static u32 GetBestMonTypeMatchup(struct Pokemon *party, int firstId, int lastId,
         // Ok, we know the mon has the right typing but does it have at least one super effective move?
         if (bestMonId != PARTY_SIZE)
         {
+            return bestMonId;
             for (i = 0; i < MAX_MON_MOVES; i++)
             {
                 u32 move = GetMonData(&party[bestMonId], MON_DATA_MOVE1 + i);
@@ -934,8 +935,8 @@ static u32 GetBestMonTypeMatchup(struct Pokemon *party, int firstId, int lastId,
                     break;
             }
 
-            if (i != MAX_MON_MOVES || (checkedAllMonForSEMoves))
-                return bestMonId; // Has both the typing and at least one super effective move. // OR we're out of party members and this one has good typing
+            if (i != MAX_MON_MOVES || (checkedAllMonForSEMoves && bestResist <= UQ_4_12(1.0)))
+                return bestMonId; // Has both the typing and at least one super effective move. // OR we're out of party members and this one has super effective typing
 
             bits |= gBitTable[bestMonId]; // Sorry buddy, we want something better.
             if (bits == 0x3F && checkedAllMonForSEMoves == FALSE)  // If we already checked all for a super effective move, then use the one with the best typing
@@ -946,6 +947,7 @@ static u32 GetBestMonTypeMatchup(struct Pokemon *party, int firstId, int lastId,
         }
         else
         {
+            return PARTY_SIZE;
             bits = 0x3F; // No viable mon to switch.
         }
     }
