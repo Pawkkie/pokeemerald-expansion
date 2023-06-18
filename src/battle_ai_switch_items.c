@@ -57,6 +57,12 @@ void GetAIPartyIndexes(u32 battlerId, s32 *firstId, s32 *lastId)
     }
 }
 
+// Used in exactly the HasBadOdds function
+static void MulModifierImproveSwitchAI(u32 *modifier, u16 val)
+{
+    *modifier = UQ_4_12_TO_INT((*modifier * val) + UQ_4_12_ROUND);
+}
+
 static bool8 HasBadOdds(void)
 {
 	u8 opposingPosition; //Variable initialization
@@ -84,12 +90,12 @@ static bool8 HasBadOdds(void)
     if (gBattleTypeFlags & BATTLE_TYPE_DOUBLE) //Won't bother configuring this for double battles. Those are complex enough.
         return FALSE;
 
-	typeDmg *= UQ_4_12_TO_INT(GetTypeModifier(atkType1, defType1));//Calculates the type advantage
+	MulModifierImproveSwitchAI(&typeDmg, GetTypeModifier(atkType1, defType1));//Calculates the type advantage
 	if (atkType2!=atkType1)
-		typeDmg *=UQ_4_12_TO_INT(GetTypeModifier(atkType2, defType1));
+		MulModifierImproveSwitchAI(&typeDmg, GetTypeModifier(atkType2, defType1));
 	if (defType2!=defType1)
 	{
-		typeDmg *=UQ_4_12_TO_INT(GetTypeModifier(atkType1, defType2));
+		MulModifierImproveSwitchAI(&typeDmg, GetTypeModifier(atkType1, defType2));
 		if (atkType2!=atkType1)
 			typeDmg *=UQ_4_12_TO_INT(GetTypeModifier(atkType2, defType2));
 	}
@@ -885,6 +891,12 @@ static u32 GetBestMonBatonPass(struct Pokemon *party, int firstId, int lastId, u
     return PARTY_SIZE;
 }
 
+// Used in exactly the GetBestMonTypeMatchup's "Find the mon whose type is the most suitable defensively" loop
+static void MulModifierSwitchAI(u32 *modifier, u16 val)
+{
+    *modifier = UQ_4_12_TO_INT((*modifier * val) + UQ_4_12_ROUND);
+}
+
 static u32 GetBestMonTypeMatchup(struct Pokemon *party, int firstId, int lastId, u8 invalidMons, u32 opposingBattler)
 {
     int i, bits = 0;
@@ -907,14 +919,14 @@ static u32 GetBestMonTypeMatchup(struct Pokemon *party, int firstId, int lastId,
                 u8 defType1 = gSpeciesInfo[species].types[0];
                 u8 defType2 = gSpeciesInfo[species].types[1];
 
-                typeEffectiveness = typeEffectiveness * UQ_4_12_TO_INT(GetTypeModifier(atkType1, defType1));
+                MulModifierSwitchAI(&typeEffectiveness, (GetTypeModifier(atkType1, defType1))); // Multiply type effectiveness by a factor depending on type matchup
                 if (atkType2 != atkType1)
-                    typeEffectiveness = typeEffectiveness * UQ_4_12_TO_INT(GetTypeModifier(atkType2, defType1));
+                    MulModifierSwitchAI(&typeEffectiveness, (GetTypeModifier(atkType2, defType1)));
                 if (defType2 != defType1)
                 {
-                    typeEffectiveness = typeEffectiveness * UQ_4_12_TO_INT(GetTypeModifier(atkType1, defType2));
+                    MulModifierSwitchAI(&typeEffectiveness, (GetTypeModifier(atkType1, defType2)));
                     if (atkType2 != atkType1)
-                        typeEffectiveness = typeEffectiveness * UQ_4_12_TO_INT(GetTypeModifier(atkType2, defType2));
+                        MulModifierSwitchAI(&typeEffectiveness, (GetTypeModifier(atkType2, defType2)));
                 }
                 if (typeEffectiveness < bestResist)
                 {
@@ -927,7 +939,6 @@ static u32 GetBestMonTypeMatchup(struct Pokemon *party, int firstId, int lastId,
         // Ok, we know the mon has the right typing but does it have at least one super effective move?
         if (bestMonId != PARTY_SIZE)
         {
-            return bestMonId;
             for (i = 0; i < MAX_MON_MOVES; i++)
             {
                 u32 move = GetMonData(&party[bestMonId], MON_DATA_MOVE1 + i);
