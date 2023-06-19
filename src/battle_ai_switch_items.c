@@ -57,12 +57,6 @@ void GetAIPartyIndexes(u32 battlerId, s32 *firstId, s32 *lastId)
     }
 }
 
-// Used in exactly the HasBadOdds function
-static void MulModifierImproveSwitchAI(u32 *modifier, u16 val)
-{
-    *modifier = UQ_4_12_TO_INT((*modifier * val) + UQ_4_12_ROUND);
-}
-
 static bool8 HasBadOdds(void)
 {
 	u8 opposingPosition; //Variable initialization
@@ -75,7 +69,7 @@ static bool8 HasBadOdds(void)
 	s32 i, j;
 	struct Pokemon *party = NULL;
 	
-	u32 typeDmg=UQ_4_12(1.0); //baseline typing damage
+	u16 typeDmg=UQ_4_12(1.0); //baseline typing damage
 	
 	u16 species = GetMonData(&party[i], MON_DATA_SPECIES);
 	
@@ -90,14 +84,14 @@ static bool8 HasBadOdds(void)
     if (gBattleTypeFlags & BATTLE_TYPE_DOUBLE) //Won't bother configuring this for double battles. Those are complex enough.
         return FALSE;
 
-	MulModifierImproveSwitchAI(&typeDmg, GetTypeModifier(atkType1, defType1));//Calculates the type advantage
+	MulModifier(&typeDmg, GetTypeModifier(atkType1, defType1));//Calculates the type advantage
 	if (atkType2!=atkType1)
-		MulModifierImproveSwitchAI(&typeDmg, GetTypeModifier(atkType2, defType1));
+		MulModifier(&typeDmg, GetTypeModifier(atkType2, defType1));
 	if (defType2!=defType1)
 	{
-		MulModifierImproveSwitchAI(&typeDmg, GetTypeModifier(atkType1, defType2));
+		MulModifier(&typeDmg, GetTypeModifier(atkType1, defType2));
 		if (atkType2!=atkType1)
-			typeDmg *=UQ_4_12_TO_INT(GetTypeModifier(atkType2, defType2));
+			MulModifier(&typeDmg, GetTypeModifier(atkType2, defType2));
 	}
 	if (typeDmg>=UQ_4_12(2.0)) //If the player has a 2x type advantage or greater...
 	{
@@ -891,12 +885,6 @@ static u32 GetBestMonBatonPass(struct Pokemon *party, int firstId, int lastId, u
     return PARTY_SIZE;
 }
 
-// Used in exactly the GetBestMonTypeMatchup's "Find the mon whose type is the most suitable defensively" loop
-static void MulModifierSwitchAI(u32 *modifier, u16 val)
-{
-    *modifier = UQ_4_12_TO_INT((*modifier * val) + UQ_4_12_ROUND);
-}
-
 static u32 GetBestMonTypeMatchup(struct Pokemon *party, int firstId, int lastId, u8 invalidMons, u32 opposingBattler)
 {
     int i, bits = 0;
@@ -904,7 +892,7 @@ static u32 GetBestMonTypeMatchup(struct Pokemon *party, int firstId, int lastId,
 
     while (bits != 0x3F) // All mons were checked.
     {
-        u32 bestResist = UQ_4_12(1.0);
+        u16 bestResist = UQ_4_12(1.0);
         int bestMonId = PARTY_SIZE;
         // Find the mon whose type is the most suitable defensively.
         for (i = firstId; i < lastId; i++)
@@ -912,21 +900,21 @@ static u32 GetBestMonTypeMatchup(struct Pokemon *party, int firstId, int lastId,
             if (!(gBitTable[i] & invalidMons) && !(gBitTable[i] & bits))
             {
                 u16 species = GetMonData(&party[i], MON_DATA_SPECIES);
-                u32 typeEffectiveness = UQ_4_12(1.0);
+                u16 typeEffectiveness = UQ_4_12(1.0);
 
                 u8 atkType1 = gBattleMons[opposingBattler].type1;
                 u8 atkType2 = gBattleMons[opposingBattler].type2;
                 u8 defType1 = gSpeciesInfo[species].types[0];
                 u8 defType2 = gSpeciesInfo[species].types[1];
 
-                MulModifierSwitchAI(&typeEffectiveness, (GetTypeModifier(atkType1, defType1))); // Multiply type effectiveness by a factor depending on type matchup
+                MulModifier(&typeEffectiveness, (GetTypeModifier(atkType1, defType1))); // Multiply type effectiveness by a factor depending on type matchup
                 if (atkType2 != atkType1)
-                    MulModifierSwitchAI(&typeEffectiveness, (GetTypeModifier(atkType2, defType1)));
+                    MulModifier(&typeEffectiveness, (GetTypeModifier(atkType2, defType1)));
                 if (defType2 != defType1)
                 {
-                    MulModifierSwitchAI(&typeEffectiveness, (GetTypeModifier(atkType1, defType2)));
+                    MulModifier(&typeEffectiveness, (GetTypeModifier(atkType1, defType2)));
                     if (atkType2 != atkType1)
-                        MulModifierSwitchAI(&typeEffectiveness, (GetTypeModifier(atkType2, defType2)));
+                        MulModifier(&typeEffectiveness, (GetTypeModifier(atkType2, defType2)));
                 }
                 if (typeEffectiveness < bestResist)
                 {
