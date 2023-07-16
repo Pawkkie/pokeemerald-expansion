@@ -6200,12 +6200,13 @@ const struct Item gItems[] =
     {
         .name = _("Cleanse Tag"),
         .itemId = ITEM_CLEANSE_TAG,
-        .price = 5000,
-        .holdEffect = HOLD_EFFECT_REPEL,
+        .price = 0,
+        .importance = 1,
+        .registrability = TRUE,
         .description = sCleanseTagDesc,
-        .pocket = POCKET_ITEMS,
-        .type = ITEM_USE_BAG_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_CannotUse,
+        .pocket = POCKET_KEY_ITEMS,
+        .type = ITEM_USE_FIELD,
+        .fieldUseFunc = ItemUseOutOfBattle_CleanseTag,
         .flingPower = 30,
     },
 

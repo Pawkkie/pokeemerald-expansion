@@ -39,6 +39,7 @@ u8 CanUseDigOrEscapeRopeOnCurMap(void);
 u8 CheckIfItemIsTMHMOrEvolutionStone(u16 itemId);
 void ItemUseOutOfBattle_PokeBall(u8);
 void ItemUseOutOfBattle_SootSack(u8);
+void ItemUseOutOfBattle_CleanseTag(u8);
 u16 GetAshCount(void);
 
 enum {
