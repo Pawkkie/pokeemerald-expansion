@@ -147,7 +147,7 @@ Route116_EventScript_ItemPotion::
 	end
 
 Route117_EventScript_ItemGreatBall::
-	finditem ITEM_CLEANSE_TAG
+	finditem ITEM_FLY
 	end
 
 Route117_EventScript_ItemRevive::

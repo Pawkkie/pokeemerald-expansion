@@ -10380,4 +10380,18 @@ const struct Item gItems[] =
         .fieldUseFunc = ItemUseOutOfBattle_CannotUse,
         .flingPower = 10,
     },
+
+    [ITEM_FLY] =
+    {
+        .name = _("Fly"),
+        .itemId = ITEM_FLY,
+        .price = 0,
+        .importance = 1,
+        .registrability = TRUE,
+        .description = sBerserkGene,
+        .pocket = POCKET_KEY_ITEMS,
+        .type = ITEM_USE_BAG_MENU,
+        .fieldUseFunc = ItemUseOutOfBattle_Fly,
+        .flingPower = 30,
+    },
 };

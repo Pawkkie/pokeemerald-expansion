@@ -32,6 +32,7 @@
 #include "party_menu.h"
 #include "pokeblock.h"
 #include "pokemon.h"
+#include "region_map.h"
 #include "script.h"
 #include "sound.h"
 #include "strings.h"
@@ -1388,6 +1389,17 @@ void ItemUseOutOfBattle_CleanseTag(u8 taskId)
         else
             DisplayItemMessage(taskId, 1, gText_CleanseTagTurnOff, CloseItemMessage);
     }
+}
+
+void ItemUseOutOfBattle_Fly(u8 taskId)
+{
+    if (Overworld_MapTypeAllowsTeleportAndFly(gMapHeader.mapType) == TRUE)
+    {
+        SetMainCallback2(CB2_OpenFlyMap);
+        Task_FadeAndCloseBagMenu(taskId);
+    }
+    else
+        DisplayDadsAdviceCannotUseItemMessage(taskId, gTasks[taskId].data[3]);
 }
 
 #undef tUsingRegisteredKeyItem
