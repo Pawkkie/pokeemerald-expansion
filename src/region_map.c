@@ -20,6 +20,7 @@
 #include "field_specials.h"
 #include "fldeff.h"
 #include "region_map.h"
+#include "item_menu.h"
 #include "constants/region_map_sections.h"
 #include "heal_location.h"
 #include "constants/field_specials.h"
@@ -2019,7 +2020,7 @@ static void CB_ExitFlyMap(void)
             }
             else
             {
-                SetMainCallback2(CB2_ReturnToPartyMenuFromFlyMap);
+                SetMainCallback2(CB2_ReturnToBagMenuPocket); // SetMainCallback2(CB2_ReturnToPartyMenuFromFlyMap);
             }
             TRY_FREE_AND_SET_NULL(sFlyMap);
             FreeAllWindowBuffers();
