@@ -75,6 +75,7 @@
 #include "constants/songs.h"
 #include "move_relearner.h"
 #include "naming_screen.h"
+#include "battle_setup.h"
 
 enum {
     MENU_SUMMARY,
@@ -5389,7 +5390,7 @@ void ItemUseCB_RareCandy(u8 taskId, TaskFunc task)
     u8 holdEffectParam = ItemId_GetHoldEffectParam(*itemPtr);
 
     sInitialLevel = GetMonData(mon, MON_DATA_LEVEL);
-    if (sInitialLevel != MAX_LEVEL)
+    if (sInitialLevel != MAX_LEVEL && !levelCapped(GetMonData(mon, MON_DATA_LEVEL)))
     {
         BufferMonStatsToTaskData(mon, arrayPtr);
         cannotUseEffect = ExecuteTableBasedItemEffect(mon, *itemPtr, gPartyMenu.slotId, 0);
