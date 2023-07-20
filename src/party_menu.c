@@ -5059,31 +5059,31 @@ bool8 PlayerHasMove(u16 move)
     switch (move)
     {
     case MOVE_SECRET_POWER:
-        item = ITEM_TM43;
+        item = ITEM_HM01;
         break;
     case MOVE_CUT:
         item = ITEM_HM01;
         break;
     case MOVE_FLY:
-        item = ITEM_HM02;
+        item = ITEM_HM01;
         break;
     case MOVE_SURF:
-        item = ITEM_HM03;
+        item = ITEM_HM01;
         break;
     case MOVE_STRENGTH:
-        item = ITEM_HM04;
+        item = ITEM_HM01;
         break;
     case MOVE_FLASH:
-        item = ITEM_HM05;
+        item = ITEM_HM01;
         break;
     case MOVE_ROCK_SMASH:
-        item = ITEM_HM06;
+        item = ITEM_HM01;
         break;
     case MOVE_WATERFALL:
-        item = ITEM_HM07;
+        item = ITEM_HM01;
         break;
     case MOVE_DIVE:
-        item = ITEM_HM08;
+        item = ITEM_HM01;
         break;
     default:
         return FALSE;

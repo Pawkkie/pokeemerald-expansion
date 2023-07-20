@@ -37,6 +37,8 @@
 #include "constants/songs.h"
 #include "constants/trainer_hill.h"
 #include "constants/items.h"
+#include "party_menu.h"
+#include "constants/moves.h"
 
 static EWRAM_DATA u8 sWildEncounterImmunitySteps = 0;
 static EWRAM_DATA u16 sPrevMetatileBehavior = 0;
@@ -504,12 +506,12 @@ static const u8 *GetInteractedMetatileScript(struct MapPosition *position, u8 me
 
 static const u8 *GetInteractedWaterScript(struct MapPosition *unused1, u8 metatileBehavior, u8 direction)
 {
-    if (CheckBagHasItem(ITEM_HM03_SURF ,1) && IsPlayerFacingSurfableFishableWater() == TRUE)
+    if (PlayerHasMove(MOVE_SURF) && IsPlayerFacingSurfableFishableWater() == TRUE)
         return EventScript_UseSurf;
 
     if (MetatileBehavior_IsWaterfall(metatileBehavior) == TRUE)
     {
-        if (CheckBagHasItem(ITEM_HM07_WATERFALL, 1)  && IsPlayerSurfingNorth() == TRUE)
+        if (PlayerHasMove(MOVE_WATERFALL)  && IsPlayerSurfingNorth() == TRUE)
             return EventScript_UseWaterfall;
         else
             return EventScript_CannotUseWaterfall;
@@ -519,7 +521,7 @@ static const u8 *GetInteractedWaterScript(struct MapPosition *unused1, u8 metati
 
 static bool32 TrySetupDiveDownScript(void)
 {
-    if (CheckBagHasItem(ITEM_HM08_DIVE, 1) && TrySetDiveWarp() == 2)
+    if (PlayerHasMove(MOVE_DIVE) && TrySetDiveWarp() == 2)
     {
         ScriptContext_SetupScript(EventScript_UseDive);
         return TRUE;
@@ -529,7 +531,7 @@ static bool32 TrySetupDiveDownScript(void)
 
 static bool32 TrySetupDiveEmergeScript(void)
 {
-    if (CheckBagHasItem(ITEM_HM08_DIVE, 1) && gMapHeader.mapType == MAP_TYPE_UNDERWATER && TrySetDiveWarp() == 1)
+    if (PlayerHasMove(MOVE_DIVE) && gMapHeader.mapType == MAP_TYPE_UNDERWATER && TrySetDiveWarp() == 1)
     {
         ScriptContext_SetupScript(EventScript_UseDiveUnderwater);
         return TRUE;
