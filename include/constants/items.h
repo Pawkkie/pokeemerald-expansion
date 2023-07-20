@@ -974,8 +974,9 @@
 #define ITEM_PEAT_BLOCK 797
 #define ITEM_BERSERK_GENE 798
 #define ITEM_FLY 799
+#define ITEM_LANTERN 800
 
-#define ITEMS_COUNT 800
+#define ITEMS_COUNT 801
 #define ITEM_FIELD_ARROW ITEMS_COUNT
 
 // A special item id associated with "Cancel"/"Exit" etc. in a list of items or decorations

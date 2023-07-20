@@ -3912,3 +3912,8 @@ static const u8 sBerserkGene[] = _(
     "Sharply boosts\n"
     "Attack, but causes\n"
     "lasting confusion.");
+
+static const u8 sLanternDesc[] = _(
+	"A bright lantern\n"
+    "that can light dark\n"
+    "caves.");

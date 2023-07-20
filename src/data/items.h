@@ -10394,4 +10394,18 @@ const struct Item gItems[] =
         .fieldUseFunc = ItemUseOutOfBattle_Fly,
         .flingPower = 30,
     },
+
+    [ITEM_LANTERN] =
+    {
+        .name = _("Lantern"),
+        .itemId = ITEM_LANTERN,
+        .price = 0,
+        .importance = 1,
+        .registrability = TRUE,
+        .description = sLanternDesc,
+        .pocket = POCKET_KEY_ITEMS,
+        .type = ITEM_USE_FIELD,
+        .fieldUseFunc = ItemUseOutOfBattle_Lantern,
+        .flingPower = 30,
+    },
 };
