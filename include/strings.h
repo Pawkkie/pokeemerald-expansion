@@ -3109,6 +3109,7 @@ extern const u8 gText_FindSmartPokemon[];
 extern const u8 gText_FindToughPokemon[];
 extern const u8 gText_ReturnToConditionMenu[];
 extern const u8 gText_Pokenav_Cannot_Access_PC[];
+extern const u8 gText_Pokenav_PC_Access_Disabled[];
 extern const u8 gText_NoRibbonWinners[];
 
 // Pokenav

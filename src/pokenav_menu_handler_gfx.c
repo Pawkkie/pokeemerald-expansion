@@ -16,6 +16,7 @@
 #include "scanline_effect.h"
 #include "constants/songs.h"
 #include "constants/rgb.h"
+#include "event_data.h"
 
 #define GFXTAG_BLUE_LIGHT 1
 #define GFXTAG_OPTIONS    3
@@ -1264,10 +1265,22 @@ static void PrintNoRibbonWinners(void)
 static void PrintCannotAccessPC(void)
 {
     struct Pokenav_MenuGfx * gfx = GetSubstructPtr(POKENAV_SUBSTRUCT_MENU_GFX);
-    const u8 * s = gText_Pokenav_Cannot_Access_PC;
-    u32 width = GetStringWidth(FONT_NORMAL, s, -1);
-    FillWindowPixelBuffer(gfx->optionDescWindowId, PIXEL_FILL(6));
-    AddTextPrinterParameterized3(gfx->optionDescWindowId, FONT_NORMAL, (192 - width) / 2, 1, sOptionDescTextColors2, 0, s);
+    u32 width;
+    if (FlagGet(FLAG_REMOTE_PC) == FALSE)
+    {
+        const u8 * s = gText_Pokenav_PC_Access_Disabled;
+        width = GetStringWidth(FONT_NORMAL, s, -1); 
+        FillWindowPixelBuffer(gfx->optionDescWindowId, PIXEL_FILL(6));
+        AddTextPrinterParameterized3(gfx->optionDescWindowId, FONT_NORMAL, (192 - width) / 2, 1, sOptionDescTextColors2, 0, s);
+    }
+
+    else
+    {
+        const u8 * s = gText_Pokenav_Cannot_Access_PC;
+        width = GetStringWidth(FONT_NORMAL, s, -1); 
+        FillWindowPixelBuffer(gfx->optionDescWindowId, PIXEL_FILL(6));
+        AddTextPrinterParameterized3(gfx->optionDescWindowId, FONT_NORMAL, (192 - width) / 2, 1, sOptionDescTextColors2, 0, s);
+    }
 }
 
 static bool32 IsDma3ManagerBusyWithBgCopy_(void)

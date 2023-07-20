@@ -44,9 +44,9 @@
 #define FLAG_PARTY_MOVES     0x20 // Used with party menu move relearner
 #define FLAG_EXP_SHARE       0x21 // Used with gen 6 exp share
 #define FLAG_CLEANSE_TAG     0x22 // Used with toggleable infinite repel
-#define FLAG_UNUSED_0x023    0x23 // Unused Flag
-#define FLAG_UNUSED_0x024    0x24 // Unused Flag
-#define FLAG_UNUSED_0x025    0x25 // Unused Flag
+#define FLAG_CAN_RELEARNER   0x23 // Allows player to use Relearn command from party menu
+#define FLAG_CAN_NICKNAME    0x24 // Allows player to use Nickname command from party menu
+#define FLAG_REMOTE_PC       0x25 // Allows player to use remote PC from Pokenav
 #define FLAG_UNUSED_0x026    0x26 // Unused Flag
 #define FLAG_UNUSED_0x027    0x27 // Unused Flag
 #define FLAG_UNUSED_0x028    0x28 // Unused Flag

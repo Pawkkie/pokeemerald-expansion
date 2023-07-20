@@ -961,6 +961,7 @@ const u8 gText_Pokenav_Access_PC[] = _("Access your PC.");
 const u8 gText_PutAwayPokenav[] = _("Put away the POKéNAV.");
 const u8 gText_NoRibbonWinners[] = _("There are no RIBBON winners.");
 const u8 gText_Pokenav_Cannot_Access_PC[] = _("No signal here. Try going outside.");
+const u8 gText_Pokenav_PC_Access_Disabled[] = _("Feature in Beta. Try again later.");
 const u8 gText_NoTrainersRegistered[] = _("No TRAINERS are registered."); // Unused
 const u8 gText_CheckPartyPokemonInDetail[] = _("Check party POKéMON in detail.");
 const u8 gText_CheckAllPokemonInDetail[] = _("Check all POKéMON in detail.");
