@@ -3917,3 +3917,8 @@ static const u8 sLanternDesc[] = _(
 	"A bright lantern\n"
     "that can light dark\n"
     "caves.");
+
+static const u8 sPokeVialDesc[] = _(
+    "Potent medicine\n"
+    "that fully restores\n"
+    "all Pokémon.");

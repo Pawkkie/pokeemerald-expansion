@@ -49,3 +49,27 @@ gText_ThankYouForWaiting::
 
 gText_WeHopeToSeeYouAgain2::
 	.string "We hope to see you again!$"
+
+gText_AreYouARookieTrainer:: 
+    .string "Hello, and welcome to\n"
+    .string "the Pokémon Center.\p"
+    .string "We restore your tired Pokémon\n"
+    .string "to full health.\p"
+    .string "This is your first time here,\n"
+    .string "isn't it?\p"
+    .string "It's your lucky day!\p"
+    .string "We're  giving out free\n"
+    .string "PokéVials to all rookie Trainers.\p"
+    .string "Here, take one!$"
+
+gText_ExplainPokeVial:: 
+    .string "That PokéVial contains very potent\n"
+    .string "medicine.\p"
+    .string "It's strong enough to heal your entire\n"
+    .string "party, but you can't use it in battles,\l"
+    .string "and there's only enough to use it twice.\p"
+    .string "But here's the good part: every time\n"
+    .string "you heal up at a Pokémon Center, we'll\l"
+    .string "refill it for free.\p"
+    .string "It's like a portable Pokémon Center!\p"
+    .string "Now, let's give your Pokemon a rest.$"

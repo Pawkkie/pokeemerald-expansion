@@ -147,7 +147,7 @@ Route116_EventScript_ItemPotion::
 	end
 
 Route117_EventScript_ItemGreatBall::
-	finditem ITEM_FLY
+	finditem ITEM_POKEVIAL
 	end
 
 Route117_EventScript_ItemRevive::

@@ -3165,4 +3165,8 @@ extern const u8 gText_TellHimTheWords[];
 // Move Relearning in Party Menu
 extern const u8 gText_Moves_Menu[];
 
+// PokeVial
+extern const u8 gText_UsedPokeVial[];
+extern const u8 gText_PokeVialEmpty[];
+
 #endif // GUARD_STRINGS_H

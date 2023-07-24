@@ -1961,3 +1961,7 @@ const u8 gText_FORMS_NONE[]                         = _("{STR_VAR_1} has no alte
 
 // Move Relearning in Party Menu
 const u8 gText_Moves_Menu[] = _("RELEARN");
+
+// Pokevial
+const u8 gText_UsedPokeVial[] = _("{PLAYER} used the Poké Vial.\nAll Pokémon were fully restored!{PAUSE_UNTIL_PRESS}");
+const u8 gText_PokeVialEmpty[] = _("The Poké Vial is empty.\nRefill it at a Pokémon Center.{PAUSE_UNTIL_PRESS}");

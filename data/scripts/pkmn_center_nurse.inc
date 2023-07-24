@@ -1,6 +1,19 @@
 Common_EventScript_PkmnCenterNurse::
 	lock
 	faceplayer
+	checkitem ITEM_POKEVIAL, 1
+	compare VAR_RESULT, 1
+	goto_if_eq EventScript_PkmnCenterNurseHasVial
+	msgbox gText_AreYouARookieTrainer, MSGBOX_DEFAULT
+	giveitem ITEM_POKEVIAL, 1
+	setvar VAR_POKEVIAL_MAX_CHARGES, 2
+	setvar VAR_POKEVIAL_CHARGES, 2
+	message gText_ExplainPokeVial
+	goto EventScript_PkmnCenterNurseHasVial
+	end
+
+EventScript_PkmnCenterNurseHasVial::
+	copyvar VAR_POKEVIAL_CHARGES, VAR_POKEVIAL_MAX_CHARGES @refill PokeVial
 	setvar VAR_0x8004, 0
 	specialvar VAR_RESULT, CountPlayerTrainerStars
 	goto_if_eq VAR_RESULT, 4, EventScript_PkmnCenterNurse_GoldCard
