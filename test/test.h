@@ -13,6 +13,7 @@ enum TestResult
     TEST_RESULT_INVALID,
     TEST_RESULT_ERROR,
     TEST_RESULT_TIMEOUT,
+    TEST_RESULT_CRASH,
     TEST_RESULT_TODO,
 };
 
@@ -38,8 +39,6 @@ struct TestRunnerState
 {
     u8 state;
     u8 exitCode;
-    s32 tests;
-    s32 passes;
     const char *skipFilename;
     const struct Test *test;
     u32 processCosts[MAX_PROCESSES];
@@ -168,9 +167,9 @@ s32 MgbaPrintf_(const char *fmt, ...);
 #define PARAMETRIZE if (gFunctionTestRunnerState->parameters++ == gFunctionTestRunnerState->runParameter)
 
 #define TO_DO \
-    Test_ExpectedResult(TEST_RESULT_TODO)
-
-#define EXPECT_TO_DO \
-    Test_ExitWithResult(TEST_RESULT_TODO, "%s:%d: EXPECT_TO_DO", gTestRunnerState.test->filename, __LINE__)
+    do { \
+        Test_ExpectedResult(TEST_RESULT_TODO); \
+        Test_ExitWithResult(TEST_RESULT_TODO, "%s:%d: EXPECT_TO_DO", gTestRunnerState.test->filename, __LINE__); \
+    } while (0)
 
 #endif

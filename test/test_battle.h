@@ -1,7 +1,7 @@
 /* Embedded DSL for automated black-box testing of battle mechanics.
  *
  * To run all the tests use:
- *     make check
+ *     make check -j
  * To run specific tests, e.g. Spikes ones, use:
  *     make check TESTS='Spikes'
  * To build a ROM (pokemerald-test.elf) that can be opened in mgba to
@@ -574,6 +574,7 @@ struct BattleTestData
     struct Pokemon *currentMon;
     u8 gender;
     u8 nature;
+    u16 forcedAbilities[NUM_BATTLE_SIDES][PARTY_SIZE];
 
     u8 currentMonIndexes[MAX_BATTLERS_COUNT];
     u8 turnState;
@@ -602,8 +603,9 @@ struct BattleTestRunnerState
     u8 parameters;
     u8 runParameter;
     u16 rngTag;
-    u8 trials;
-    u8 runTrial;
+    u16 rngTrialOffset;
+    u16 trials;
+    u16 runTrial;
     u16 expectedRatio;
     u16 observedRatio;
     u16 trialRatio;
@@ -650,12 +652,9 @@ extern struct BattleTestRunnerState *gBattleTestRunnerState;
 /* Test */
 
 #define TO_DO_BATTLE_TEST(_name) \
-    SINGLE_BATTLE_TEST("TODO: " _name) \
+    TEST("TODO: " _name) \
     { \
         TO_DO; \
-        GIVEN { PLAYER(SPECIES_WOBBUFFET); OPPONENT(SPECIES_WOBBUFFET); } \
-        WHEN { TURN { } } \
-        THEN { EXPECT_TO_DO; } \
     }
 
 #define SINGLE_BATTLE_TEST(_name, ...) \

@@ -6502,13 +6502,16 @@ u16 GetEvolutionTargetSpecies(struct Pokemon *mon, u8 mode, u16 evolutionItem, s
                 if (MonKnowsMove(mon, gEvolutionTable[species][i].param))
                     targetSpecies = gEvolutionTable[species][i].targetSpecies;
                 break;
-            case EVO_MOVE_TYPE:
-                for (j = 0; j < 4; j++)
+            case EVO_FRIENDSHIP_MOVE_TYPE:
+                if (friendship >= 220)
                 {
-                    if (gBattleMoves[GetMonData(mon, MON_DATA_MOVE1 + j, NULL)].type == gEvolutionTable[species][i].param)
+                    for (j = 0; j < MAX_MON_MOVES; j++)
                     {
-                        targetSpecies = gEvolutionTable[species][i].targetSpecies;
-                        break;
+                        if (gBattleMoves[GetMonData(mon, MON_DATA_MOVE1 + j, NULL)].type == gEvolutionTable[species][i].param)
+                        {
+                            targetSpecies = gEvolutionTable[species][i].targetSpecies;
+                            break;
+                        }
                     }
                 }
                 break;
@@ -8494,7 +8497,7 @@ bool32 TryFormChange(u32 monId, u32 side, u16 method)
     targetSpecies = GetFormChangeTargetSpecies(&party[monId], method, 0);
 
     if (targetSpecies == SPECIES_NONE && gBattleStruct != NULL)
-        targetSpecies = gBattleStruct->changedSpecies[monId];
+        targetSpecies = gBattleStruct->changedSpecies[side][monId];
 
     if (targetSpecies != SPECIES_NONE)
     {
