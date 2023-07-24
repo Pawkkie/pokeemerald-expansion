@@ -6773,9 +6773,9 @@ static u8 PrintEvolutionTargetSpeciesAndMethod(u8 taskId, u16 species, u8 depth,
                 StringCopy(gStringVar2, gMoveNames[gEvolutionTable[species][i].param]);
                 StringExpandPlaceholders(gStringVar4, gText_EVO_MOVE );
                 break;
-            case EVO_MOVE_TYPE:
+            case EVO_FRIENDSHIP_MOVE_TYPE:
                 StringCopy(gStringVar2, gTypeNames[gEvolutionTable[species][i].param]);
-                StringExpandPlaceholders(gStringVar4, gText_EVO_MOVE_TYPE );
+                StringExpandPlaceholders(gStringVar4, gText_EVO_FRIENDSHIP_MOVE_TYPE );
                 break;
             case EVO_MAPSEC:
                 StringCopy(gStringVar2, gRegionMapEntries[gEvolutionTable[species][i].param].name);
