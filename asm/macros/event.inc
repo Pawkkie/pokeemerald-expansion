@@ -1032,6 +1032,12 @@
 		.byte 1
 	.elseif \id == STR_VAR_3
 		.byte 2
+	.elseif \id == EXTRA_STR_VAR_1
+		.byte 3
+	.elseif \id == EXTRA_STR_VAR_2
+		.byte 4
+	.elseif \id == EXTRA_STR_VAR_3
+		.byte 5
 	.else
 		.byte \id
 	.endif

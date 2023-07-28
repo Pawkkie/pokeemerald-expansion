@@ -3169,4 +3169,55 @@ extern const u8 gText_Moves_Menu[];
 extern const u8 gText_UsedPokeVial[];
 extern const u8 gText_PokeVialEmpty[];
 
+// Nature changer multichoice
+extern const u8 gText_FlavourRed[];
+extern const u8 gText_FlavourYellow[];
+extern const u8 gText_FlavourPink[];
+extern const u8 gText_FlavourBlue[];
+extern const u8 gText_FlavourGreen[];
+
+// Super/Hyper Training strings
+extern const u8 gText_View[];
+extern const u8 gText_Modify[];
+extern const u8 gText_ResetEVs[];
+extern const u8 gText_ExplainEVs[];
+extern const u8 gText_ChangeIVto0[];
+extern const u8 gText_ChangeIVto1[];
+extern const u8 gText_ChangeIVto14[];
+extern const u8 gText_ChangeIVto15[];
+extern const u8 gText_ChangeIVto30[];
+extern const u8 gText_ChangeIVto31[];
+extern const u8 gText_Add4toEV[];
+extern const u8 gText_Add8toEV[];
+extern const u8 gText_Add12toEV[];
+extern const u8 gText_Add64toEV[];
+extern const u8 gText_Add128toEV[];
+extern const u8 gText_Add252toEV[];
+extern const u8 gText_HiddenPower[];
+extern const u8 gText_ChangeIV[];
+extern const u8 gText_ExplainIVs[];
+extern const u8 gText_HPFighting[];
+extern const u8 gText_HPFlying[];
+extern const u8 gText_HPPoison[];
+extern const u8 gText_HPGround[];
+extern const u8 gText_HPRock[];
+extern const u8 gText_HPBug[];
+extern const u8 gText_HPGhost[];
+extern const u8 gText_HPSteel[];
+extern const u8 gText_HPFire[];
+extern const u8 gText_HPWater[];
+extern const u8 gText_HPGrass[];
+extern const u8 gText_HPElectric[];
+extern const u8 gText_HPPsychic[];
+extern const u8 gText_HPIce[];
+extern const u8 gText_HPDragon[];
+extern const u8 gText_HPDark[];
+
+extern const u8 gText_HP_Placeholder[];
+extern const u8 gText_Attack_Placeholder[];
+extern const u8 gText_Defense_Placeholder[];
+extern const u8 gText_Speed_Placeholder[];
+extern const u8 gText_SpAtk_Placeholder[];
+extern const u8 gText_SpDef_Placeholder[];
+
 #endif // GUARD_STRINGS_H

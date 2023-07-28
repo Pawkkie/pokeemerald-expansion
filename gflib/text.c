@@ -1382,17 +1382,26 @@ s32 GetStringWidth(u8 fontId, const u8 *str, s16 letterSpacing)
         case PLACEHOLDER_BEGIN:
             switch (*++str)
             {
-            case PLACEHOLDER_ID_STRING_VAR_1:
-                bufferPointer = gStringVar1;
-                break;
-            case PLACEHOLDER_ID_STRING_VAR_2:
-                bufferPointer = gStringVar2;
-                break;
-            case PLACEHOLDER_ID_STRING_VAR_3:
-                bufferPointer = gStringVar3;
-                break;
-            default:
-                return 0;
+                case PLACEHOLDER_ID_STRING_VAR_1:
+                    bufferPointer = gStringVar1;
+                    break;
+                case PLACEHOLDER_ID_STRING_VAR_2:
+                    bufferPointer = gStringVar2;
+                    break;
+                case PLACEHOLDER_ID_STRING_VAR_3:
+                    bufferPointer = gStringVar3;
+                    break;
+                case PLACEHOLDER_ID_EXTRA_STRING_VAR_1:
+                    bufferPointer = gExtraStringVar1;
+                    break;
+                case PLACEHOLDER_ID_EXTRA_STRING_VAR_2:
+                    bufferPointer = gExtraStringVar2;
+                    break;
+                case PLACEHOLDER_ID_EXTRA_STRING_VAR_3:
+                    bufferPointer = gExtraStringVar3;
+                    break;
+                default:
+                    return 0;
             }
         case CHAR_DYNAMIC:
             if (bufferPointer == NULL)

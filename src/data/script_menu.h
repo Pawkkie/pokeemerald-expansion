@@ -776,6 +776,52 @@ static const struct MenuAction MultichoiceList_Exit[] =
     {gText_Exit},
 };
 
+const struct MenuAction MultichoiceList_SuperTrainingMenu[] =
+{
+    {gText_Modify},
+    {gText_ResetEVs},
+    {gText_ExplainEVs},
+    {gText_Exit},
+};
+
+const struct MenuAction MultichoiceList_EVMenu[] =
+{
+    {gText_Add4toEV},
+    {gText_Add8toEV},
+    {gText_Add12toEV},
+    {gText_Add64toEV},
+    {gText_Add128toEV},
+    {gText_Add252toEV},
+};
+
+const struct MenuAction MultichoiceList_IVMenu[] =
+{
+    {gText_ChangeIVto0},
+    {gText_ChangeIVto1},
+    {gText_ChangeIVto14},
+    {gText_ChangeIVto15},
+    {gText_ChangeIVto30},
+    {gText_ChangeIVto31},
+};
+
+const struct MenuAction MultichoiceList_BaseStats[] =
+{
+    {gText_HP_Placeholder},
+    {gText_Attack_Placeholder},
+    {gText_Defense_Placeholder},
+    {gText_Speed_Placeholder},
+    {gText_SpAtk_Placeholder},
+    {gText_SpDef_Placeholder},
+};
+
+const struct MenuAction MultichoiceList_HyperTrainingMenu[] =
+{
+    {gText_ChangeIV},
+    {gText_HiddenPower},
+    {gText_ExplainIVs},
+    {gText_Exit},
+};
+
 struct MultichoiceListStruct
 {
     const struct MenuAction *list;
@@ -898,6 +944,11 @@ static const struct MultichoiceListStruct sMultichoiceLists[] =
     [MULTI_SLATEPORT_TENT_RULES]       = MULTICHOICE(MultichoiceList_SlateportTentRules),
     [MULTI_FALLARBOR_TENT_RULES]       = MULTICHOICE(MultichoiceList_FallarborTentRules),
     [MULTI_TAG_MATCH_TYPE]             = MULTICHOICE(MultichoiceList_TagMatchType),
+    [MULTI_SUPER_TRAINING_MENU]        = MULTICHOICE(MultichoiceList_SuperTrainingMenu),
+    [MULTI_IV_MENU]                    = MULTICHOICE(MultichoiceList_IVMenu),
+    [MULTI_EV_MENU]                    = MULTICHOICE(MultichoiceList_EVMenu),
+    [MULTI_BASE_STATS]                 = MULTICHOICE(MultichoiceList_BaseStats),
+    [MULTI_HYPER_TRAINING_MENU]        = MULTICHOICE(MultichoiceList_HyperTrainingMenu),
 };
 
 const u8 *const gStdStrings[] =

@@ -536,3 +536,13 @@ gSpecials::
 	def_special TrySetBattleTowerLinkType
 	def_special SetTotemBoost
 	def_special TrySpecialOverworldEvo
+	def_special AreChosenMonEVsMaxedOut
+	def_special ResetChosenMonEVs
+	def_special CheckChosenMonCanGainEVs
+	def_special IncreaseChosenMonEVs
+	def_special BufferChosenMonEV
+	def_special BufferChosenMonAllEVs
+	def_special ChangeChosenMonIVs
+	def_special BufferChosenMonIV
+	def_special BufferChosenMonAllIVs
+	def_special ChangeChosenMonHiddenPower
