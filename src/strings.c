@@ -2021,3 +2021,9 @@ const u8 gText_Defense_Placeholder[] =  _("Defense{CLEAR_TO 0x36}{STR_VAR_3}");
 const u8 gText_Speed_Placeholder[] =    _("Speed{CLEAR_TO 0x36}{EXTRA_STR_VAR_1}");
 const u8 gText_SpAtk_Placeholder[] =    _("Sp. Atk{CLEAR_TO 0x36}{EXTRA_STR_VAR_2}");
 const u8 gText_SpDef_Placeholder[] =    _("Sp. Def{CLEAR_TO 0x36}{EXTRA_STR_VAR_3}");
+
+// Move party items
+const u8 gMenuText_Move[] = _("MOVE");
+const u8 gText_MoveItemWhere[] = _("Move item to where?");
+const u8 gText_XsYAnd[] = _("Swapped {STR_VAR_1}'s {STR_VAR_2}\n");
+const u8 gText_XsYWereSwapped[] = _("and {STR_VAR_1}'s {STR_VAR_2}!{PAUSE_UNTIL_PRESS}");
