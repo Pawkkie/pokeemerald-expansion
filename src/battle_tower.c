@@ -3110,7 +3110,7 @@ static void FillPartnerParty(u16 trainerId)
                 else if (partyData[i].gender == TRAINER_MON_FEMALE)
                     j = (j & 0xFFFFFF00) | GeneratePersonalityForGender(MON_FEMALE, partyData[i].species);
                 if (partyData[i].nature != 0)
-                    ModifyPersonalityForNature(&j, partyData[i].nature - 1);
+                    ModifyPersonalityForNature(&gPlayerParty[i + 3], &j, partyData[i].nature - 1);
                 if (partyData[i].isShiny)
                 {
                     otIdType = OT_ID_PRESET;

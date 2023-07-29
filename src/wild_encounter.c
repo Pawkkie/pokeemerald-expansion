@@ -420,7 +420,7 @@ static u8 PickWildMonNature(void)
     #endif
     )
     {
-        return GetMonData(&gPlayerParty[0], MON_DATA_PERSONALITY) % NUM_NATURES;
+        return GetMonData(&gPlayerParty[0], MON_DATA_NATURE);
     }
 
     // random nature

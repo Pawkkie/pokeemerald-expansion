@@ -6461,7 +6461,7 @@ static u8 HealConfuseBerry(u32 battlerId, u32 itemId, u8 flavorId, bool32 end2)
         gBattleScripting.battler = battlerId;
         if (end2)
         {
-            if (GetFlavorRelationByPersonality(gBattleMons[battlerId].personality, flavorId) < 0)
+            if (GetFlavorRelationByNature(gBattleMons[battlerId].nature, flavorId) < 0)
                 BattleScriptExecute(BattleScript_BerryConfuseHealEnd2);
             else
                 BattleScriptExecute(BattleScript_ItemHealHP_RemoveItemEnd2);
@@ -6469,7 +6469,7 @@ static u8 HealConfuseBerry(u32 battlerId, u32 itemId, u8 flavorId, bool32 end2)
         else
         {
             BattleScriptPushCursor();
-            if (GetFlavorRelationByPersonality(gBattleMons[battlerId].personality, flavorId) < 0)
+            if (GetFlavorRelationByNature(gBattleMons[battlerId].nature, flavorId) < 0)
                 gBattlescriptCurrInstr = BattleScript_BerryConfuseHealRet;
             else
                 gBattlescriptCurrInstr = BattleScript_ItemHealHP_RemoveItemRet;

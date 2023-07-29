@@ -1914,9 +1914,9 @@ static u32 GeneratePartyHash(const struct Trainer *trainer, u32 i)
     return Crc32B(buffer, n);
 }
 
-void ModifyPersonalityForNature(u32 *personality, u32 newNature)
+void ModifyPersonalityForNature(struct Pokemon *mon, u32 *personality, u32 newNature)
 {
-    u32 nature = GetNatureFromPersonality(*personality);
+    u32 nature = GetMonData(mon, MON_DATA_NATURE);
     s32 diff = abs(nature - newNature);
     s32 sign = (nature > newNature) ? 1 : -1;
     if (diff > NUM_NATURES / 2)
@@ -2052,7 +2052,7 @@ u8 CreateNPCTrainerPartyFromTrainer(struct Pokemon *party, const struct Trainer 
                 else if (partyData[i].gender == TRAINER_MON_FEMALE)
                     personalityValue = (personalityValue & 0xFFFFFF00) | GeneratePersonalityForGender(MON_FEMALE, partyData[i].species);
                 if (partyData[i].nature != 0)
-                    ModifyPersonalityForNature(&personalityValue, partyData[i].nature - 1);
+                    ModifyPersonalityForNature(&party[i], &personalityValue, partyData[i].nature - 1);
                 if (partyData[i].isShiny)
                 {
                     otIdType = OT_ID_PRESET;
