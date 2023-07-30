@@ -104,6 +104,8 @@ FallarborTown_Text_AnnoyingIntroPart8:
 	.string "Ivy: And for one Bottle Cap, I'll change\n"
 	.string "one of a Pokémon's IVs to whatever\l"
 	.string "you want.\p"
+	.string "If you want them changed to really low\n"
+	.string "values like 0 or 1, it's on the house.\p"
 	.string "Also, for three Caps, I'll change all\n"
 	.string "of a Pokémon's IVs to give them a new\l"
 	.string "Hidden Power type.$"
@@ -551,11 +553,11 @@ FallarborTown_ChooseNewIV::
 
 HyperTraining_EventScript_ChangeIV0::
 	setvar VAR_0x8006, 0
-	goto HyperTraining_EventScript_ChangeOneIV
+	goto HyperTraining_EventScript_ChangeOneIVFree
 
 HyperTraining_EventScript_ChangeIV1::
 	setvar VAR_0x8006, 1
-	goto HyperTraining_EventScript_ChangeOneIV
+	goto HyperTraining_EventScript_ChangeOneIVFree
 
 HyperTraining_EventScript_ChangeIV14::
 	setvar VAR_0x8006, 14
@@ -581,6 +583,14 @@ HyperTraining_EventScript_ChangeOneIV::
 	msgbox HyperTraining_Text_PayOneCap, MSGBOX_DEFAULT
 	removeitem ITEM_BOTTLE_CAP
 	goto HyperTraining_EventScript_DoHyperTraining
+
+HyperTraining_EventScript_ChangeOneIVFree::
+	msgbox HyperTraining_Text_Free, MSGBOX_YESNO
+	compare VAR_RESULT, 0
+	goto_if_eq FallarborTown_HyperTrainer
+	special ChangeChosenMonIVs
+	goto HyperTraining_EventScript_DoHyperTraining
+
 
 HyperTraining_EventScript_ChangeHiddenPower::
 	msgbox HyperTraining_Text_ForThreeCapsChangeAllIVs, MSGBOX_DEFAULT
@@ -790,3 +800,7 @@ HyperTraining_Text_PayOneCap:
 
 HyperTraining_Text_PayThreeCaps:
 	.string "{PLAYER} handed over three Bottle Caps.$"
+
+HyperTraining_Text_Free:
+	.string "I can do that for free! Just to check,\n"
+	.string "you're sure you want to set it that low?$"

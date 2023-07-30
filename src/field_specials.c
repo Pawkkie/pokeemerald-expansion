@@ -4477,21 +4477,21 @@ void ChangeChosenMonHiddenPower (void)
 
     static const u8 hiddenPowerSpreads[NUMBER_OF_MON_TYPES - 3][NUM_STATS] = {
     //   HP  Atk Def Spe SpA SpD
-        {31,  0, 30, 30, 30, 30}, // TYPE_FIGHTING
-        {30,  0, 30, 31, 30, 30}, // TYPE_FLYING
-        {30,  1, 30, 31, 30, 30}, // TYPE_POISON
-        {31,  1, 31, 31, 30, 30}, // TYPE_GROUND
-        {31,  1, 30, 30, 31, 30}, // TYPE_ROCK
-        {31,  0, 30, 31, 31, 30}, // TYPE_BUG
-        {31,  1, 30, 31, 31, 30}, // TYPE_GHOST
-        {31,  1, 31, 31, 31, 30}, // TYPE_STEEL
-        {31,  0, 31, 30, 30, 31}, // TYPE_FIRE
-        {31,  1, 31, 30, 30, 31}, // TYPE_WATER
-        {31,  0, 31, 31, 30, 31}, // TYPE_GRASS
-        {31,  1, 31, 31, 30, 31}, // TYPE_ELECTRIC
-        {31,  0, 31, 30, 31, 31}, // TYPE_PSYCHIC
-        {31,  0, 30, 31, 31, 31}, // TYPE_ICE
-        {31,  0, 31, 31, 31, 31}, // TYPE_DRAGON
+        {31,  30, 30, 30, 30, 30}, // TYPE_FIGHTING
+        {30,  30, 30, 31, 30, 30}, // TYPE_FLYING
+        {30,  31, 30, 31, 30, 30}, // TYPE_POISON
+        {31,  31, 31, 31, 30, 30}, // TYPE_GROUND
+        {31,  31, 30, 30, 31, 30}, // TYPE_ROCK
+        {31,  30, 30, 31, 31, 30}, // TYPE_BUG
+        {31,  31, 30, 31, 31, 30}, // TYPE_GHOST
+        {31,  31, 31, 31, 31, 30}, // TYPE_STEEL
+        {31,  30, 31, 30, 30, 31}, // TYPE_FIRE
+        {31,  31, 31, 30, 30, 31}, // TYPE_WATER
+        {31,  30, 31, 31, 30, 31}, // TYPE_GRASS
+        {31,  31, 31, 31, 30, 31}, // TYPE_ELECTRIC
+        {31,  30, 31, 30, 31, 31}, // TYPE_PSYCHIC
+        {31,  30, 30, 31, 31, 31}, // TYPE_ICE
+        {31,  30, 31, 31, 31, 31}, // TYPE_DRAGON
         {31, 31, 31, 31, 31, 31}, // TYPE_DARK
     };
   
