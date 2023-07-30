@@ -15456,6 +15456,8 @@ static void Cmd_handleballthrow(void)
             case ITEM_SPORT_BALL:
         #endif
             case ITEM_GREAT_BALL:
+                ballMultiplier = 150;
+                break;
             case ITEM_SAFARI_BALL:
                 ballMultiplier = 150;
                 break;
@@ -15600,12 +15602,10 @@ static void Cmd_handleballthrow(void)
             #endif
                 break;
             case ITEM_DREAM_BALL:
-            #if B_DREAM_BALL_MODIFIER >= GEN_8
-                if (gBattleMons[gBattlerTarget].status1 & STATUS1_SLEEP || GetBattlerAbility(gBattlerTarget) == ABILITY_COMATOSE)
-                    ballMultiplier = 400;
-            #else
-                ballMultiplier = 100;
-            #endif
+                ballMultiplier = 150;
+                break;
+            case ITEM_FRIEND_BALL:
+                ballMultiplier = 150;
                 break;
             case ITEM_BEAST_BALL:
                 ballMultiplier = 10;
