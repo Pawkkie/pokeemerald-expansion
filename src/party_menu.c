@@ -2650,13 +2650,12 @@ static void SetPartyMonFieldSelectionActions(struct Pokemon *mons, u8 slotId)
     {
         if (GetMonData(&mons[1], MON_DATA_SPECIES) != SPECIES_NONE)
             AppendToList(sPartyMenuInternal->actions, &sPartyMenuInternal->numActions, MENU_SWITCH);
-    	if (GetNumberOfRelearnableMoves(&mons[slotId]) != 0)
-            AppendToList(sPartyMenuInternal->actions, &sPartyMenuInternal->numActions, MENU_ITEM);
         if (ItemIsMail(GetMonData(&mons[slotId], MON_DATA_HELD_ITEM)))
             AppendToList(sPartyMenuInternal->actions, &sPartyMenuInternal->numActions, MENU_MAIL);
-        if (FlagGet(FLAG_CAN_RELEARNER) == TRUE)
+        else
+            AppendToList(sPartyMenuInternal->actions, &sPartyMenuInternal->numActions, MENU_ITEM);
+        if (GetNumberOfRelearnableMoves(&mons[slotId]) != 0 && FlagGet(FLAG_CAN_RELEARNER) == TRUE)
             AppendToList(sPartyMenuInternal->actions, &sPartyMenuInternal->numActions, MENU_MOVES);
-            
     }
 
     if (!IsTradedMon(&mons[slotId]) && FlagGet(FLAG_CAN_NICKNAME))
