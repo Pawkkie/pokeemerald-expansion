@@ -4679,9 +4679,7 @@ u32 GetBattlerTotalSpeedStat(u8 battlerId)
     speed /= gStatStageRatios[gBattleMons[battlerId].statStages[STAT_SPEED]][1];
 
     // item effects
-    if (holdEffect == HOLD_EFFECT_MACHO_BRACE || holdEffect == HOLD_EFFECT_POWER_ITEM)
-        speed /= 2;
-    else if (holdEffect == HOLD_EFFECT_IRON_BALL)
+    if (holdEffect == HOLD_EFFECT_IRON_BALL)
         speed /= 2;
     else if (holdEffect == HOLD_EFFECT_CHOICE_SCARF)
         speed = (speed * 150) / 100;
