@@ -15657,6 +15657,12 @@ static void Cmd_handleballthrow(void)
                 u8 Ability = 2;
                 SetMonData(&gEnemyParty[gBattlerPartyIndexes[gBattlerTarget]], MON_DATA_ABILITY_NUM, &Ability);
             }
+
+            if (gLastUsedItem == ITEM_FRIEND_BALL) // Give a Pokemon max friendship when caught in a Friend Ball
+            {   
+                u8 Friendship= 255;
+                SetMonData(&gEnemyParty[gBattlerPartyIndexes[gBattlerTarget]], MON_DATA_FRIENDSHIP, &Friendship);
+            }  
         }
         else // mon may be caught, calculate shakes
         {
@@ -15716,6 +15722,12 @@ static void Cmd_handleballthrow(void)
                 {
                     u8 Ability = 2;
                     SetMonData(&gEnemyParty[gBattlerPartyIndexes[gBattlerTarget]], MON_DATA_ABILITY_NUM, &Ability);
+                }
+
+                else if (gLastUsedItem == ITEM_FRIEND_BALL) // Give a Pokemon max friendship when caught in a Friend Ball
+                {
+                    u8 Friendship= 255;
+                    SetMonData(&gEnemyParty[gBattlerPartyIndexes[gBattlerTarget]], MON_DATA_FRIENDSHIP, &Friendship);
                 }
             }
             else // not caught

@@ -88,9 +88,9 @@ static const u8 sMoonBallDesc[] = _(
     "Stone users.");
 
 static const u8 sFriendBallDesc[] = _(
-    "A Ball that makes\n"
-    "a Pokémon friendly\n"
-    "when caught.");
+    "A Ball that maxes\n"
+    "caught Pokémon's\n"
+    "friendship.");
 
 static const u8 sLoveBallDesc[] = _(
     "Works well on\n"
@@ -109,9 +109,9 @@ static const u8 sHeavyBallDesc[] = _(
 
 static const u8 sDreamBallDesc[] = _(
 #if B_DREAM_BALL_MODIFIER >= GEN_8
-    "A Ball that works\n"
-    "well on sleeping\n"
-    "Pokémon.");
+    "Caught Pokémon will\n"
+    "have their Hidden\n"
+    "Ability.");
 #else
     "A Poké Ball used in\n"
     "the Entree Forest.");
