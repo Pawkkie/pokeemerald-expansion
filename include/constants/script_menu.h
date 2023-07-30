@@ -127,6 +127,7 @@
 #define MULTI_EV_MENU                      116
 #define MULTI_BASE_STATS                   117
 #define MULTI_HYPER_TRAINING_MENU          118
+#define MULTI_FLAVORS                      119
 
 // Lilycove SS Tidal Multichoice Selections
 #define SSTIDAL_SELECTION_SLATEPORT        0

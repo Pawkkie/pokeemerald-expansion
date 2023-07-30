@@ -546,3 +546,5 @@ gSpecials::
 	def_special BufferChosenMonIV
 	def_special BufferChosenMonAllIVs
 	def_special ChangeChosenMonHiddenPower
+	def_special BufferChosenMonNature
+	def_special ChangePokemonNature

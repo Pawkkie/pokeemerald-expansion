@@ -4501,3 +4501,25 @@ void ChangeChosenMonHiddenPower (void)
     }
     CalculateMonStats(&gPlayerParty[gSpecialVar_0x800A]);
 }
+
+// Changes the selected Pokemon's nature.
+// gSpecialVar_0x8004 must be set to the party slot of the Pokemon whose nature should be changed
+// Set gSpecialVar_0x8005 to the stat to icrease, and gSpecialVar_0x8006 to the stat to decrease
+void ChangePokemonNature (void)
+{
+    u8 newNature = 0;
+
+    newNature = (gSpecialVar_0x8005 * (NUM_STATS - 1)) + gSpecialVar_0x8006;
+	SetMonData(&gPlayerParty[gSpecialVar_0x8004], MON_DATA_NATURE, &newNature);
+    CalculateMonStats(&gPlayerParty[gSpecialVar_0x8004]);
+}
+
+// Buffers the nature of a Pokemon chosen by the player.
+// gSpecialVar_0x8004 must be set to the party slot of the chosen Pokemon
+void BufferChosenMonNature (void)
+{
+    u8 nature = 0;
+
+    nature = GetMonData(&gPlayerParty[gSpecialVar_0x8004], MON_DATA_NATURE, NULL);
+    StringCopy (gStringVar2, gNatureNamePointers[nature]);
+}
