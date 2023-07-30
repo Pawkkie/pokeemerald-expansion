@@ -10415,4 +10415,16 @@ const struct Item gItems[] =
         .fieldUseFunc = ItemUseOutOfBattle_RareCandy,
         .flingPower = 30,
     },
+
+    [ITEM_TRAINING_BAND] =
+    {
+        .name = _("Training Band"),
+        .itemId = ITEM_TRAINING_BAND,
+        .price = 5000,
+        .holdEffect = HOLD_EFFECT_TRAINING_BAND,
+        .description = sTrainingBandDesc,
+        .pocket = POCKET_ITEMS,
+        .type = ITEM_USE_BAG_MENU,
+        .fieldUseFunc = ItemUseOutOfBattle_CannotUse,
+    },
 };

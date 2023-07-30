@@ -3928,3 +3928,8 @@ static const u8 sCandyJarDesc[] = _(
     "A bottomless\n"
     "jar filled with\n"
     "Rare Candies.");
+
+static const u8 sTrainingBandDesc[] = _(
+    "Massively boosts\n"
+    "Exp. gain for\n"
+    "weaker Pokémon.");

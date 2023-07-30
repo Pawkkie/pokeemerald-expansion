@@ -62,6 +62,7 @@
 #include "battle_util.h"
 #include "constants/pokemon.h"
 #include "config/battle.h"
+#include "battle_tower.h"
 
 // Helper for accessing command arguments and advancing gBattlescriptCurrInstr.
 //
@@ -4238,6 +4239,7 @@ static void Cmd_getexp(void)
     u8 holdEffect;
     s32 sentIn;
     u32 *exp = &gBattleStruct->expValue;
+    u8 highestLevel;
 
     gBattlerFainted = GetBattlerForBattleScript(cmd->battler);
     sentIn = gSentPokesToOpponent[(gBattlerFainted & 2) >> 1];
@@ -4379,6 +4381,16 @@ static void Cmd_getexp(void)
                 #endif
                     if (holdEffect == HOLD_EFFECT_LUCKY_EGG)
                         gBattleMoveDamage = (gBattleMoveDamage * 150) / 100;
+                    
+                    if (holdEffect == HOLD_EFFECT_TRAINING_BAND)
+                    {
+                        highestLevel = GetHighestLevelInPlayerParty();
+                        if (GetMonData(&gPlayerParty[gBattleStruct->expGetterMonId], MON_DATA_LEVEL) < (highestLevel - 4))
+                        {
+                            gBattleMoveDamage = gBattleMoveDamage * 5;
+                        }
+                    }
+
                 #if B_TRAINER_EXP_MULTIPLIER <= GEN_7
                     if (gBattleTypeFlags & BATTLE_TYPE_TRAINER)
                         gBattleMoveDamage = (gBattleMoveDamage * 150) / 100;
