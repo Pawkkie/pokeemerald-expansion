@@ -1991,6 +1991,9 @@ const u32 gItemIconPalette_TinyBambooShoot[] = INCBIN_U32("graphics/items/icon_p
 const u32 gItemIcon_Lantern[] = INCBIN_U32("graphics/items/icons/lantern.4bpp.lz");
 const u32 gItemIconPalette_Lantern[] = INCBIN_U32("graphics/items/icon_palettes/lantern.gbapal.lz");
 
+const u32 gItemIcon_CandyJar[] = INCBIN_U32("graphics/items/icons/candy_jar.4bpp.lz");
+const u32 gItemIconPalette_CandyJar[] = INCBIN_U32("graphics/items/icon_palettes/candy_jar.gbapal.lz");
+
 // Tera Shards here
 
 const u32 gItemIcon_AdamantCrystal[] = INCBIN_U32("graphics/items/icons/adamant_crystal.4bpp.lz");
