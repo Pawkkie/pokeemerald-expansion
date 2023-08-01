@@ -1414,8 +1414,13 @@ void ItemUseOutOfBattle_TownMap(u8 taskId)
 
 void ItemUseOutOfBattle_BoxLink(u8 taskId)
 {
-    sItemUseOnFieldCB = ItemUseOnFieldCB_BoxLink;
-    SetUpItemUseOnFieldCallback(taskId);
+    if (Overworld_MapTypeAllowsTeleportAndFly(gMapHeader.mapType) == TRUE)
+    {
+        sItemUseOnFieldCB = ItemUseOnFieldCB_BoxLink;
+        SetUpItemUseOnFieldCallback(taskId);
+    }
+    else
+        DisplayItemMessage(taskId, 1, gText_CantAccesPC, CloseItemMessage);
 }
 
 static void ItemUseOnFieldCB_BoxLink(u8 taskId)

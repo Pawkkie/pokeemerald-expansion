@@ -1052,6 +1052,7 @@ extern const u8 gText_ExpShareTurnOff[];
 extern const u8 gText_DadsAdvice[];
 extern const u8 gText_CleanseTagTurnOn[];
 extern const u8 gText_CleanseTagTurnOff[];
+extern const u8 gText_CantAccesPC[];
 extern const u8 gText_CantDismountBike[];
 extern const u8 gText_ItemFinderNothing[];
 extern const u8 gText_ItemFinderNearby[];

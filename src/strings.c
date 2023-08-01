@@ -238,6 +238,7 @@ const u8 gText_ExpShareTurnOn[] = _("Turned on the Exp. Share.\pParty will now g
 const u8 gText_ExpShareTurnOff[] = _("Turned off the Exp. Share.\pParty will no longer gain a portion\nof any Experience Points.{PAUSE_UNTIL_PRESS}");
 const u8 gText_CleanseTagTurnOn[] = _("Turned on Cleanse Tag.\nAll wild encounters will be avoided.{PAUSE_UNTIL_PRESS}");
 const u8 gText_CleanseTagTurnOff[] = _("Turned off Cleanse Tag.{PAUSE_UNTIL_PRESS}");
+const u8 gText_CantAccesPC[] = _("You can't access the PC here.\nTry going outside.{PAUSE_UNTIL_PRESS}");
 const u8 gText_CantDismountBike[] = _("You can't dismount your BIKE here.{PAUSE_UNTIL_PRESS}");
 const u8 gText_ItemFinderNearby[] = _("Huh?\nThe ITEMFINDER's responding!\pThere's an item buried around here!{PAUSE_UNTIL_PRESS}");
 const u8 gText_ItemFinderOnTop[] = _("Oh!\nThe ITEMFINDER's shaking wildly!{PAUSE_UNTIL_PRESS}");
