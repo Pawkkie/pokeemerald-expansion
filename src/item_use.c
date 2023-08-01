@@ -1405,6 +1405,12 @@ void ItemUseOutOfBattle_Fly(u8 taskId)
         DisplayDadsAdviceCannotUseItemMessage(taskId, gTasks[taskId].data[3]);
 }
 
+void ItemUseOutOfBattle_TownMap(u8 taskId)
+{
+    SetMainCallback2(CB2_OpenTownMap);
+    Task_FadeAndCloseBagMenu(taskId);
+}
+
 void ItemUseOutOfBattle_Lantern(u8 taskId)
 {
     if (SetUpFieldMove_Flash())
