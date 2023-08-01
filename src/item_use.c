@@ -64,6 +64,7 @@ static void ItemUseOnFieldCB_Itemfinder(u8);
 static void ItemUseOnFieldCB_Berry(u8);
 static void ItemUseOnFieldCB_WailmerPailBerry(u8);
 static void ItemUseOnFieldCB_Lantern(u8);
+static void ItemUseOnFieldCB_BoxLink(u8);
 static void ItemUseOnFieldCB_WailmerPailSudowoodo(u8);
 static bool8 TryToWaterSudowoodo(void);
 static void BootUpSoundTMHM(u8);
@@ -1409,6 +1410,19 @@ void ItemUseOutOfBattle_TownMap(u8 taskId)
 {
     SetMainCallback2(CB2_OpenTownMap);
     Task_FadeAndCloseBagMenu(taskId);
+}
+
+void ItemUseOutOfBattle_BoxLink(u8 taskId)
+{
+    sItemUseOnFieldCB = ItemUseOnFieldCB_BoxLink;
+    SetUpItemUseOnFieldCallback(taskId);
+}
+
+static void ItemUseOnFieldCB_BoxLink(u8 taskId)
+{
+    LockPlayerFieldControls();
+    ScriptContext_SetupScript(EventScript_PCMainMenu);
+    DestroyTask(taskId);
 }
 
 void ItemUseOutOfBattle_Lantern(u8 taskId)

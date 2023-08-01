@@ -9379,8 +9379,8 @@ const struct Item gItems[] =
         .description = sPokemonBoxLinkDesc,
         .importance = 1,
         .pocket = POCKET_KEY_ITEMS,
-        .type = ITEM_USE_BAG_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_CannotUse, // Todo
+        .type = ITEM_USE_FIELD,
+        .fieldUseFunc = ItemUseOutOfBattle_BoxLink, // Todo
     },
 
     [ITEM_COIN_CASE] =
