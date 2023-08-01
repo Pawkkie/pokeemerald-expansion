@@ -98,7 +98,6 @@ void MoveDeleterForgetMove(void);
 void BufferMoveDeleterNicknameAndMove(void);
 void GetNumMovesSelectedMonHas(void);
 void MoveDeleterChooseMoveToForget(void);
-void ItemUseCB_PokeBall(u8 taskId, TaskFunc task);
 void CB2_ReturnToPartyMenuFromSummaryScreen(void);
 
 #ifndef BATTLE_ENGINE
