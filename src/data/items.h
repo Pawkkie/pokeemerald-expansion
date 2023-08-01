@@ -9407,7 +9407,7 @@ const struct Item gItems[] =
         .importance = 1,
         .pocket = POCKET_KEY_ITEMS,
         .type = ITEM_USE_FIELD,
-        .fieldUseFunc = ItemUseOutOfBattle_BoxLink, // Todo
+        .fieldUseFunc = ItemUseOutOfBattle_BoxLink,
     },
 
     [ITEM_COIN_CASE] =
@@ -10453,5 +10453,17 @@ const struct Item gItems[] =
         .pocket = POCKET_ITEMS,
         .type = ITEM_USE_BAG_MENU,
         .fieldUseFunc = ItemUseOutOfBattle_CannotUse,
+    },
+
+    [ITEM_TYPE_CHART] =
+    {
+        .name = _("Type Chart"),
+        .itemId = ITEM_TYPE_CHART,
+        .price = 0,
+        .description = sTypeChartDesc,
+        .importance = 1,
+        .pocket = POCKET_KEY_ITEMS,
+        .type = ITEM_USE_FIELD,
+        .fieldUseFunc = ItemUseOutOfBattle_TypeChart,
     },
 };

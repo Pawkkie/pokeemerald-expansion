@@ -48,12 +48,7 @@ FallarborTown_EventScript_TownSign::
 	end
 
 FallarborTown_EventScript_MoveTutorSign::
-	lock
-	setvar VAR_0x8000, MUGSHOT_TYPE_CHART
-	callnative DrawMugshot
-	waitbuttonpress
-	callnative ClearMugshot
-	release
+	msgbox FallarborTown_Text_MoveTutorSign, MSGBOX_SIGN
 	end
 
 FallarborTown_Text_ShadyCharactersCozmosHome:

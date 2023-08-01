@@ -849,6 +849,7 @@ const u32 *const gItemIconTable[ITEMS_COUNT + 1][2] =
     [ITEM_POKEVIAL] = {gItemIcon_BerserkGene, gItemIconPalette_BerserkGene},
     [ITEM_CANDY_JAR] = {gItemIcon_CandyJar, gItemIconPalette_CandyJar},
     [ITEM_TRAINING_BAND] = {gItemIcon_FocusBand, gItemIconPalette_FocusBand},
+    [ITEM_TYPE_CHART] = {gItemIcon_TownMap, gItemIconPalette_TownMap},
     // Return to field arrow
     [ITEMS_COUNT] = {gItemIcon_ReturnToFieldArrow, gItemIconPalette_ReturnToFieldArrow},
 };

@@ -80,6 +80,7 @@ static void SetDistanceOfClosestHiddenItem(u8, s16, s16);
 static void CB2_OpenPokeblockFromBag(void);
 static void ItemUseOnFieldCB_Honey(u8 taskId);
 static void ItemUseOnFieldCB_PokeVial(u8 taskId);
+static void ItemUseOnFieldCB_TypeChart(u8 taskId);
 static bool32 CannotUseBagBattleItem(u16 itemId);
 
 // EWRAM variables
@@ -1474,6 +1475,19 @@ static void ItemUseOnFieldCB_PokeVial(u8 taskId)
     HealPlayerParty();
     VarSet(VAR_POKEVIAL_CHARGES, VarGet(VAR_POKEVIAL_CHARGES) - 1);
     DisplayItemMessageOnField(taskId, gText_UsedPokeVial, Task_CloseCantUseKeyItemMessage);
+}
+
+void ItemUseOutOfBattle_TypeChart(u8 taskId)
+{
+    sItemUseOnFieldCB = ItemUseOnFieldCB_TypeChart;
+    SetUpItemUseOnFieldCallback(taskId);
+}
+
+void ItemUseOnFieldCB_TypeChart(u8 taskId)
+{
+    LockPlayerFieldControls();
+    ScriptContext_SetupScript(EventScript_TypeChart);
+    DestroyTask(taskId);
 }
 
 #undef tUsingRegisteredKeyItem

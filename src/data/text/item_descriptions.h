@@ -3933,3 +3933,8 @@ static const u8 sTrainingBandDesc[] = _(
     "Massively boosts\n"
     "Exp. gain for\n"
     "weaker Pokémon.");
+
+static const u8 sTypeChartDesc[] = _(
+    "A chart showing\n"
+    "Pokémon type\n"
+    "matchups.");
