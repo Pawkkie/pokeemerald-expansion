@@ -14359,6 +14359,16 @@ Move_POLTERGEIST::
 	end
 
 Move_CORROSIVE_GAS::
+	@to do: Using Haze as placeholder anim.
+	waitforvisualfinish
+	playsewithpan SE_M_HAZE, 0
+	createvisualtask AnimTask_HazeScrollingFog, 5
+	delay 30
+	createvisualtask AnimTask_BlendBattleAnimPal, 10, 0x780, 2, 0, 16, RGB_BLACK
+	delay 90
+	createvisualtask AnimTask_BlendBattleAnimPal, 10, 0x780, 1, 16, 0, RGB_BLACK
+	end
+
 Move_COACHING::
 Move_FLIP_TURN::
 Move_TRIPLE_AXEL::
