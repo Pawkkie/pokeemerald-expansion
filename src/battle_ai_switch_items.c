@@ -986,6 +986,7 @@ static u32 GetBestMonBatonPass(struct Pokemon *party, int firstId, int lastId, u
 static u32 GetBestMonTypeMatchup(struct Pokemon *party, int firstId, int lastId, u8 invalidMons, u32 opposingBattler)
 {
     int i, bits = 0;
+    bool8 checkedAllMonsForSEMoves = FALSE;
 
     while (bits != 0x3F) // All mons were checked.
     {
@@ -1023,10 +1024,28 @@ static u32 GetBestMonTypeMatchup(struct Pokemon *party, int firstId, int lastId,
                 }
             }
         }
-
+        // Have defensive mon
         if (bestMonId != PARTY_SIZE)
         {
-            return bestMonId; // Get most defensive mon, and assume it knows a STAB move
+            // Check if it has a super effective move
+            for (i = 0; i < MAX_MON_MOVES; i++)
+            {
+                u32 move = GetMonData(&party[bestMonId], MON_DATA_MOVE1 + i);
+                if (move != MOVE_NONE && AI_GetTypeEffectiveness(move, gActiveBattler, opposingBattler) >= UQ_4_12(2.0))
+                    break;
+            }
+            /// If it has a super effective move or we've already checked other options, it's the best mon
+            if (i != MAX_MON_MOVES || checkedAllMonsForSEMoves)
+                return bestMonId; 
+            // If it doesn't, keep looking
+            bits |= gBitTable[bestMonId];
+            
+            if (bits == 0x3F && !checkedAllMonsForSEMoves)
+            {
+                bits = 0;
+                checkedAllMonsForSEMoves = TRUE;
+            }
+        // Do not have a defensive mon
         }
         else
         {
