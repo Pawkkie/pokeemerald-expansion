@@ -100,6 +100,19 @@ static bool8 HasBadOdds(void)
 		if ((!HasSuperEffectiveMoveAgainstOpponents(FALSE))
 			&& (gBattleMons[gActiveBattler].hp >= gBattleMons[gActiveBattler].maxHP/2)) //If the computer doesn't have a super effective move AND they have >1/2 their HP...
 		{
+            // Check if current mon can revenge kill in spite of bad matchup
+            for (j = 0; j < MAX_MON_MOVES; j++)
+            {
+                u32 move = GetMonData(&party[i], MON_DATA_MOVE1 + j);
+                if(AI_CalcPartyMonDamage(move, gActiveBattler, opposingBattler, &party[i]) > gBattleMons[opposingBattler].hp)
+                {
+                    if (GetMonData(&party[i], MON_DATA_SPEED) > gBattleMons[opposingBattler].speed || gBattleMoves[move].priority > 0)
+                    {
+                        return FALSE;
+                    }
+                }
+            }
+
 			for (i = 0; i < MAX_MON_MOVES; i++) //Then check their moves to see if they have a status move. If you have a status move, you probably want to use it even if you don't have the advantage.
 			{
 				move = gBattleMons[gActiveBattler].moves[i]; //List of status moves under consideration
@@ -887,8 +900,12 @@ static u32 GetBestMonBatonPass(struct Pokemon *party, int firstId, int lastId, u
 
 static u32 GetBestMonTypeMatchup(struct Pokemon *party, int firstId, int lastId, u8 invalidMons, u32 opposingBattler)
 {
-    int i, bits = 0;
+    int i, j, bits = 0;
     bool8 checkedAllMonForSEMoves = FALSE; // We have checked all Pokemon in the party for if they have a super effective move
+
+    // Revenge killer
+    int revengeKillerId = PARTY_SIZE;
+    bool8 revengeKiller = FALSE;
 
     while (bits != 0x3F) // All mons were checked.
     {
@@ -921,7 +938,27 @@ static u32 GetBestMonTypeMatchup(struct Pokemon *party, int firstId, int lastId,
                     bestResist = typeEffectiveness;
                     bestMonId = i;
                 }
+
+                // Check if current mon can revenge kill
+                for (j = 0; j < MAX_MON_MOVES; j++)
+                {
+                    u32 move = GetMonData(&party[i], MON_DATA_MOVE1 + j);
+                    if(AI_CalcPartyMonDamage(move, gActiveBattler, opposingBattler, &party[i]) > gBattleMons[opposingBattler].hp)
+                    {
+                        if (GetMonData(&party[i], MON_DATA_SPEED) > gBattleMons[opposingBattler].speed || gBattleMoves[move].priority > 0)
+                        {
+                            revengeKillerId = i;
+                            revengeKiller = TRUE;
+                        }
+                    }
+                }
+
             }
+        }
+
+        if (revengeKiller == TRUE)
+        {
+            return revengeKillerId;
         }
 
         // Ok, we know the mon has the right typing but does it have at least one super effective move?
