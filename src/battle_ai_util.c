@@ -3421,22 +3421,12 @@ void FreeRestoreBattleMons(struct BattlePokemon *savedBattleMons)
 // party logic
 s32 AI_CalcPartyMonDamageDealt(u16 move, u8 battlerAtk, u8 battlerDef, struct Pokemon *mon)
 {
-    s32 dmg;
-    u32 i;
+    s32 dmg, i;
     u8 effectiveness;
-    struct BattlePokemon *battleMons = Alloc(sizeof(struct BattlePokemon) * MAX_BATTLERS_COUNT);
-
-    for (i = 0; i < MAX_BATTLERS_COUNT; i++)
-        battleMons[i] = gBattleMons[i];
-
+    struct BattlePokemon *savedBattleMons = AllocSaveBattleMons();
     PokemonToBattleMon(mon, &gBattleMons[battlerAtk]);
     dmg = AI_CalcDamage(move, battlerAtk, battlerDef, &effectiveness, FALSE);
-
-    for (i = 0; i < MAX_BATTLERS_COUNT; i++)
-        gBattleMons[i] = battleMons[i];
-
-    Free(battleMons);
-
+    FreeRestoreBattleMons(savedBattleMons);
     return dmg;
 }
 
