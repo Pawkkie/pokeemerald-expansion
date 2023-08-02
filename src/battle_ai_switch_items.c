@@ -105,7 +105,7 @@ static bool8 HasBadOdds(void)
             for (j = 0; j < MAX_MON_MOVES; j++)
             {
                 u32 move = gBattleMons[gActiveBattler].moves[j];
-                if(AI_CalcPartyMonDamage(move, gActiveBattler, opposingBattler, &party[i]) > gBattleMons[opposingBattler].hp)
+                if(AI_CalcPartyMonDamageDealt(move, gActiveBattler, opposingBattler, &party[i]) > gBattleMons[opposingBattler].hp)
                 {
                     if (gBattleMons[gActiveBattler].speed > gBattleMons[opposingBattler].speed || gBattleMoves[move].priority > 0)
                     {
@@ -1000,7 +1000,6 @@ static u32 GetBestMonBatonPass(struct Pokemon *party, int firstId, int lastId, u
 static u32 GetBestMonTypeMatchup(struct Pokemon *party, int firstId, int lastId, u8 invalidMons, u32 opposingBattler)
 {
     int i, bits = 0;
-    bool8 checkedAllMonForSEMoves = FALSE; // We have checked all Pokemon in the party for if they have a super effective move
 
     while (bits != 0x3F) // All mons were checked.
     {
@@ -1036,7 +1035,6 @@ static u32 GetBestMonTypeMatchup(struct Pokemon *party, int firstId, int lastId,
             }
         }
 
-        // Ok, we know the mon has the right typing but does it have at least one super effective move?
         if (bestMonId != PARTY_SIZE)
         {
             return bestMonId; // Get most defensive mon, and assume it knows a STAB move
@@ -1052,14 +1050,19 @@ static u32 GetBestMonTypeMatchup(struct Pokemon *party, int firstId, int lastId,
 
 static u32 GetBestMonRevengeKiller(struct Pokemon *party, int firstId, int lastId, u8 invalidMons, u32 opposingBattler)
 {
-    int i, j, bits = 0;
+    int i, j, k, l, bits = 0;
 
     // Revenge killer
     int revengeKillerId = PARTY_SIZE;
+    int slowRevengeKillerId = PARTY_SIZE;
+    int fastThreatenId = PARTY_SIZE;
+    int slowThreatenId = PARTY_SIZE;
+
+    s32 maxDamageTaken = 0;
 
     while (bits != 0x3F) // All mons were checked.
     {
-        // Find the mon whose type is the most suitable defensively.
+        // Iterate through mons
         for (i = firstId; i < lastId; i++)
         {
             if (!(gBitTable[i] & invalidMons) && !(gBitTable[i] & bits))
@@ -1068,12 +1071,69 @@ static u32 GetBestMonRevengeKiller(struct Pokemon *party, int firstId, int lastI
                 for (j = 0; j < MAX_MON_MOVES; j++)
                 {
                     u32 move = GetMonData(&party[i], MON_DATA_MOVE1 + j);
-                    if(AI_CalcPartyMonDamage(move, gActiveBattler, opposingBattler, &party[i]) > gBattleMons[opposingBattler].hp)
+                    // If mon can one shot
+                    if(AI_CalcPartyMonDamageDealt(move, gActiveBattler, opposingBattler, &party[i]) > gBattleMons[opposingBattler].hp)
                     {
+                        // If mon is faster
                         if (GetMonData(&party[i], MON_DATA_SPEED) > gBattleMons[opposingBattler].speed || gBattleMoves[move].priority > 0)
                         {
+                            // We have a revenge killer
                             revengeKillerId = i;
                             return revengeKillerId;
+                        }
+
+                        // If mon is slower
+                        else
+                        {
+                            // Check highest damage player can do, save it in maxDamageTaken
+                            maxDamageTaken = 0;
+                            for (k = 0; k < MAX_MON_MOVES; k++)
+                            {
+                                if (AI_CalcPartyMonDamageTaken(move, gActiveBattler, opposingBattler, &party[i]) > maxDamageTaken)
+                                {
+                                    maxDamageTaken = AI_CalcPartyMonDamageTaken(move, gActiveBattler, opposingBattler, &party[i]) ;
+                                }
+                            }
+
+                            // If mon can't be 2HKO'd, have a slow revenge killer
+                            if (maxDamageTaken < GetMonData(&party[i], MON_DATA_HP) / 2)
+                            {
+                                slowRevengeKillerId = i;
+                            }
+                        }
+                    }
+
+                    // If mon can two shot
+                    if(AI_CalcPartyMonDamageDealt(move, gActiveBattler, opposingBattler, &party[i]) > gBattleMons[opposingBattler].hp / 2)
+                    {
+                        // Check highest damage player can do, save it in maxDamageTaken
+                        maxDamageTaken = 0;
+                        for (l = 0; l < MAX_MON_MOVES; l++)
+                        {
+                            if (AI_CalcPartyMonDamageTaken(move, gActiveBattler, opposingBattler, &party[i]) > maxDamageTaken)
+                            {
+                                maxDamageTaken = AI_CalcPartyMonDamageTaken(move, gActiveBattler, opposingBattler, &party[i]) ;
+                            }
+                        }
+                        // If mon is faster
+                        if (GetMonData(&party[i], MON_DATA_SPEED) > gBattleMons[opposingBattler].speed || gBattleMoves[move].priority > 0)
+                        {
+   
+                            // If mon can't be 2HKO'd, have a fast threaten
+                            if (maxDamageTaken < GetMonData(&party[i], MON_DATA_HP) / 2)
+                            {
+                                fastThreatenId = i;
+                            }
+                        }
+                        // If mon is slower
+                        else
+                        {
+   
+                            // If mon can't be 3HKO'd, have a slow threaten
+                            if (maxDamageTaken < GetMonData(&party[i], MON_DATA_HP) / 3)
+                            {
+                                fastThreatenId = i;
+                            }
                         }
                     }
                 }
@@ -1082,6 +1142,14 @@ static u32 GetBestMonRevengeKiller(struct Pokemon *party, int firstId, int lastI
         if (revengeKillerId != PARTY_SIZE)
         {
             return revengeKillerId;
+        }
+        else if (slowRevengeKillerId != PARTY_SIZE)
+        {
+            return slowRevengeKillerId;
+        }
+        else if (fastThreatenId != PARTY_SIZE)
+        {
+            return fastThreatenId;
         }
         else
         {
@@ -1110,7 +1178,7 @@ static u32 GetBestMonDmg(struct Pokemon *party, int firstId, int lastId, u8 inva
             u32 move = GetMonData(&party[i], MON_DATA_MOVE1 + j);
             if (move != MOVE_NONE && gBattleMoves[move].power != 0)
             {
-                s32 dmg = AI_CalcPartyMonDamage(move, gActiveBattler, opposingBattler, &party[i]);
+                s32 dmg = AI_CalcPartyMonDamageDealt(move, gActiveBattler, opposingBattler, &party[i]);
                 if (bestDmg < dmg)
                 {
                     bestDmg = dmg;
