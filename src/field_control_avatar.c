@@ -511,7 +511,7 @@ static const u8 *GetInteractedWaterScript(struct MapPosition *unused1, u8 metati
 
     if (MetatileBehavior_IsWaterfall(metatileBehavior) == TRUE)
     {
-        if (PlayerHasMove(MOVE_WATERFALL)  && IsPlayerSurfingNorth() == TRUE)
+        if ((PlayerHasMove(MOVE_WATERFALL) || FlagGet(FLAG_CAN_WATERFALL))  && IsPlayerSurfingNorth() == TRUE)
             return EventScript_UseWaterfall;
         else
             return EventScript_CannotUseWaterfall;
