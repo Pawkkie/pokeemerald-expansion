@@ -73,8 +73,6 @@ static bool8 HasBadOdds(void)
 	
 	u16 typeDmg=UQ_4_12(1.0); //baseline typing damage
 	
-	u16 species = GetMonData(&party[i], MON_DATA_SPECIES);
-	
 	opposingPosition = BATTLE_OPPOSITE(GetBattlerPosition(gActiveBattler));
     opposingBattler = GetBattlerAtPosition(opposingPosition);
 	
@@ -116,7 +114,7 @@ static bool8 HasBadOdds(void)
                 }
             }
 
-/* 			for (i = 0; i < MAX_MON_MOVES; i++) //Then check their moves to see if they have a status move. If you have a status move, you probably want to use it even if you don't have the advantage.
+ 			for (i = 0; i < MAX_MON_MOVES; i++) //Then check their moves to see if they have a status move. If you have a status move, you probably want to use it even if you don't have the advantage.
 			{
 				move = gBattleMons[gActiveBattler].moves[i]; //List of status moves under consideration
 				if ((move == MOVE_REFLECT || move == MOVE_LIGHT_SCREEN 
@@ -127,11 +125,15 @@ static bool8 HasBadOdds(void)
 				|| move == MOVE_WILL_O_WISP 
 				|| move == MOVE_TRICK || move == MOVE_TRICK_ROOM || move== MOVE_WONDER_ROOM || move ==  MOVE_PSYCHO_SHIFT || move == MOVE_FAKE_OUT
 				|| move == MOVE_STUN_SPORE || move == MOVE_THUNDER_WAVE || move == MOVE_NUZZLE || move == MOVE_GLARE
-				) && Random()%5<4) // (check has a 1/5 chance of failing regardless)
+				))
 				{
 					return FALSE;
 				}
-			} */
+			}
+            if (Random() % 2 == 0)
+            {
+                return FALSE;
+            }
 			*(gBattleStruct->AI_monToSwitchIntoId + gActiveBattler) = PARTY_SIZE; //Status move check failed. Let's get the Pokémon out of there.
 			BtlController_EmitTwoReturnValues(1, B_ACTION_SWITCH, 0);
 			return TRUE;
