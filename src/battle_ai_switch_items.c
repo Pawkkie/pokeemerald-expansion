@@ -1056,10 +1056,54 @@ static u32 GetBestMonTypeMatchup(struct Pokemon *party, int firstId, int lastId,
     return PARTY_SIZE;
 }
 
+static u32 GetBestMonDefensive(struct Pokemon *party, int firstId, int lastId, u8 invalidMons, u32 opposingBattler)
+{
+    // Most defensive
+    int defensiveMonId = PARTY_SIZE;
+
+    // Variables
+    int i, bits = 0;
+    s32 maxDamageTaken = 0;
+    s32 hpPercentLost = 0;
+    s32 lowestHPPercentLost = 0;
+    bool8 firstRun = TRUE;
+
+    while (bits != 0x3F) // All mons were checked.
+    {
+        // Iterate through mons
+        for (i = firstId; i < lastId; i++)
+        {
+            if (!(gBitTable[i] & invalidMons) && !(gBitTable[i] & bits))
+            {
+                // Get max damage mon could take
+                maxDamageTaken = AI_CalcPartyMonBestMoveDamage(opposingBattler, gActiveBattler, NULL, &party[i]);
+                
+                // Check what percentage of mon's HP that damage is
+                hpPercentLost = maxDamageTaken / GetMonData(&party[i], MON_DATA_HP);
+                
+                // If this is the new lowest HP percent lost, mon is new most defensive mon
+                if (hpPercentLost < lowestHPPercentLost || firstRun)
+                {
+                    firstRun = FALSE;
+                    lowestHPPercentLost = hpPercentLost;
+                    defensiveMonId = i;
+                }
+            }
+        }
+        if (defensiveMonId != PARTY_SIZE)
+        {
+            return defensiveMonId;
+        }
+        else
+        {
+            return PARTY_SIZE;
+            bits = 0x3F; // No viable mon to switch.
+        }
+    }
+}
+
 static u32 GetBestMonRevengeKiller(struct Pokemon *party, int firstId, int lastId, u8 invalidMons, u32 opposingBattler)
 {
-    int i, j, k, l, bits = 0;
-
     // Revenge killer
     int revengeKillerId = PARTY_SIZE;
     int slowRevengeKillerId = PARTY_SIZE;
@@ -1067,6 +1111,7 @@ static u32 GetBestMonRevengeKiller(struct Pokemon *party, int firstId, int lastI
     int slowThreatenId = PARTY_SIZE;
 
     // Variables
+    int i, j, k, l, bits = 0;
     s32 maxDamageTaken = 0;
     while (bits != 0x3F) // All mons were checked.
     {
@@ -1249,6 +1294,9 @@ u8 GetMostSuitableMonToSwitchInto(void)
     }
 
     bestMonId = GetBestMonBatonPass(party, firstId, lastId, invalidMons, aliveCount, opposingBattler);
+    if (bestMonId != PARTY_SIZE)
+        return bestMonId;
+    bestMonId = GetBestMonDefensive(party, firstId, lastId, invalidMons, opposingBattler);
     if (bestMonId != PARTY_SIZE)
         return bestMonId;
     bestMonId = GetBestMonTypeMatchup(party, firstId, lastId, invalidMons, opposingBattler);

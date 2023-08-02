@@ -6110,8 +6110,8 @@ static const struct TrainerMonNoItemDefaultMoves sParty_Nancy[] = {
     },
     {
     .iv = 0,
-    .lvl = 20,
-    .species = SPECIES_LOMBRE,
+    .lvl = 30,
+    .species = SPECIES_BLISSEY,
     },
     {
     .iv = 0,
