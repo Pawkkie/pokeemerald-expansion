@@ -28,6 +28,7 @@ static bool8 ShouldUseItem(void);
 static bool32 AiExpectsToFaintPlayer(void);
 static bool32 AI_ShouldHeal(u32 healAmount);
 static bool32 AI_OpponentCanFaintAiWithMod(u32 healAmount);
+static bool32 IsAiPartyMonOHKOBy(u32 battlerAtk, struct Pokemon *aiMon);
 static bool8 IsMonHealthyEnoughToSwitch(void);
 static u32 CalculateHazardDamage(void);
 
@@ -197,11 +198,7 @@ static bool8 ShouldSwitchIfWonderGuard(void)
     // Find a Pokemon in the party that has a super effective move.
     for (i = firstId; i < lastId; i++)
     {
-        if (GetMonData(&party[i], MON_DATA_HP) == 0)
-            continue;
-        if (GetMonData(&party[i], MON_DATA_SPECIES_OR_EGG) == SPECIES_NONE)
-            continue;
-        if (GetMonData(&party[i], MON_DATA_SPECIES_OR_EGG) == SPECIES_EGG)
+        if (!IsValidForBattle(&party[i]))
             continue;
         if (i == gBattlerPartyIndexes[gActiveBattler])
             continue;
@@ -280,13 +277,9 @@ static bool8 FindMonThatAbsorbsOpponentsMove(void)
 
     for (i = firstId; i < lastId; i++)
     {
-        u16 species;
         u16 monAbility;
 
-        if (GetMonData(&party[i], MON_DATA_HP) == 0)
-            continue;
-        species = GetMonData(&party[i], MON_DATA_SPECIES_OR_EGG);
-        if (species == SPECIES_NONE || species == SPECIES_EGG)
+        if (!IsValidForBattle(&party[i]))
             continue;
         if (i == gBattlerPartyIndexes[battlerIn1])
             continue;
@@ -375,9 +368,7 @@ static bool8 ShouldSwitchIfGameStatePrompt(void)
                                 continue;
 
                             //Look for mon in party that is able to be switched into and has ability that sets terrain
-                            if (GetMonData(&party[i], MON_DATA_HP) != 0
-                                && GetMonData(&party[i], MON_DATA_SPECIES_OR_EGG) != SPECIES_NONE
-                                && GetMonData(&party[i], MON_DATA_SPECIES_OR_EGG) != SPECIES_EGG
+                            if (IsValidForBattle(&party[i])
                                 && i != gBattlerPartyIndexes[gActiveBattler]
                                 && i != gBattlerPartyIndexes[BATTLE_PARTNER(gActiveBattler)]
                                 && IsBattlerGrounded(gActiveBattler)
@@ -646,13 +637,9 @@ static bool8 FindMonWithFlagsAndSuperEffective(u16 flags, u8 moduloPercent)
 
     for (i = firstId; i < lastId; i++)
     {
-        u16 species;
-        u16 monAbility;
+        u16 species, monAbility;
 
-        if (GetMonData(&party[i], MON_DATA_HP) == 0)
-            continue;
-        species = GetMonData(&party[i], MON_DATA_SPECIES_OR_EGG);
-        if (species == SPECIES_NONE || species == SPECIES_EGG)
+        if (!IsValidForBattle(&party[i]))
             continue;
         if (i == gBattlerPartyIndexes[battlerIn1])
             continue;
@@ -665,6 +652,7 @@ static bool8 FindMonWithFlagsAndSuperEffective(u16 flags, u8 moduloPercent)
         if (IsAceMon(gActiveBattler, i))
             continue;
 
+        species = GetMonData(&party[i], MON_DATA_SPECIES_OR_EGG);
         monAbility = GetMonAbility(&party[i]);
 
         CalcPartyMonTypeEffectivenessMultiplier(gLastLandedMoves[gActiveBattler], species, monAbility);
@@ -817,11 +805,7 @@ bool32 ShouldSwitch(void)
 
     for (i = firstId; i < lastId; i++)
     {
-        if (GetMonData(&party[i], MON_DATA_HP) == 0)
-            continue;
-        if (GetMonData(&party[i], MON_DATA_SPECIES_OR_EGG) == SPECIES_NONE)
-            continue;
-        if (GetMonData(&party[i], MON_DATA_SPECIES_OR_EGG) == SPECIES_EGG)
+        if (!IsValidForBattle(&party[i]))
             continue;
         if (i == gBattlerPartyIndexes[battlerIn1])
             continue;
@@ -932,7 +916,7 @@ void AI_TrySwitchOrUseItem(void)
 
                     for (monToSwitchId = (lastId-1); monToSwitchId >= firstId; monToSwitchId--)
                     {
-                        if (GetMonData(&party[monToSwitchId], MON_DATA_HP) == 0)
+                        if (!IsValidForBattle(&party[monToSwitchId]))
                             continue;
                         if (monToSwitchId == gBattlerPartyIndexes[battlerIn1])
                             continue;
@@ -966,13 +950,15 @@ void AI_TrySwitchOrUseItem(void)
 
 // If there are two(or more) mons to choose from, always choose one that has baton pass
 // as most often it can't do much on its own.
-static u32 GetBestMonBatonPass(struct Pokemon *party, int firstId, int lastId, u8 invalidMons, int aliveCount)
+static u32 GetBestMonBatonPass(struct Pokemon *party, int firstId, int lastId, u8 invalidMons, int aliveCount, u32 opposingBattler)
 {
     int i, j, bits = 0;
 
     for (i = firstId; i < lastId; i++)
     {
         if (invalidMons & gBitTable[i])
+            continue;
+        if (IsAiPartyMonOHKOBy(opposingBattler, &party[i]))
             continue;
 
         for (j = 0; j < MAX_MON_MOVES; j++)
@@ -1018,6 +1004,9 @@ static u32 GetBestMonTypeMatchup(struct Pokemon *party, int firstId, int lastId,
                 u8 defType1 = gSpeciesInfo[species].types[0];
                 u8 defType2 = gSpeciesInfo[species].types[1];
 
+                if (IsAiPartyMonOHKOBy(opposingBattler, &party[i]))
+                    continue;
+
                 MulModifier(&typeEffectiveness, (GetTypeModifier(atkType1, defType1))); // Multiply type effectiveness by a factor depending on type matchup
                 if (atkType2 != atkType1)
                     MulModifier(&typeEffectiveness, (GetTypeModifier(atkType2, defType1)));
@@ -1058,8 +1047,8 @@ static u32 GetBestMonRevengeKiller(struct Pokemon *party, int firstId, int lastI
     int fastThreatenId = PARTY_SIZE;
     int slowThreatenId = PARTY_SIZE;
 
+    // Variables
     s32 maxDamageTaken = 0;
-
     while (bits != 0x3F) // All mons were checked.
     {
         // Iterate through mons
@@ -1067,6 +1056,7 @@ static u32 GetBestMonRevengeKiller(struct Pokemon *party, int firstId, int lastI
         {
             if (!(gBitTable[i] & invalidMons) && !(gBitTable[i] & bits))
             {
+                maxDamageTaken = AI_CalcPartyMonBestMoveDamage(opposingBattler, gActiveBattler, NULL, &party[i]);
                 // Check if current mon can revenge kill
                 for (j = 0; j < MAX_MON_MOVES; j++)
                 {
@@ -1085,20 +1075,10 @@ static u32 GetBestMonRevengeKiller(struct Pokemon *party, int firstId, int lastI
                         // If mon is slower
                         else
                         {
-                            // Check highest damage player can do, save it in maxDamageTaken
-                            maxDamageTaken = 0;
-                            for (k = 0; k < MAX_MON_MOVES; k++)
-                            {
-                                u32 playerMove = gBattleMons[opposingBattler].moves[k];
-                                if (AI_CalcPartyMonDamageTaken(playerMove, gActiveBattler, opposingBattler, &party[i]) > maxDamageTaken)
-                                {
-                                    maxDamageTaken = AI_CalcPartyMonDamageTaken(playerMove, gActiveBattler, opposingBattler, &party[i]) ;
-                                }
-                            }
-
                             // If mon can't be 2HKO'd, have a slow revenge killer
                             if (maxDamageTaken < GetMonData(&party[i], MON_DATA_HP) / 2)
                             {
+                                // We have a slow revenge killer
                                 slowRevengeKillerId = i;
                             }
                         }
@@ -1107,40 +1087,32 @@ static u32 GetBestMonRevengeKiller(struct Pokemon *party, int firstId, int lastI
                     // If mon can two shot
                     if(AI_CalcPartyMonDamageDealt(aiMove, gActiveBattler, opposingBattler, &party[i]) > gBattleMons[opposingBattler].hp / 2)
                     {
-                        // Check highest damage player can do, save it in maxDamageTaken
-                        maxDamageTaken = 0;
-                        for (l = 0; l < MAX_MON_MOVES; l++)
-                        {
-                            u32 playerMove = gBattleMons[opposingBattler].moves[l];
-                            if (AI_CalcPartyMonDamageTaken(playerMove, gActiveBattler, opposingBattler, &party[i]) > maxDamageTaken)
-                            {
-                                maxDamageTaken = AI_CalcPartyMonDamageTaken(playerMove, gActiveBattler, opposingBattler, &party[i]) ;
-                            }
-                        }
                         // If mon is faster
                         if (GetMonData(&party[i], MON_DATA_SPEED) > gBattleMons[opposingBattler].speed || gBattleMoves[aiMove].priority > 0)
                         {
-   
                             // If mon can't be 2HKO'd, have a fast threaten
                             if (maxDamageTaken < GetMonData(&party[i], MON_DATA_HP) / 2)
                             {
+                                // We have a fast threaten
                                 fastThreatenId = i;
                             }
                         }
                         // If mon is slower
                         else
                         {
-   
                             // If mon can't be 3HKO'd, have a slow threaten
                             if (maxDamageTaken < GetMonData(&party[i], MON_DATA_HP) / 3)
                             {
-                                fastThreatenId = i;
+                                // We have a slow threaten
+                                slowThreatenId = i;
                             }
                         }
                     }
                 }
             }
         }
+
+        // Return results in order of effectiveness, where faster and higher damage is better
         if (revengeKillerId != PARTY_SIZE)
         {
             return revengeKillerId;
@@ -1152,6 +1124,10 @@ static u32 GetBestMonRevengeKiller(struct Pokemon *party, int firstId, int lastI
         else if (fastThreatenId != PARTY_SIZE)
         {
             return fastThreatenId;
+        }
+        else if (slowThreatenId != PARTY_SIZE)
+        {
+            return slowThreatenId;
         }
         else
         {
@@ -1165,7 +1141,7 @@ static u32 GetBestMonRevengeKiller(struct Pokemon *party, int firstId, int lastI
 static u32 GetBestMonDmg(struct Pokemon *party, int firstId, int lastId, u8 invalidMons, u32 opposingBattler)
 {
     int i, j;
-    int bestDmg = 0;
+    int dmg, bestDmg = 0;
     int bestMonId = PARTY_SIZE;
 
     gMoveResultFlags = 0;
@@ -1174,19 +1150,14 @@ static u32 GetBestMonDmg(struct Pokemon *party, int firstId, int lastId, u8 inva
     {
         if (gBitTable[i] & invalidMons)
             continue;
+        if (IsAiPartyMonOHKOBy(opposingBattler, &party[i]))
+            continue;
 
-        for (j = 0; j < MAX_MON_MOVES; j++)
+        dmg = AI_CalcPartyMonBestMoveDamage(gActiveBattler, opposingBattler, &party[i], NULL);
+        if (bestDmg < dmg)
         {
-            u32 move = GetMonData(&party[i], MON_DATA_MOVE1 + j);
-            if (move != MOVE_NONE && gBattleMoves[move].power != 0)
-            {
-                s32 dmg = AI_CalcPartyMonDamageDealt(move, gActiveBattler, opposingBattler, &party[i]);
-                if (bestDmg < dmg)
-                {
-                    bestDmg = dmg;
-                    bestMonId = i;
-                }
-            }
+            bestDmg = dmg;
+            bestMonId = i;
         }
     }
 
@@ -1196,7 +1167,7 @@ static u32 GetBestMonDmg(struct Pokemon *party, int firstId, int lastId, u8 inva
 u8 GetMostSuitableMonToSwitchInto(void)
 {
     u32 opposingBattler = 0;
-    u32 bestMonId = 0;
+    u32 bestMonId = PARTY_SIZE;
     u8 battlerIn1 = 0, battlerIn2 = 0;
     s32 firstId = 0;
     s32 lastId = 0; // + 1
@@ -1238,10 +1209,7 @@ u8 GetMostSuitableMonToSwitchInto(void)
     // Get invalid slots ids.
     for (i = firstId; i < lastId; i++)
     {
-        u16 species = GetMonData(&party[i], MON_DATA_SPECIES_OR_EGG);
-        if (species == SPECIES_NONE
-            || species == SPECIES_EGG
-            || GetMonData(&party[i], MON_DATA_HP) == 0
+        if (!IsValidForBattle(&party[i])
             || gBattlerPartyIndexes[battlerIn1] == i
             || gBattlerPartyIndexes[battlerIn2] == i
             || i == *(gBattleStruct->monToSwitchIntoId + battlerIn1)
@@ -1261,7 +1229,7 @@ u8 GetMostSuitableMonToSwitchInto(void)
         }
     }
 
-    bestMonId = GetBestMonBatonPass(party, firstId, lastId, invalidMons, aliveCount);
+    bestMonId = GetBestMonBatonPass(party, firstId, lastId, invalidMons, aliveCount, opposingBattler);
     if (bestMonId != PARTY_SIZE)
         return bestMonId;
     bestMonId = GetBestMonTypeMatchup(party, firstId, lastId, invalidMons, opposingBattler);
@@ -1279,7 +1247,7 @@ u8 GetMostSuitableMonToSwitchInto(void)
 u8 GetMostSuitableMonToSwitchIntoAfterKO(void)
 {
     u32 opposingBattler = 0;
-    u32 bestMonId = 0;
+    u32 bestMonId = PARTY_SIZE;
     u8 battlerIn1 = 0, battlerIn2 = 0;
     s32 firstId = 0;
     s32 lastId = 0; // + 1
@@ -1321,10 +1289,7 @@ u8 GetMostSuitableMonToSwitchIntoAfterKO(void)
     // Get invalid slots ids.
     for (i = firstId; i < lastId; i++)
     {
-        u16 species = GetMonData(&party[i], MON_DATA_SPECIES_OR_EGG);
-        if (species == SPECIES_NONE
-            || species == SPECIES_EGG
-            || GetMonData(&party[i], MON_DATA_HP) == 0
+        if (!IsValidForBattle(&party[i])
             || gBattlerPartyIndexes[battlerIn1] == i
             || gBattlerPartyIndexes[battlerIn2] == i
             || i == *(gBattleStruct->monToSwitchIntoId + battlerIn1)
@@ -1344,7 +1309,7 @@ u8 GetMostSuitableMonToSwitchIntoAfterKO(void)
         }
     }
 
-    bestMonId = GetBestMonBatonPass(party, firstId, lastId, invalidMons, aliveCount);
+    bestMonId = GetBestMonBatonPass(party, firstId, lastId, invalidMons, aliveCount, opposingBattler);
     if (bestMonId != PARTY_SIZE)
         return bestMonId;
 
@@ -1412,9 +1377,7 @@ static bool8 ShouldUseItem(void)
 
     for (i = 0; i < PARTY_SIZE; i++)
     {
-        if (GetMonData(&party[i], MON_DATA_HP) != 0
-            && GetMonData(&party[i], MON_DATA_SPECIES_OR_EGG) != SPECIES_NONE
-            && GetMonData(&party[i], MON_DATA_SPECIES_OR_EGG) != SPECIES_EGG)
+        if (IsValidForBattle(&party[i]))
         {
             validMons++;
         }
@@ -1526,6 +1489,32 @@ static bool32 AI_OpponentCanFaintAiWithMod(u32 healAmount)
         }
     }
     return FALSE;
+}
+
+static bool32 IsAiPartyMonOHKOBy(u32 battlerAtk, struct Pokemon *aiMon)
+{
+    bool32 ret = FALSE;
+    struct BattlePokemon *savedBattleMons;
+    s32 hp = GetMonData(aiMon, MON_DATA_HP);
+    s32 bestDmg = AI_CalcPartyMonBestMoveDamage(battlerAtk, gActiveBattler, NULL, aiMon);
+
+    switch (GetNoOfHitsToKO(bestDmg, hp))
+    {
+    case 1:
+        ret = TRUE;
+        break;
+    case 2: // if AI mon is faster allow 2 turns
+        savedBattleMons = AllocSaveBattleMons();
+        PokemonToBattleMon(aiMon, &gBattleMons[gActiveBattler]);
+        if (AI_WhoStrikesFirst(gActiveBattler, battlerAtk, 0) == AI_IS_SLOWER)
+            ret = TRUE;
+        else
+            ret = FALSE;
+        FreeRestoreBattleMons(savedBattleMons);
+        break;
+    }
+
+    return ret;
 }
 
 // Doesn't account for max moves as I don't intend to use those
