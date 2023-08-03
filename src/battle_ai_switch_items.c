@@ -1024,7 +1024,7 @@ static u32 GetBestMonTypeMatchup(struct Pokemon *party, int firstId, int lastId,
                 }
             }
         }
-        // Have defensive mon
+        // Have type matchup mon
         if (bestMonId != PARTY_SIZE)
         {
             // Check if it has a super effective move
@@ -1296,10 +1296,10 @@ u8 GetMostSuitableMonToSwitchInto(void)
     bestMonId = GetBestMonBatonPass(party, firstId, lastId, invalidMons, aliveCount, opposingBattler);
     if (bestMonId != PARTY_SIZE)
         return bestMonId;
-    bestMonId = GetBestMonDefensive(party, firstId, lastId, invalidMons, opposingBattler);
+    bestMonId = GetBestMonTypeMatchup(party, firstId, lastId, invalidMons, opposingBattler);
     if (bestMonId != PARTY_SIZE)
         return bestMonId;
-    bestMonId = GetBestMonTypeMatchup(party, firstId, lastId, invalidMons, opposingBattler);
+    bestMonId = GetBestMonDefensive(party, firstId, lastId, invalidMons, opposingBattler);
     if (bestMonId != PARTY_SIZE)
         return bestMonId;
 
