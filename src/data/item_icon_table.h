@@ -851,6 +851,11 @@ const u32 *const gItemIconTable[ITEMS_COUNT + 1][2] =
     [ITEM_TRAINING_BAND] = {gItemIcon_FocusBand, gItemIconPalette_FocusBand},
     [ITEM_TYPE_CHART] = {gItemIcon_TownMap, gItemIconPalette_TownMap},
     [ITEM_COND_CHECKER] = {gItemIcon_FameChecker, gItemIconPalette_FameChecker},
+    [ITEM_AXE] = {gItemIcon_Axe, gItemIconPalette_Axe},
+    [ITEM_PICKAXE] = {gItemIcon_Pickaxe, gItemIconPalette_Pickaxe},
+    [ITEM_POWER_GLOVE] = {gItemIcon_PowerGlove, gItemIconPalette_PowerGlove},
+    [ITEM_WAILMER_SNACK] = {gItemIcon_BerryPouch, gItemIconPalette_BerryPouch},
+    [ITEM_SCUBA_GEAR] = {gItemIcon_ScubaGear, gItemIconPalette_ScubaGear},
     // Return to field arrow
     [ITEMS_COUNT] = {gItemIcon_ReturnToFieldArrow, gItemIconPalette_ReturnToFieldArrow},
 };

@@ -3943,3 +3943,28 @@ static const u8 sCondCheckerDesc[] = _(
     "Check your\n"
     "Pokémon's condition\n"
     "for contests.");
+
+static const u8 sAxeDesc[] = _(
+    "Can be used to\n"
+    "cut down small\n"
+    "trees.");
+
+static const u8 sPickaxeDesc[] = _(
+    "Can be used to\n"
+    "smash certain\n"
+    "rocks.");
+
+static const u8 sPowerGloveDesc[] = _(
+    "Can be used to\n"
+    "push heavy\n"
+    "boulders.");
+
+static const u8 sWailmerSnacksDesc[] = _(
+    "Toss into water\n"
+    "to summon and ride\n"
+    "a friendly Wailmer.");
+
+static const u8 sScubaGearDesc[] = _(
+    "Allows you to ride\n"
+    "a friendly Wailmer\n"
+    "underwater.");

@@ -10478,4 +10478,59 @@ const struct Item gItems[] =
         .type = ITEM_USE_FIELD,
         .fieldUseFunc = ItemUseOutOfBattle_Pokenav,
     },
+    [ITEM_AXE] =
+    {
+        .name = _("Axe"),
+        .itemId = ITEM_AXE,
+        .price = 0,
+        .importance = 1,
+        .description = sAxeDesc,
+        .pocket = POCKET_KEY_ITEMS,
+        .type = ITEM_USE_BAG_MENU,
+        .fieldUseFunc = ItemUseOutOfBattle_CannotUse,
+    },
+    [ITEM_PICKAXE] =
+    {
+        .name = _("Pickaxe"),
+        .itemId = ITEM_PICKAXE,
+        .price = 0,
+        .importance = 1,
+        .description = sPickaxeDesc,
+        .pocket = POCKET_KEY_ITEMS,
+        .type = ITEM_USE_BAG_MENU,
+        .fieldUseFunc = ItemUseOutOfBattle_CannotUse,
+    },
+    [ITEM_POWER_GLOVE] =
+    {
+        .name = _("Power Glove"),
+        .itemId = ITEM_POWER_GLOVE,
+        .price = 0,
+        .importance = 1,
+        .description = sPowerGloveDesc,
+        .pocket = POCKET_KEY_ITEMS,
+        .type = ITEM_USE_BAG_MENU,
+        .fieldUseFunc = ItemUseOutOfBattle_CannotUse,
+    },
+    [ITEM_WAILMER_SNACK] =
+    {
+        .name = _("Wailmer Snack"),
+        .itemId = ITEM_WAILMER_SNACK,
+        .price = 0,
+        .importance = 1,
+        .description = sWailmerSnacksDesc,
+        .pocket = POCKET_KEY_ITEMS,
+        .type = ITEM_USE_BAG_MENU,
+        .fieldUseFunc = ItemUseOutOfBattle_CannotUse,
+    },
+    [ITEM_SCUBA_GEAR] =
+    {
+        .name = _("Scuba Gear"),
+        .itemId = ITEM_SCUBA_GEAR,
+        .price = 0,
+        .importance = 1,
+        .description = sScubaGearDesc,
+        .pocket = POCKET_KEY_ITEMS,
+        .type = ITEM_USE_BAG_MENU,
+        .fieldUseFunc = ItemUseOutOfBattle_CannotUse,
+    },
 };

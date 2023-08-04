@@ -8877,6 +8877,15 @@ extern const u32 gItemIcon_Lantern[];
 extern const u32 gItemIconPalette_Lantern[];
 extern const u32 gItemIcon_CandyJar[];
 extern const u32 gItemIconPalette_CandyJar[];
+extern const u32 gItemIcon_Axe[];
+extern const u32 gItemIconPalette_Axe[];
+extern const u32 gItemIcon_Pickaxe[];
+extern const u32 gItemIconPalette_Pickaxe[];
+extern const u32 gItemIcon_PowerGlove[];
+extern const u32 gItemIconPalette_PowerGlove[];
+extern const u32 gItemIcon_ScubaGear[];
+extern const u32 gItemIconPalette_ScubaGear[];
+
 
 // GEN IX ITEMS
 extern const u32 gItemIcon_AbilityShield[];

@@ -980,8 +980,13 @@
 #define ITEM_TRAINING_BAND 803
 #define ITEM_TYPE_CHART 804
 #define ITEM_COND_CHECKER 805
+#define ITEM_AXE 806
+#define ITEM_PICKAXE 807
+#define ITEM_POWER_GLOVE 808
+#define ITEM_WAILMER_SNACK 809
+#define ITEM_SCUBA_GEAR 810
 
-#define ITEMS_COUNT 806
+#define ITEMS_COUNT 811
 #define ITEM_FIELD_ARROW ITEMS_COUNT
 
 // A special item id associated with "Cancel"/"Exit" etc. in a list of items or decorations
