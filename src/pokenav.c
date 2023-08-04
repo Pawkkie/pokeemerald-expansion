@@ -76,7 +76,7 @@ const struct PokenavCallbacks PokenavMenuCallbacks[15] =
     {
         .init = PokenavCallback_Init_ConditionMenu,
         .callback = GetMenuHandlerCallback,
-        .open = OpenPokenavMenuNotInitial,
+        .open = OpenPokenavMenuInitial,
         .createLoopTask = CreateMenuHandlerLoopedTask,
         .isLoopTaskActive = IsMenuHandlerLoopedTaskActive,
         .free1 = FreeMenuHandlerSubstruct1,
@@ -448,7 +448,7 @@ static void Task_Pokenav(u8 taskId)
         // Wait for LoopedTask_InitPokenavMenu to finish
         if (PokenavMainMenuLoopedTaskIsActive())
             break;
-        SetActivePokenavMenu(POKENAV_MAIN_MENU);
+        SetActivePokenavMenu(POKENAV_CONDITION_MENU);
         tState = 4;
         break;
     case 2:

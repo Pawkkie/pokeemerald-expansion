@@ -411,8 +411,8 @@ static u32 HandleConditionMenuInput(struct Pokenav_Menu *menu)
             return POKENAV_MENU_FUNC_OPEN_FEATURE;
         case POKENAV_MENUITEM_CONDITION_CANCEL:
             PlaySE(SE_SELECT);
-            ReturnToMainMenu(menu);
-            return POKENAV_MENU_FUNC_RETURN_TO_MAIN;
+            // ReturnToMainMenu(menu);
+            return POKENAV_MENU_FUNC_EXIT;
         }
     }
     if (JOY_NEW(B_BUTTON))
@@ -420,14 +420,14 @@ static u32 HandleConditionMenuInput(struct Pokenav_Menu *menu)
         if (menu->cursorPos != sLastCursorPositions[menu->menuType])
         {
             menu->cursorPos = sLastCursorPositions[menu->menuType];
-            menu->callback = CB2_ReturnToMainMenu;
+            // menu->callback = CB2_ReturnToMainMenu;
             return POKENAV_MENU_FUNC_MOVE_CURSOR;
         }
         else
         {
             PlaySE(SE_SELECT);
-            ReturnToMainMenu(menu);
-            return POKENAV_MENU_FUNC_RETURN_TO_MAIN;
+            // ReturnToMainMenu(menu);
+            return POKENAV_MENU_FUNC_EXIT;
         }
     }
 
