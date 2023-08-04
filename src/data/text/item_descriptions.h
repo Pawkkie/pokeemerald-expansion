@@ -3938,3 +3938,8 @@ static const u8 sTypeChartDesc[] = _(
     "A chart showing\n"
     "Pokémon type\n"
     "matchups.");
+
+static const u8 sCondCheckerDesc[] = _(
+    "Check your\n"
+    "Pokémon's condition\n"
+    "for contests.");

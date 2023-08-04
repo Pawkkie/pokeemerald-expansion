@@ -10467,12 +10467,12 @@ const struct Item gItems[] =
         .fieldUseFunc = ItemUseOutOfBattle_TypeChart,
     },
 
-    [ITEM_POKENAV] =
+    [ITEM_COND_CHECKER] =
     {
-        .name = _("PokéNav"),
-        .itemId = ITEM_POKENAV,
+        .name = _("Cond. Checker"),
+        .itemId = ITEM_COND_CHECKER,
         .price = 0,
-        .description = sTypeChartDesc,
+        .description = sCondCheckerDesc,
         .importance = 1,
         .pocket = POCKET_KEY_ITEMS,
         .type = ITEM_USE_FIELD,
