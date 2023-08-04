@@ -100,7 +100,9 @@ static bool8 HasBadOdds(void)
 		if (GetMostSuitableMonToSwitchInto()==PARTY_SIZE) //If there is no better option...
 			return FALSE;
 		if ((!HasSuperEffectiveMoveAgainstOpponents(FALSE))
-			&& (gBattleMons[gActiveBattler].hp >= gBattleMons[gActiveBattler].maxHP/2)) //If the computer doesn't have a super effective move AND they have >1/2 their HP...
+			&& (gBattleMons[gActiveBattler].hp >= gBattleMons[gActiveBattler].maxHP/2 
+                || (gBattleMons[gActiveBattler].ability == ABILITY_REGENERATOR 
+                && gBattleMons[gActiveBattler].hp >= gBattleMons[gActiveBattler].maxHP/4))) //If the computer doesn't have a super effective move AND they have >1/2 their HP, or >1/4 HP and Regenerator
 		{
             // Check if current mon can revenge kill in spite of bad matchup, and don't switch out if it can
             for (j = 0; j < MAX_MON_MOVES; j++)
