@@ -1247,8 +1247,8 @@ static void Task_BuyHowManyDialogueInit(u8 taskId)
 
     maxQuantity = GetMoney(&gSaveBlock1Ptr->money) / sShopData->totalCost;
 
-    if (maxQuantity > MAX_BAG_ITEM_CAPACITY)
-        sShopData->maxQuantity = MAX_BAG_ITEM_CAPACITY;
+    if (maxQuantity > 99)
+        sShopData->maxQuantity = 99;
     else
         sShopData->maxQuantity = maxQuantity;
 
