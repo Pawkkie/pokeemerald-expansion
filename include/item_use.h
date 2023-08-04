@@ -46,6 +46,7 @@ void ItemUseOutOfBattle_PokeBall(u8);
 void ItemUseOutOfBattle_SootSack(u8);
 void ItemUseOutOfBattle_CleanseTag(u8);
 void ItemUseOutOfBattle_TypeChart(u8);
+void ItemUseOutOfBattle_Pokenav(u8);
 u16 GetAshCount(void);
 
 enum {

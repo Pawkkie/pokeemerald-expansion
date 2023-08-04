@@ -319,7 +319,7 @@ void CB2_InitPokeNav(void)
     gPokenavResources = Alloc(sizeof(*gPokenavResources));
     if (gPokenavResources == NULL)
     {
-        SetMainCallback2(CB2_ReturnToFieldWithOpenMenu);
+        SetMainCallback2(CB2_ReturnToField); //SetMainCallback2(CB2_ReturnToFieldWithOpenMenu);
     }
     else
     {
@@ -500,7 +500,7 @@ static void Task_Pokenav(u8 taskId)
                 if (gSysPcFromPokenav)
                     SetMainCallback2(CB2_ReturnToField);
                 else
-                    SetMainCallback2(CB2_ReturnToFieldWithOpenMenu);
+                    SetMainCallback2(CB2_ReturnToField);
         }
         break;
     }

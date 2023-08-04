@@ -10466,4 +10466,16 @@ const struct Item gItems[] =
         .type = ITEM_USE_FIELD,
         .fieldUseFunc = ItemUseOutOfBattle_TypeChart,
     },
+
+    [ITEM_POKENAV] =
+    {
+        .name = _("PokéNav"),
+        .itemId = ITEM_POKENAV,
+        .price = 0,
+        .description = sTypeChartDesc,
+        .importance = 1,
+        .pocket = POCKET_KEY_ITEMS,
+        .type = ITEM_USE_FIELD,
+        .fieldUseFunc = ItemUseOutOfBattle_Pokenav,
+    },
 };

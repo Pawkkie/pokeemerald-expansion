@@ -979,8 +979,9 @@
 #define ITEM_CANDY_JAR 802
 #define ITEM_TRAINING_BAND 803
 #define ITEM_TYPE_CHART 804
+#define ITEM_POKENAV 805
 
-#define ITEMS_COUNT 805
+#define ITEMS_COUNT 806
 #define ITEM_FIELD_ARROW ITEMS_COUNT
 
 // A special item id associated with "Cancel"/"Exit" etc. in a list of items or decorations

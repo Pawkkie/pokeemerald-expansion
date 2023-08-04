@@ -45,6 +45,7 @@
 #include "constants/items.h"
 #include "constants/songs.h"
 #include "script_pokemon_util.h"
+#include "pokenav.h"
 
 static void SetUpItemUseCallback(u8);
 static void FieldCB_UseItemOnField(void);
@@ -1488,6 +1489,19 @@ void ItemUseOnFieldCB_TypeChart(u8 taskId)
     LockPlayerFieldControls();
     ScriptContext_SetupScript(EventScript_TypeChart);
     DestroyTask(taskId);
+}
+
+void ItemUseOutOfBattle_Pokenav(u8 taskId)
+{
+    if (MenuHelpers_IsLinkActive() == TRUE)
+    {
+        DisplayDadsAdviceCannotUseItemMessage(taskId, gTasks[taskId].tUsingRegisteredKeyItem);
+    }
+    else
+    {
+        gBagMenu->newScreenCallback = CB2_InitPokeNav;
+        Task_FadeAndCloseBagMenu(taskId);
+    }
 }
 
 #undef tUsingRegisteredKeyItem
