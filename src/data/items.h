@@ -10387,14 +10387,14 @@ const struct Item gItems[] =
         .flingPower = 10,
     },
 
-    [ITEM_FLY] =
+    [ITEM_TAXI_TICKET] =
     {
-        .name = _("Fly"),
-        .itemId = ITEM_FLY,
+        .name = _("Taxi Ticket"),
+        .itemId = ITEM_TAXI_TICKET,
         .price = 0,
         .importance = 1,
         .registrability = TRUE,
-        .description = sBerserkGene,
+        .description = sTaxiTicketDesc,
         .pocket = POCKET_KEY_ITEMS,
         .type = ITEM_USE_BAG_MENU,
         .fieldUseFunc = ItemUseOutOfBattle_Fly,
@@ -10486,8 +10486,8 @@ const struct Item gItems[] =
         .importance = 1,
         .description = sAxeDesc,
         .pocket = POCKET_KEY_ITEMS,
-        .type = ITEM_USE_BAG_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_CannotUse,
+        .type = ITEM_USE_FIELD,
+        .fieldUseFunc = ItemUseOutOfBattle_Axe,
     },
     [ITEM_PICKAXE] =
     {
@@ -10497,19 +10497,19 @@ const struct Item gItems[] =
         .importance = 1,
         .description = sPickaxeDesc,
         .pocket = POCKET_KEY_ITEMS,
-        .type = ITEM_USE_BAG_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_CannotUse,
+        .type = ITEM_USE_FIELD,
+        .fieldUseFunc = ItemUseOutOfBattle_Pickaxe,
     },
-    [ITEM_POWER_GLOVE] =
+    [ITEM_POWER_GLOVES] =
     {
-        .name = _("Power Glove"),
-        .itemId = ITEM_POWER_GLOVE,
+        .name = _("Power Gloves"),
+        .itemId = ITEM_POWER_GLOVES,
         .price = 0,
         .importance = 1,
         .description = sPowerGloveDesc,
         .pocket = POCKET_KEY_ITEMS,
-        .type = ITEM_USE_BAG_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_CannotUse,
+        .type = ITEM_USE_FIELD,
+        .fieldUseFunc = ItemUseOutOfBattle_PowerGlove,
     },
     [ITEM_WAILMER_SNACK] =
     {
@@ -10519,8 +10519,8 @@ const struct Item gItems[] =
         .importance = 1,
         .description = sWailmerSnacksDesc,
         .pocket = POCKET_KEY_ITEMS,
-        .type = ITEM_USE_BAG_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_CannotUse,
+        .type = ITEM_USE_FIELD,
+        .fieldUseFunc = ItemUseOutOfBattle_WailmerSnack,
     },
     [ITEM_SCUBA_GEAR] =
     {
@@ -10530,7 +10530,7 @@ const struct Item gItems[] =
         .importance = 1,
         .description = sScubaGearDesc,
         .pocket = POCKET_KEY_ITEMS,
-        .type = ITEM_USE_BAG_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_CannotUse,
+        .type = ITEM_USE_FIELD,
+        .fieldUseFunc = ItemUseOutOfBattle_ScubaGear,
     },
 };

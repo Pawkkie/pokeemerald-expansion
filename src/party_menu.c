@@ -5063,28 +5063,28 @@ bool8 PlayerHasMove(u16 move)
         item = ITEM_HM01;
         break;
     case MOVE_CUT:
-        item = ITEM_HM01;
+        item = ITEM_AXE;
         break;
     case MOVE_FLY:
-        item = ITEM_HM01;
+        item = ITEM_TAXI_TICKET;
         break;
     case MOVE_SURF:
-        item = ITEM_HM01;
+        item = ITEM_WAILMER_SNACK;
         break;
     case MOVE_STRENGTH:
-        item = ITEM_HM01;
+        item = ITEM_POWER_GLOVES;
         break;
     case MOVE_FLASH:
-        item = ITEM_HM01;
+        item = ITEM_LANTERN;
         break;
     case MOVE_ROCK_SMASH:
-        item = ITEM_HM01;
+        item = ITEM_PICKAXE;
         break;
     case MOVE_WATERFALL:
-        item = ITEM_HM01;
+        item = ITEM_HM07;
         break;
     case MOVE_DIVE:
-        item = ITEM_HM01;
+        item = ITEM_SCUBA_GEAR;
         break;
     default:
         return FALSE;

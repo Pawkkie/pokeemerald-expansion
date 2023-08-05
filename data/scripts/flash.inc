@@ -6,4 +6,4 @@ EventScript_UseFlash::
 	end
 
 Text_PlayerUsedLantern:
-	.string "{PLAYER} used the LANTERN!$"
+	.string "{PLAYER} lit the Lantern!$"

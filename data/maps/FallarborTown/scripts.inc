@@ -48,6 +48,14 @@ FallarborTown_EventScript_TownSign::
 	end
 
 FallarborTown_EventScript_MoveTutorSign::
+	setflag FLAG_CAN_WATERFALL
+	giveitem ITEM_TAXI_TICKET
+	giveitem ITEM_WAILMER_SNACK
+	giveitem ITEM_AXE
+	giveitem ITEM_PICKAXE
+	giveitem ITEM_SCUBA_GEAR
+	giveitem ITEM_POWER_GLOVES
+	giveitem ITEM_LANTERN
 	msgbox FallarborTown_Text_MoveTutorSign, MSGBOX_SIGN
 	end
 

@@ -47,6 +47,11 @@ void ItemUseOutOfBattle_SootSack(u8);
 void ItemUseOutOfBattle_CleanseTag(u8);
 void ItemUseOutOfBattle_TypeChart(u8);
 void ItemUseOutOfBattle_Pokenav(u8);
+void ItemUseOutOfBattle_WailmerSnack(u8);
+void ItemUseOutOfBattle_Axe(u8);
+void ItemUseOutOfBattle_Pickaxe(u8);
+void ItemUseOutOfBattle_ScubaGear(u8);
+void ItemUseOutOfBattle_PowerGlove(u8);
 u16 GetAshCount(void);
 
 enum {

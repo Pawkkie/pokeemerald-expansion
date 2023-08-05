@@ -44,8 +44,10 @@
 #include "constants/item_effects.h"
 #include "constants/items.h"
 #include "constants/songs.h"
+#include "constants/map_types.h"
 #include "script_pokemon_util.h"
 #include "pokenav.h"
+#include "field_control_avatar.h"
 
 static void SetUpItemUseCallback(u8);
 static void FieldCB_UseItemOnField(void);
@@ -82,6 +84,12 @@ static void CB2_OpenPokeblockFromBag(void);
 static void ItemUseOnFieldCB_Honey(u8 taskId);
 static void ItemUseOnFieldCB_PokeVial(u8 taskId);
 static void ItemUseOnFieldCB_TypeChart(u8 taskId);
+static void ItemUseOnFieldCB_WailmerSnack(u8);
+static void ItemUseOnFieldCB_Axe(u8);
+static void ItemUseOnFieldCB_Pickaxe(u8);
+static void ItemUseOnFieldCB_ScubaGearAboveWater(u8);
+static void ItemUseOnFieldCB_ScubaGearUnderwater(u8);
+static void ItemUseOnFieldCB_PowerGlove(u8);
 static bool32 CannotUseBagBattleItem(u16 itemId);
 
 // EWRAM variables
@@ -1502,6 +1510,108 @@ void ItemUseOutOfBattle_Pokenav(u8 taskId)
         gBagMenu->newScreenCallback = CB2_InitPokeNav;
         Task_FadeAndCloseBagMenu(taskId);
     }
+}
+
+void ItemUseOutOfBattle_WailmerSnack(u8 taskId)
+{
+    if (IsPlayerFacingSurfableFishableWater())
+    {
+        sItemUseOnFieldCB = ItemUseOnFieldCB_WailmerSnack;
+        SetUpItemUseOnFieldCallback(taskId);
+    }
+    else
+        DisplayDadsAdviceCannotUseItemMessage(taskId, gTasks[taskId].tUsingRegisteredKeyItem);
+}
+
+static void ItemUseOnFieldCB_WailmerSnack(u8 taskId)
+{
+	LockPlayerFieldControls();
+    ScriptContext_SetupScript(EventScript_UseSurf);
+    DestroyTask(taskId);
+}
+
+void ItemUseOutOfBattle_Axe(u8 taskId)
+{
+    if (SetUpFieldMove_Cut())
+    {
+        sItemUseOnFieldCB = ItemUseOnFieldCB_Axe;
+		SetUpItemUseOnFieldCallback(taskId);
+    }
+    else
+        DisplayDadsAdviceCannotUseItemMessage(taskId, gTasks[taskId].tUsingRegisteredKeyItem);
+}
+
+static void ItemUseOnFieldCB_Axe(u8 taskId)
+{
+	LockPlayerFieldControls();
+    ScriptContext_SetupScript(EventScript_UseCut);
+    DestroyTask(taskId);
+}
+
+void ItemUseOutOfBattle_Pickaxe(u8 taskId)
+{
+    if (SetUpFieldMove_RockSmash())
+    {
+        sItemUseOnFieldCB = ItemUseOnFieldCB_Pickaxe;
+        SetUpItemUseOnFieldCallback(taskId);
+    }
+    else
+        DisplayDadsAdviceCannotUseItemMessage(taskId, gTasks[taskId].tUsingRegisteredKeyItem);
+}
+
+static void ItemUseOnFieldCB_Pickaxe(u8 taskId)
+{
+	LockPlayerFieldControls();
+    ScriptContext_SetupScript(EventScript_UseRockSmash);
+    DestroyTask(taskId);
+}
+
+void ItemUseOutOfBattle_ScubaGear(u8 taskId)
+{
+    if (TrySetDiveWarp() == 2)
+    {
+        sItemUseOnFieldCB = ItemUseOnFieldCB_ScubaGearAboveWater;
+        SetUpItemUseOnFieldCallback(taskId);
+    }
+    else if (gMapHeader.mapType == MAP_TYPE_UNDERWATER && TrySetDiveWarp() == 1)
+	{
+		sItemUseOnFieldCB = ItemUseOnFieldCB_ScubaGearUnderwater;
+        SetUpItemUseOnFieldCallback(taskId);
+	}
+	else
+        DisplayDadsAdviceCannotUseItemMessage(taskId, gTasks[taskId].tUsingRegisteredKeyItem);
+}
+
+static void ItemUseOnFieldCB_ScubaGearAboveWater(u8 taskId)
+{
+	LockPlayerFieldControls();
+    ScriptContext_SetupScript(EventScript_UseDive);
+    DestroyTask(taskId);
+}
+
+static void ItemUseOnFieldCB_ScubaGearUnderwater(u8 taskId)
+{
+	LockPlayerFieldControls();
+    ScriptContext_SetupScript(EventScript_UseDiveUnderwater);
+    DestroyTask(taskId);
+}
+
+void ItemUseOutOfBattle_PowerGlove(u8 taskId)
+{
+    if (SetUpFieldMove_Strength())
+    {
+        sItemUseOnFieldCB = ItemUseOnFieldCB_PowerGlove;
+        SetUpItemUseOnFieldCallback(taskId);
+    }
+    else
+        DisplayDadsAdviceCannotUseItemMessage(taskId, gTasks[taskId].tUsingRegisteredKeyItem);
+}
+
+static void ItemUseOnFieldCB_PowerGlove(u8 taskId)
+{
+	LockPlayerFieldControls();
+    ScriptContext_SetupScript(EventScript_UseStrength);
+    DestroyTask(taskId);
 }
 
 #undef tUsingRegisteredKeyItem

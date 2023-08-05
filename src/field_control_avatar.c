@@ -37,6 +37,7 @@
 #include "constants/songs.h"
 #include "constants/trainer_hill.h"
 #include "constants/items.h"
+#include "constants/flags.h"
 #include "party_menu.h"
 #include "constants/moves.h"
 

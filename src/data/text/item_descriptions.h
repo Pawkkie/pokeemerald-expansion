@@ -3968,3 +3968,8 @@ static const u8 sScubaGearDesc[] = _(
     "Allows you to ride\n"
     "a friendly Wailmer\n"
     "underwater.");
+
+static const u8 sTaxiTicketDesc[] = _(
+    "Calls a flying\n"
+    "Pokémon from the\n"
+    "taxi service.");

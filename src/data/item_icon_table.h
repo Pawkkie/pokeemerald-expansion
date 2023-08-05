@@ -844,7 +844,7 @@ const u32 *const gItemIconTable[ITEMS_COUNT + 1][2] =
     [ITEM_LINKING_CORD] = {gItemIcon_LinkingCord, gItemIconPalette_LinkingCord},
     [ITEM_PEAT_BLOCK] = {gItemIcon_PeatBlock, gItemIconPalette_PeatBlock},
     [ITEM_BERSERK_GENE] = {gItemIcon_BerserkGene, gItemIconPalette_BerserkGene},
-    [ITEM_FLY] = {gItemIcon_EonTicket, gItemIconPalette_EonTicket},
+    [ITEM_TAXI_TICKET] = {gItemIcon_EonTicket, gItemIconPalette_EonTicket},
     [ITEM_LANTERN] = {gItemIcon_Lantern, gItemIconPalette_Lantern},
     [ITEM_POKEVIAL] = {gItemIcon_BerserkGene, gItemIconPalette_BerserkGene},
     [ITEM_CANDY_JAR] = {gItemIcon_CandyJar, gItemIconPalette_CandyJar},
@@ -853,7 +853,7 @@ const u32 *const gItemIconTable[ITEMS_COUNT + 1][2] =
     [ITEM_COND_CHECKER] = {gItemIcon_FameChecker, gItemIconPalette_FameChecker},
     [ITEM_AXE] = {gItemIcon_Axe, gItemIconPalette_Axe},
     [ITEM_PICKAXE] = {gItemIcon_Pickaxe, gItemIconPalette_Pickaxe},
-    [ITEM_POWER_GLOVE] = {gItemIcon_PowerGlove, gItemIconPalette_PowerGlove},
+    [ITEM_POWER_GLOVES] = {gItemIcon_PowerGlove, gItemIconPalette_PowerGlove},
     [ITEM_WAILMER_SNACK] = {gItemIcon_BerryPouch, gItemIconPalette_BerryPouch},
     [ITEM_SCUBA_GEAR] = {gItemIcon_ScubaGear, gItemIconPalette_ScubaGear},
     // Return to field arrow
