@@ -3441,32 +3441,6 @@ s32 AI_CalcPartyMonDamageReceived(u16 move, u8 battlerAtk, u8 battlerDef, struct
     return dmg;
 }
 
-s32 AI_CalcPartyMonBestMoveDamage(u32 battlerAtk, u32 battlerDef, struct Pokemon *attackerMon, struct Pokemon *targetMon)
-{
-    s32 i, move, bestDmg, dmg;
-    u8 effectiveness;
-    struct BattlePokemon *savedBattleMons = AllocSaveBattleMons();
-    if (attackerMon != NULL)
-        PokemonToBattleMon(attackerMon, &gBattleMons[battlerAtk]);
-    if (targetMon != NULL)
-        PokemonToBattleMon(targetMon, &gBattleMons[battlerDef]);
-    for (bestDmg = 0, i = 0; i < MAX_MON_MOVES; i++)
-    {
-        if (BattlerHasAi(battlerAtk))
-            move = GetMonData(attackerMon, MON_DATA_MOVE1 + i);
-        else
-            move = AI_PARTY->mons[GET_BATTLER_SIDE2(battlerAtk)][gBattlerPartyIndexes[battlerAtk]].moves[i];
-        if (move != MOVE_NONE && gBattleMoves[move].power != 0)
-        {
-            dmg = AI_CalcDamage(move, battlerAtk, battlerDef, &effectiveness, FALSE);
-            if (dmg > bestDmg)
-                bestDmg = dmg;
-        }
-    }
-    FreeRestoreBattleMons(savedBattleMons);
-    return dmg;
-}
-
 s32 CountUsablePartyMons(u8 battlerId)
 {
     s32 battlerOnField1, battlerOnField2, i, ret;
