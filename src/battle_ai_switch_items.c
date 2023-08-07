@@ -68,8 +68,12 @@ static bool8 HasBadOdds(void)
 	u8 atkType2;
 	u8 defType1;
 	u8 defType2;
+    u8 effectiveness;
 	u16 move;
-	s32 i, j;
+	s32 i;
+    s32 damageDealt = 0;
+    s32 maxDamageDealt = 0;
+    bool8 getsOneShot = FALSE;
 	struct Pokemon *party = NULL;
 	
 	u16 typeDmg=UQ_4_12(1.0); //baseline typing damage
@@ -95,7 +99,30 @@ static bool8 HasBadOdds(void)
 			MulModifier(&typeDmg, GetTypeModifier(atkType2, defType2));
 	}
 
-	if (typeDmg>=UQ_4_12(2.0)) //If the player has a 2x type advantage or greater...
+    // Get max damage mon could deal
+    for (i = 0; i < MAX_MON_MOVES; i++)
+    {
+        u32 aiMove = gBattleMons[gActiveBattler].moves[i];
+        damageDealt = AI_CalcDamage(aiMove, gActiveBattler, opposingBattler, &effectiveness, FALSE);
+        if(damageDealt > maxDamageDealt)
+            maxDamageDealt = damageDealt;
+        
+        // Check if current mon can revenge kill in spite of bad matchup, and don't switch out if it can
+        if(damageDealt > gBattleMons[opposingBattler].hp)
+        {
+            if (gBattleMons[gActiveBattler].speed > gBattleMons[opposingBattler].speed || gBattleMoves[move].priority > 0)
+                return FALSE;
+        }
+    }
+
+    // Get max damage mon could take to determine if it gets one shot
+    if (AI_CalcPartyMonBestMoveDamage(opposingBattler, gActiveBattler, NULL, NULL) > gBattleMons[gActiveBattler].hp)
+        getsOneShot = TRUE;
+
+    // Start assessing whether or not mon has bad odds
+	if (typeDmg>=UQ_4_12(2.0) // If the player has a 2x type advantage
+    || (getsOneShot && gBattleMons[opposingBattler].speed > gBattleMons[gActiveBattler].speed) // Or the player OHKOs and outspeeds
+    || (getsOneShot && gBattleMons[opposingBattler].speed <= gBattleMons[gActiveBattler].speed && maxDamageDealt < gBattleMons[opposingBattler].hp / 2)) // Or the player OHKOs, doesn't outspeed but isn't 2HKO'd
 	{
 		if (GetMostSuitableMonToSwitchInto()==PARTY_SIZE) //If there is no better option...
 			return FALSE;
@@ -104,19 +131,6 @@ static bool8 HasBadOdds(void)
                 || (gBattleMons[gActiveBattler].ability == ABILITY_REGENERATOR 
                 && gBattleMons[gActiveBattler].hp >= gBattleMons[gActiveBattler].maxHP/4))) //If the computer doesn't have a super effective move AND they have >1/2 their HP, or >1/4 HP and Regenerator
 		{
-            // Check if current mon can revenge kill in spite of bad matchup, and don't switch out if it can
-            for (j = 0; j < MAX_MON_MOVES; j++)
-            {
-                u32 move = gBattleMons[gActiveBattler].moves[j];
-                if(AI_CalcPartyMonDamageDealt(move, gActiveBattler, opposingBattler, &party[i]) > gBattleMons[opposingBattler].hp)
-                {
-                    if (gBattleMons[gActiveBattler].speed > gBattleMons[opposingBattler].speed || gBattleMoves[move].priority > 0)
-                    {
-                        return FALSE;
-                    }
-                }
-            }
-
  			for (i = 0; i < MAX_MON_MOVES; i++) //Then check their moves to see if they have a status move. If you have a status move, you probably want to use it even if you don't have the advantage.
 			{
 				move = gBattleMons[gActiveBattler].moves[i]; //List of status moves under consideration
