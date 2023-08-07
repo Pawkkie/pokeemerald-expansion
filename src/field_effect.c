@@ -3091,8 +3091,8 @@ u8 FldEff_UseFly(void)
 }
 
 static void (*const sFlyOutFieldEffectFuncs[])(struct Task *) = {
-    FlyOutFieldEffect_FieldMovePose,
-    FlyOutFieldEffect_ShowMon,
+    // FlyOutFieldEffect_FieldMovePose,
+    // FlyOutFieldEffect_ShowMon,
     FlyOutFieldEffect_BirdLeaveBall,
     FlyOutFieldEffect_WaitBirdLeave,
     FlyOutFieldEffect_BirdSwoopDown,
@@ -3273,6 +3273,12 @@ static const union AffineAnimCmd *const sAffineAnims_FlyBird[] = {
 
 static void SpriteCB_FlyBirdLeaveBall(struct Sprite *sprite)
 {
+    // Remove bird flying out of ball animation
+    while (sprite->sAnimCompleted == FALSE)
+    {
+        sprite->sAnimCompleted++;
+    }
+    return;
     if (sprite->sAnimCompleted == FALSE)
     {
         if (sprite->data[0] == 0)
@@ -3326,6 +3332,12 @@ static void SpriteCB_FlyBirdSwoopDown(struct Sprite *sprite)
 
 static void SpriteCB_FlyBirdReturnToBall(struct Sprite *sprite)
 {
+    // Remove bird flying into ball animation
+    while (sprite->sAnimCompleted == FALSE)
+    {
+        sprite->sAnimCompleted++;
+    }
+    return;
     if (sprite->sAnimCompleted == FALSE)
     {
         if (sprite->data[0] == 0)
@@ -3481,8 +3493,8 @@ static void FlyInFieldEffect_FieldMovePose(struct Task *task)
         sprite->x2 = 0;
         sprite->y2 = 0;
         sprite->coordOffsetEnabled = TRUE;
-        SetPlayerAvatarFieldMove();
-        ObjectEventSetHeldMovement(objectEvent, MOVEMENT_ACTION_START_ANIM_IN_DIRECTION);
+        SetPlayerAvatarTransitionFlags(PLAYER_AVATAR_FLAG_ON_FOOT); // SetPlayerAvatarFieldMove();
+        ObjectEventSetHeldMovement(&gObjectEvents[gPlayerAvatar.objectEventId], MOVEMENT_ACTION_FACE_LEFT); // ObjectEventSetHeldMovement(objectEvent, MOVEMENT_ACTION_START_ANIM_IN_DIRECTION);
         task->tState++;
     }
 }
@@ -3492,18 +3504,18 @@ static void FlyInFieldEffect_BirdReturnToBall(struct Task *task)
     if (ObjectEventClearHeldMovementIfFinished(&gObjectEvents[gPlayerAvatar.objectEventId]))
     {
         task->tState++;
-        StartFlyBirdReturnToBall(task->tBirdSpriteId);
+        // StartFlyBirdReturnToBall(task->tBirdSpriteId);
     }
 }
 
 static void FlyInFieldEffect_WaitBirdReturn(struct Task *task)
 {
-    if (GetFlyBirdAnimCompleted(task->tBirdSpriteId))
-    {
+/*     if (GetFlyBirdAnimCompleted(task->tBirdSpriteId))
+    { */
         DestroySprite(&gSprites[task->tBirdSpriteId]);
         task->tState++;
         task->data[1] = 16;
-    }
+/*     } */
 }
 
 static void FlyInFieldEffect_End(struct Task *task)
