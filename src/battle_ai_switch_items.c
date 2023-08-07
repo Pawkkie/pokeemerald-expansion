@@ -1152,103 +1152,101 @@ static u32 GetBestMonRevengeKiller(struct Pokemon *party, int firstId, int lastI
     int slowThreatenId = PARTY_SIZE;
 
     // Variables
-    int i, j, k, l, bits = 0;
-    s32 maxDamageTaken, damageTaken = 0;
-    while (bits != 0x3F) // All mons were checked.
-    {
+    int i, j = 0;
+    s32 maxDamageTaken, damageTaken, hitsToKO = 0;
         // Iterate through mons
-        for (i = firstId; i < lastId; i++)
+    for (i = firstId; i < lastId; i++)
+    {
+        if (!(gBitTable[i] & invalidMons))
         {
-            if (!(gBitTable[i] & invalidMons) && !(gBitTable[i] & bits))
+            maxDamageTaken = 0;
+            // Find most damaging move player could use
+            for (j = 0; j < MAX_MON_MOVES; j++)
             {
-                maxDamageTaken = 0;
-                // Find most damaging move player could use
-                for (j = 0; j < MAX_MON_MOVES; j++)
-                {
-                    u32 playerMove = gBattleMons[opposingBattler].moves[j];
-                    damageTaken = AI_CalcPartyMonDamageReceived(playerMove, opposingBattler, gActiveBattler, &party[i]);
-                    if (damageTaken > maxDamageTaken)
-                        maxDamageTaken = damageTaken;
-                }
-                // Check if current mon can revenge kill
-                for (j = 0; j < MAX_MON_MOVES; j++)
-                {
-                    u32 aiMove = GetMonData(&party[i], MON_DATA_MOVE1 + j);
-                    // If mon can one shot
-                    if(AI_CalcPartyMonDamageDealt(aiMove, gActiveBattler, opposingBattler, &party[i]) > gBattleMons[opposingBattler].hp)
-                    {
-                        // If mon is faster
-                        if (GetMonData(&party[i], MON_DATA_SPEED) > gBattleMons[opposingBattler].speed || gBattleMoves[aiMove].priority > 0)
-                        {
-                            // We have a revenge killer
-                            revengeKillerId = i;
-                            return revengeKillerId;
-                        }
+                u32 playerMove = gBattleMons[opposingBattler].moves[j];
+                damageTaken = AI_CalcPartyMonDamageReceived(playerMove, opposingBattler, gActiveBattler, &party[i]);
+                if (damageTaken > maxDamageTaken)
+                    maxDamageTaken = damageTaken;
+            }
+            // Get max number of hits to KO mon
+            hitsToKO = GetNoOfHitsToKO(maxDamageTaken, GetMonData(&party[i], MON_DATA_HP));
 
-                        // If mon is slower
-                        else
-                        {
-                            // If mon can't be 2HKO'd, have a slow revenge killer
-                            if (maxDamageTaken < GetMonData(&party[i], MON_DATA_HP) / 2)
-                            {
-                                // We have a slow revenge killer
-                                slowRevengeKillerId = i;
-                            }
-                        }
+            // Check if current mon can revenge kill
+            for (j = 0; j < MAX_MON_MOVES; j++)
+            {
+                u32 aiMove = GetMonData(&party[i], MON_DATA_MOVE1 + j);
+                // If mon can one shot
+                if(AI_CalcPartyMonDamageDealt(aiMove, gActiveBattler, opposingBattler, &party[i]) > gBattleMons[opposingBattler].hp)
+                {
+                    // If mon is faster
+                    if (GetMonData(&party[i], MON_DATA_SPEED) > gBattleMons[opposingBattler].speed || gBattleMoves[aiMove].priority > 0)
+                    {
+                        // We have a revenge killer
+                        revengeKillerId = i;
+                        return revengeKillerId;
                     }
 
-                    // If mon can two shot
-                    if(AI_CalcPartyMonDamageDealt(aiMove, gActiveBattler, opposingBattler, &party[i]) > gBattleMons[opposingBattler].hp / 2)
+                    // If mon is slower
+                    else
                     {
-                        // If mon is faster
-                        if (GetMonData(&party[i], MON_DATA_SPEED) > gBattleMons[opposingBattler].speed || gBattleMoves[aiMove].priority > 0)
+                        // If mon can't be 2HKO'd, have a slow revenge killer
+                        if (hitsToKO > 2)
                         {
-                            // If mon can't be 2HKO'd, have a fast threaten
-                            if (maxDamageTaken < GetMonData(&party[i], MON_DATA_HP) / 2)
-                            {
-                                // We have a fast threaten
-                                fastThreatenId = i;
-                            }
+                            // We have a slow revenge killer
+                            slowRevengeKillerId = i;
                         }
-                        // If mon is slower
-                        else
+                    }
+                }
+
+                // If mon can two shot
+                if(AI_CalcPartyMonDamageDealt(aiMove, gActiveBattler, opposingBattler, &party[i]) > gBattleMons[opposingBattler].hp / 2)
+                {
+                    // If mon is faster
+                    if (GetMonData(&party[i], MON_DATA_SPEED) > gBattleMons[opposingBattler].speed || gBattleMoves[aiMove].priority > 0)
+                    {
+                        // If mon can't be OHKO'd, have a fast threaten
+                        if (hitsToKO > 1)
                         {
-                            // If mon can't be 3HKO'd, have a slow threaten
-                            if (maxDamageTaken < GetMonData(&party[i], MON_DATA_HP) / 3)
-                            {
-                                // We have a slow threaten
-                                slowThreatenId = i;
-                            }
+                            // We have a fast threaten
+                            fastThreatenId = i;
+                        }
+                    }
+                    // If mon is slower
+                    else
+                    {
+                        // If mon can't be 2HKO'd, have a slow threaten
+                        if (hitsToKO > 2)
+                        {
+                            // We have a slow threaten
+                            slowThreatenId = i;
                         }
                     }
                 }
             }
         }
-
-        // Return results in order of effectiveness, where faster and higher damage is better
-        if (revengeKillerId != PARTY_SIZE)
-        {
-            return revengeKillerId;
-        }
-        else if (slowRevengeKillerId != PARTY_SIZE)
-        {
-            return slowRevengeKillerId;
-        }
-        else if (fastThreatenId != PARTY_SIZE)
-        {
-            return fastThreatenId;
-        }
-        else if (slowThreatenId != PARTY_SIZE)
-        {
-            return slowThreatenId;
-        }
-        else
-        {
-            return PARTY_SIZE;
-            bits = 0x3F; // No viable mon to switch.
-        }
     }
-    return PARTY_SIZE;
+
+    // Return results in order of effectiveness, where faster and higher damage is better
+    if (revengeKillerId != PARTY_SIZE)
+    {
+        return revengeKillerId;
+    }
+    else if (slowRevengeKillerId != PARTY_SIZE)
+    {
+        return slowRevengeKillerId;
+    }
+    else if (fastThreatenId != PARTY_SIZE)
+    {
+        return fastThreatenId;
+    }
+    else if (slowThreatenId != PARTY_SIZE)
+    {
+        return slowThreatenId;
+    }
+    else
+    {
+        return PARTY_SIZE;
+    }
 }
 
 static u32 GetBestMonDmg(struct Pokemon *party, int firstId, int lastId, u8 invalidMons, u32 opposingBattler)

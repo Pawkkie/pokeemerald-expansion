@@ -6102,37 +6102,31 @@ static const struct TrainerMonNoItemDefaultMoves sParty_Carol[] = {
     }
 };
 
-static const struct TrainerMonCustomized sParty_Nancy[] = {
-    {
-    .iv = 0,
-    .lvl = 20,
-    .species = SPECIES_PONYTA,
-    .moves = {MOVE_GROWL, MOVE_TACKLE}
-    },
-    {
-    .iv = 0,
-    .lvl = 21,
-    .species = SPECIES_PONYTA,
-    .moves = {MOVE_GROWL, MOVE_TACKLE}
-    },
+static const struct TrainerMonNoItemDefaultMoves sParty_Nancy[] = {
     {
     .iv = 0,
     .lvl = 22,
     .species = SPECIES_PONYTA,
-    .moves = {MOVE_GROWL, MOVE_TACKLE}
     },
     {
     .iv = 0,
-    .lvl = 30,
-    .species = SPECIES_PONYTA,
-    .nature = TRAINER_PARTY_NATURE(NATURE_HARDY),
-    .moves = {MOVE_GROWL, MOVE_TACKLE}
+    .lvl = 22,
+    .species = SPECIES_TANGELA,
+    },
+    {
+    .iv = 0,
+    .lvl = 22,
+    .species = SPECIES_ARON,
+    },
+    {
+    .iv = 0,
+    .lvl = 22,
+    .species = SPECIES_LOMBRE,
     },
     {
     .iv = 0,
     .lvl = 25,
     .species = SPECIES_ELECTRODE,
-    .moves = {MOVE_GROWL, MOVE_TACKLE}
     },
     {
     .iv = 0,
