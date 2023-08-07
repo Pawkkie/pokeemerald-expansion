@@ -1965,7 +1965,6 @@ u8 CreateNPCTrainerPartyFromTrainer(struct Pokemon *party, const struct Trainer 
     u8 fixedIV;
     s32 i, j;
     u8 monsCount;
-    s32 ball = -1;
     if (battleTypeFlags & BATTLE_TYPE_TRAINER && !(battleTypeFlags & (BATTLE_TYPE_FRONTIER
                                                                         | BATTLE_TYPE_EREADER_TRAINER
                                                                         | BATTLE_TYPE_TRAINER_HILL)))
@@ -1987,6 +1986,7 @@ u8 CreateNPCTrainerPartyFromTrainer(struct Pokemon *party, const struct Trainer 
 
         for (i = 0; i < monsCount; i++)
         {
+            s32 ball = -1;
             u32 personalityHash = GeneratePartyHash(trainer, i);
             if (trainer->doubleBattle == TRUE)
                 personalityValue = 0x80;
@@ -3171,7 +3171,10 @@ static void BattleStartClearSetData(void)
 
     gBattleStruct->mega.triggerSpriteId = 0xFF;
 
-    gBattleStruct->stickyWebUser = 0xFF;
+    for (i = 0; i < ARRAY_COUNT(gSideTimers); i++)
+    {
+        gSideTimers[i].stickyWebBattlerId = 0xFF;
+    }
     gBattleStruct->appearedInBattle = 0;
     gBattleStruct->beatUpSlot = 0;
 
@@ -3277,8 +3280,12 @@ void SwitchInClearSetData(void)
     gBattleStruct->lastMoveFailed &= ~(gBitTable[gActiveBattler]);
     gBattleStruct->palaceFlags &= ~(gBitTable[gActiveBattler]);
 
-    if (gActiveBattler == gBattleStruct->stickyWebUser)
-        gBattleStruct->stickyWebUser = 0xFF;    // Switched into sticky web user slot so reset it
+    for (i = 0; i < ARRAY_COUNT(gSideTimers); i++)
+    {
+        // Switched into sticky web user slot, so reset stored battler ID
+        if (gSideTimers[i].stickyWebBattlerId == gActiveBattler)
+            gSideTimers[i].stickyWebBattlerId = 0xFF;
+    }
 
     for (i = 0; i < gBattlersCount; i++)
     {
@@ -3391,8 +3398,12 @@ void FaintClearSetData(void)
 
     gBattleStruct->palaceFlags &= ~(gBitTable[gActiveBattler]);
 
-    if (gActiveBattler == gBattleStruct->stickyWebUser)
-        gBattleStruct->stickyWebUser = 0xFF;    // User of sticky web fainted, so reset the stored battler ID
+    for (i = 0; i < ARRAY_COUNT(gSideTimers); i++)
+    {
+        // User of sticky web fainted, so reset the stored battler ID
+        if (gSideTimers[i].stickyWebBattlerId == gActiveBattler)
+            gSideTimers[i].stickyWebBattlerId = 0xFF;
+    }
 
     for (i = 0; i < gBattlersCount; i++)
     {
