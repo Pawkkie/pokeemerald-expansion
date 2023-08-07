@@ -73,6 +73,8 @@ static bool8 HasBadOdds(void)
 	s32 i;
     s32 damageDealt = 0;
     s32 maxDamageDealt = 0;
+    s32 damageTaken = 0;
+    s32 maxDamageTaken = 0;
     bool8 getsOneShot = FALSE;
 	struct Pokemon *party = NULL;
 	
@@ -115,9 +117,20 @@ static bool8 HasBadOdds(void)
         }
     }
 
-    // Get max damage mon could take to determine if it gets one shot
-    if (AI_CalcPartyMonBestMoveDamage(opposingBattler, gActiveBattler, NULL, NULL) > gBattleMons[gActiveBattler].hp)
+    // Get max damage mon could take
+    for (i = 0; i < MAX_MON_MOVES; i++)
+    {
+        u32 playerMove = gBattleMons[opposingBattler].moves[i];
+        damageTaken = AI_CalcDamage(playerMove, opposingBattler, gActiveBattler, &effectiveness, FALSE);
+        if (damageTaken > maxDamageTaken)
+            maxDamageTaken = damageTaken;
+    }
+
+    // Check if mon gets one shot
+    if(maxDamageTaken > gBattleMons[gActiveBattler].hp)
+    {
         getsOneShot = TRUE;
+    }
 
     // Start assessing whether or not mon has bad odds
 	if (typeDmg>=UQ_4_12(2.0) // If the player has a 2x type advantage
@@ -1078,48 +1091,55 @@ static u32 GetBestMonDefensive(struct Pokemon *party, int firstId, int lastId, u
     int defensiveMonId = PARTY_SIZE;
 
     // Variables
-    int i, bits = 0;
+    int i, j, bits = 0;
+    s32 damageTaken = 0;
     s32 maxDamageTaken = 0;
-    s32 hpPercentLost = 0;
-    s32 lowestHPPercentLost = 0;
-    bool8 firstRun = TRUE;
+    s32 maxHitsToKO = 0;
+    s32 hitsToKO = 0;
+    s32 hp = 0;
+    s32 hitKOThreshold = 3; // 3HKO threshold to exceed
 
-    while (bits != 0x3F) // All mons were checked.
+    // Iterate through mons
+    for (i = firstId; i < lastId; i++)
     {
-        // Iterate through mons
-        for (i = firstId; i < lastId; i++)
+        if (!(gBitTable[i] & invalidMons))
         {
-            if (!(gBitTable[i] & invalidMons) && !(gBitTable[i] & bits))
+            maxDamageTaken = 0;
+            // Find most damaging move player could use
+            for (j = 0; j < MAX_MON_MOVES; j++)
             {
-                // Get max damage mon could take
-                maxDamageTaken = AI_CalcPartyMonBestMoveDamage(opposingBattler, gActiveBattler, NULL, &party[i]);
-                
-                // Check what percentage of mon's HP that damage is
-                hpPercentLost = maxDamageTaken / GetMonData(&party[i], MON_DATA_HP);
-                
-                // If this is the new lowest HP percent lost, mon is new most defensive mon
-                if (hpPercentLost < lowestHPPercentLost || firstRun)
-                {
-                    firstRun = FALSE;
-                    lowestHPPercentLost = hpPercentLost;
-                    defensiveMonId = i;
-                }
+                u32 playerMove = gBattleMons[opposingBattler].moves[j];
+                damageTaken = AI_CalcPartyMonDamageReceived(playerMove, opposingBattler, gActiveBattler, &party[i]);
+                if (damageTaken > maxDamageTaken)
+                    maxDamageTaken = damageTaken;
+            }
+
+            // Get max number of hits to KO mon
+            hp = GetMonData(&party[i], MON_DATA_HP);
+            hitsToKO = GetNoOfHitsToKO(maxDamageTaken, hp);
+            if(hitsToKO > maxHitsToKO)
+            {
+                maxHitsToKO = hitsToKO;
+                defensiveMonId = i;
             }
         }
-        
-        // Return most defensive mon if it takes less than half damage at worst
-        if (defensiveMonId != PARTY_SIZE)
+    }
+    
+    // Return most defensive mon if isn't 3HKO'd
+    if (defensiveMonId != PARTY_SIZE)
+    {
+        if(maxHitsToKO > hitKOThreshold)
         {
-            if (lowestHPPercentLost < (GetMonData(&party[defensiveMonId], MON_DATA_HP) / 2))
-            {
-                return defensiveMonId;
-            }
+            return defensiveMonId;
         }
         else
         {
             return PARTY_SIZE;
-            bits = 0x3F; // No viable mon to switch.
         }
+    }
+    else
+    {
+        return PARTY_SIZE;
     }
 }
 
@@ -1133,7 +1153,7 @@ static u32 GetBestMonRevengeKiller(struct Pokemon *party, int firstId, int lastI
 
     // Variables
     int i, j, k, l, bits = 0;
-    s32 maxDamageTaken = 0;
+    s32 maxDamageTaken, damageTaken = 0;
     while (bits != 0x3F) // All mons were checked.
     {
         // Iterate through mons
@@ -1141,7 +1161,15 @@ static u32 GetBestMonRevengeKiller(struct Pokemon *party, int firstId, int lastI
         {
             if (!(gBitTable[i] & invalidMons) && !(gBitTable[i] & bits))
             {
-                maxDamageTaken = AI_CalcPartyMonBestMoveDamage(opposingBattler, gActiveBattler, NULL, &party[i]);
+                maxDamageTaken = 0;
+                // Find most damaging move player could use
+                for (j = 0; j < MAX_MON_MOVES; j++)
+                {
+                    u32 playerMove = gBattleMons[opposingBattler].moves[j];
+                    damageTaken = AI_CalcPartyMonDamageReceived(playerMove, opposingBattler, gActiveBattler, &party[i]);
+                    if (damageTaken > maxDamageTaken)
+                        maxDamageTaken = damageTaken;
+                }
                 // Check if current mon can revenge kill
                 for (j = 0; j < MAX_MON_MOVES; j++)
                 {
@@ -1227,6 +1255,7 @@ static u32 GetBestMonDmg(struct Pokemon *party, int firstId, int lastId, u8 inva
 {
     int i, j;
     int dmg, bestDmg = 0;
+    s32 damageDealt, maxDamageDealt = 0;
     int bestMonId = PARTY_SIZE;
 
     gMoveResultFlags = 0;
@@ -1237,12 +1266,15 @@ static u32 GetBestMonDmg(struct Pokemon *party, int firstId, int lastId, u8 inva
             continue;
         if (IsAiPartyMonOHKOBy(opposingBattler, &party[i]))
             continue;
-
-        dmg = AI_CalcPartyMonBestMoveDamage(gActiveBattler, opposingBattler, &party[i], NULL);
-        if (bestDmg < dmg)
+        maxDamageDealt = 0;
+        // Find max damage mon can deal
+        for (j = 0; j < MAX_MON_MOVES; j++)
         {
-            bestDmg = dmg;
-            bestMonId = i;
+            u32 aiMove = GetMonData(&party[i], MON_DATA_MOVE1 + j);
+            damageDealt = AI_CalcPartyMonDamageDealt(aiMove, gActiveBattler, opposingBattler, &party[i]);
+            if (damageDealt > maxDamageDealt)
+                maxDamageDealt = damageDealt;
+                bestMonId = i;
         }
     }
 
@@ -1313,7 +1345,6 @@ u8 GetMostSuitableMonToSwitchInto(void)
             aliveCount++;
         }
     }
-
     bestMonId = GetBestMonBatonPass(party, firstId, lastId, invalidMons, aliveCount, opposingBattler);
     if (bestMonId != PARTY_SIZE)
         return bestMonId;
@@ -1582,11 +1613,22 @@ static bool32 AI_OpponentCanFaintAiWithMod(u32 healAmount)
 static bool32 IsAiPartyMonOHKOBy(u32 battlerAtk, struct Pokemon *aiMon)
 {
     bool32 ret = FALSE;
+    int i;
     struct BattlePokemon *savedBattleMons;
     s32 hp = GetMonData(aiMon, MON_DATA_HP);
-    s32 bestDmg = AI_CalcPartyMonBestMoveDamage(battlerAtk, gActiveBattler, NULL, aiMon);
+    s32 damageTaken, maxDamageTaken = 0;
 
-    switch (GetNoOfHitsToKO(bestDmg, hp))
+    // Find most damaging move player could use
+    for (i = 0; i < MAX_MON_MOVES; i++)
+    {
+        u32 playerMove = gBattleMons[battlerAtk].moves[i];
+        damageTaken = AI_CalcPartyMonDamageReceived(playerMove, battlerAtk, gActiveBattler, aiMon);
+        if (damageTaken > maxDamageTaken)
+            maxDamageTaken = damageTaken;
+    }
+
+    // Check if OHKO'd
+    switch (GetNoOfHitsToKO(maxDamageTaken, hp))
     {
     case 1:
         ret = TRUE;

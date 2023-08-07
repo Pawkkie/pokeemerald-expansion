@@ -3430,6 +3430,17 @@ s32 AI_CalcPartyMonDamageDealt(u16 move, u8 battlerAtk, u8 battlerDef, struct Po
     return dmg;
 }
 
+s32 AI_CalcPartyMonDamageReceived(u16 move, u8 battlerAtk, u8 battlerDef, struct Pokemon *mon)
+{
+    s32 dmg, i;
+    u8 effectiveness;
+    struct BattlePokemon *savedBattleMons = AllocSaveBattleMons();
+    PokemonToBattleMon(mon, &gBattleMons[battlerDef]);
+    dmg = AI_CalcDamage(move, battlerAtk, battlerDef, &effectiveness, FALSE);
+    FreeRestoreBattleMons(savedBattleMons);
+    return dmg;
+}
+
 s32 AI_CalcPartyMonBestMoveDamage(u32 battlerAtk, u32 battlerDef, struct Pokemon *attackerMon, struct Pokemon *targetMon)
 {
     s32 i, move, bestDmg, dmg;
