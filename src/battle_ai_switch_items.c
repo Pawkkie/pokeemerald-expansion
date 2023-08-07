@@ -1106,9 +1106,14 @@ static u32 GetBestMonDefensive(struct Pokemon *party, int firstId, int lastId, u
                 }
             }
         }
+        
+        // Return most defensive mon if it takes less than half damage at worst
         if (defensiveMonId != PARTY_SIZE)
         {
-            return defensiveMonId;
+            if (lowestHPPercentLost < (GetMonData(&party[defensiveMonId], MON_DATA_HP) / 2))
+            {
+                return defensiveMonId;
+            }
         }
         else
         {
