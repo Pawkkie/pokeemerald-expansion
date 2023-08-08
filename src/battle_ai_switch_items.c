@@ -326,7 +326,7 @@ static bool8 FindMonThatAbsorbsOpponentsMove(void)
         monAbility = GetMonAbility(&party[i]);
 
         if (absorbingTypeAbility == monAbility
-        || (absorbingTypeAbility == ABILITY_WATER_ABSORB && monAbility == ABILITY_STORM_DRAIN)
+        || (absorbingTypeAbility == ABILITY_WATER_ABSORB && (monAbility == ABILITY_STORM_DRAIN || monAbility == ABILITY_DRY_SKIN))
         || (absorbingTypeAbility == ABILITY_VOLT_ABSORB && (monAbility == ABILITY_MOTOR_DRIVE || monAbility == ABILITY_LIGHTNING_ROD))
         )
         {
