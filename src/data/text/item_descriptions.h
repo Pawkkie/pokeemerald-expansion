@@ -3561,9 +3561,9 @@ static const u8 sMachBikeDesc[] = _(
     "speed or better.");
 
 static const u8 sAcroBikeDesc[] = _(
-    "A folding bicycle\n"
-    "capable of jumps\n"
-    "and wheelies.");
+    "Can jump, wheelie,\n"
+    "or speed up slopes.\n"
+    "R to switch modes.");
 
 static const u8 sOldRodDesc[] = _(
     "Use by any body of\n"
