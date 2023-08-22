@@ -540,6 +540,8 @@ gSpecials::
 	def_special ResetChosenMonEVs
 	def_special CheckChosenMonCanGainEVs
 	def_special IncreaseChosenMonEVs
+	def_special GetEVsRequiredToMax
+	def_special GetMoneyRequiredToMax
 	def_special BufferChosenMonEV
 	def_special BufferChosenMonAllEVs
 	def_special ChangeChosenMonIVs
@@ -548,3 +550,4 @@ gSpecials::
 	def_special ChangeChosenMonHiddenPower
 	def_special BufferChosenMonNature
 	def_special ChangePokemonNature
+

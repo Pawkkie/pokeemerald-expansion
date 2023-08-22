@@ -272,8 +272,10 @@ FallarborTown_ChangeEV128::
 	goto FallarborTown_DoSuperTraining
 
 FallarborTown_ChangeEV252::
-	setvar VAR_0x8006, 252
-	setvar VAR_0x8009, 25200
+	// setvar VAR_0x8006, 252
+	// setvar VAR_0x8009, 25200
+	special GetEVsRequiredToMax
+	special GetMoneyRequiredToMax
 	goto FallarborTown_DoSuperTraining
 
 FallarborTown_ResetEVs::

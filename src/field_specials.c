@@ -4360,6 +4360,56 @@ void IncreaseChosenMonEVs (void)
     gSpecialVar_0x8007 = newEV;
 }
 
+// Calculates required EVs to max out chosen stat
+// gSpecialVar_0x8005 must be set to the index of the EV to be shown (0 for HP, 1 for Attack, etc.)
+// Result is stored in gSpecialVar_0x8006
+void GetEVsRequiredToMax (void)
+{
+    u8 statToRead = gSpecialVar_0x8005;
+    u8 hpEV;
+    u8 atkEV;
+    u8 defEV;
+    u8 speEV;
+    u8 spatkEV;
+    u8 spdefEV;
+
+    switch (statToRead)
+    {
+    case STAT_HP: 
+        hpEV = GetMonData(&gPlayerParty[gSpecialVar_0x8004], MON_DATA_HP_EV, NULL);
+        gSpecialVar_0x8006 = 252 - hpEV;
+        break;
+    case STAT_ATK: 
+        atkEV = GetMonData(&gPlayerParty[gSpecialVar_0x8004], MON_DATA_ATK_EV, NULL);
+        gSpecialVar_0x8006 = 252 - atkEV;
+        break;
+    case STAT_DEF: 
+        defEV = GetMonData(&gPlayerParty[gSpecialVar_0x8004], MON_DATA_DEF_EV, NULL);
+        gSpecialVar_0x8006 = 252 - defEV;
+        break;
+    case STAT_SPEED: 
+        speEV = GetMonData(&gPlayerParty[gSpecialVar_0x8004], MON_DATA_SPEED_EV, NULL);
+        gSpecialVar_0x8006 = 252 - speEV;
+        break;
+    case STAT_SPATK: 
+        spatkEV = GetMonData(&gPlayerParty[gSpecialVar_0x8004], MON_DATA_SPATK_EV, NULL);
+        gSpecialVar_0x8006 = 252 - spatkEV;
+        break;
+    case STAT_SPDEF: 
+        spdefEV = GetMonData(&gPlayerParty[gSpecialVar_0x8004], MON_DATA_SPDEF_EV, NULL);
+        gSpecialVar_0x8006 = 252 - spdefEV;
+        break;
+    }
+}
+
+// Calculates required money to max out chosen stat
+// gSpecialVar_0x8006 must be set to the required number of EVs to max the stat
+// Result is stored in gSpecialVar_0x8009
+void GetMoneyRequiredToMax (void)
+{
+    gSpecialVar_0x8009 = gSpecialVar_0x8006 * 100;
+}
+
 // Buffers the EVs of a Pokemon's stat chosen by the player.
 // gSpecialVar_0x8004 must be set to the party slot of the chosen Pokemon
 // gSpecialVar_0x8005 must be set to the index of the EV to be shown (0 for HP, 1 for Attack, etc.)

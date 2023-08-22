@@ -1992,7 +1992,7 @@ const u8 gText_Add8toEV[] = _(" 8 EVs");
 const u8 gText_Add12toEV[] = _("12 EVs");
 const u8 gText_Add64toEV[] = _("64 EVs");
 const u8 gText_Add128toEV[] = _("128 EVs");
-const u8 gText_Add252toEV[] = _("252 EVs");
+const u8 gText_Add252toEV[] = _("Max Stat");
 
 const u8 gText_HiddenPower[] = _("Change Hidden Power");
 const u8 gText_ChangeIV[] = _("Change IVs");
