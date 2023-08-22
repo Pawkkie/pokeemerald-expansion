@@ -126,7 +126,7 @@ TEST("CreateNPCTrainerPartyForTrainer generates customized Pokémon")
 
     EXPECT(GetGenderFromSpeciesAndPersonality(GetMonData(&testParty[0], MON_DATA_SPECIES, 0), testParty[0].box.personality) == MON_FEMALE);
 
-    EXPECT(GetNature(&testParty[0]) == NATURE_HASTY);
+    EXPECT(GetMonData(&testParty[0], MON_DATA_NATURE) == NATURE_HASTY);
 
     Free(testParty);
 }
