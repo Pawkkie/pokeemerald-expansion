@@ -62,36 +62,43 @@ void GetAIPartyIndexes(u32 battlerId, s32 *firstId, s32 *lastId)
 
 static bool8 HasBadOdds(void)
 {
-	u8 opposingPosition; //Variable initialization
+    //Variable initialization
+	u8 opposingPosition; 
     u8 opposingBattler;
 	u8 atkType1;
 	u8 atkType2;
 	u8 defType1;
 	u8 defType2;
     u8 effectiveness;
-	u16 move;
 	s32 i;
     s32 damageDealt = 0;
     s32 maxDamageDealt = 0;
     s32 damageTaken = 0;
     s32 maxDamageTaken = 0;
     bool8 getsOneShot = FALSE;
+    bool8 hasStatusMove = FALSE;
 	struct Pokemon *party = NULL;
-	
-	u16 typeDmg=UQ_4_12(1.0); //baseline typing damage
+	u16 typeDmg = UQ_4_12(1.0); //baseline typing damage
+
+    // If we don't have any other viable options, don't switch out
+    if (GetMostSuitableMonToSwitchInto()==PARTY_SIZE)
+        return FALSE;
 	
 	opposingPosition = BATTLE_OPPOSITE(GetBattlerPosition(gActiveBattler));
     opposingBattler = GetBattlerAtPosition(opposingPosition);
 	
-	atkType1 = gBattleMons[opposingBattler].type1;//Gets types of player(opposingBattler) and computer (gActiveBattler)
+    // Gets types of player (opposingBattler) and computer (gActiveBattler)
+	atkType1 = gBattleMons[opposingBattler].type1;
 	atkType2 = gBattleMons[opposingBattler].type2;
 	defType1 = gBattleMons[gActiveBattler].type1;
 	defType2 = gBattleMons[gActiveBattler].type2;
 	
-    if (gBattleTypeFlags & BATTLE_TYPE_DOUBLE) //Won't bother configuring this for double battles. Those are complex enough.
+    // Won't bother configuring this for double battles
+    if (gBattleTypeFlags & BATTLE_TYPE_DOUBLE) 
         return FALSE;
 
-	MulModifier(&typeDmg, GetTypeModifier(atkType1, defType1));//Calculates the type advantage
+    // Calculate type advantage
+	MulModifier(&typeDmg, GetTypeModifier(atkType1, defType1));
 	if (atkType2!=atkType1)
 		MulModifier(&typeDmg, GetTypeModifier(atkType2, defType1));
 	if (defType2!=defType1)
@@ -101,10 +108,26 @@ static bool8 HasBadOdds(void)
 			MulModifier(&typeDmg, GetTypeModifier(atkType2, defType2));
 	}
 
-    // Get max damage mon could deal
+    // Check AI moves for damage dealt / status moves
     for (i = 0; i < MAX_MON_MOVES; i++)
     {
         u32 aiMove = gBattleMons[gActiveBattler].moves[i];
+
+        // Check if mon has an important status move
+        if (aiMove == MOVE_REFLECT || aiMove == MOVE_LIGHT_SCREEN 
+        || aiMove == MOVE_SPIKES || aiMove == MOVE_TOXIC_SPIKES || aiMove == MOVE_STEALTH_ROCK || aiMove == MOVE_STICKY_WEB || aiMove == MOVE_LEECH_SEED
+        || aiMove == MOVE_EXPLOSION || aiMove == MOVE_SELF_DESTRUCT 
+        || aiMove == MOVE_SLEEP_POWDER || aiMove == MOVE_YAWN || aiMove == MOVE_LOVELY_KISS || aiMove == MOVE_GRASS_WHISTLE || aiMove == MOVE_HYPNOSIS 
+        || aiMove == MOVE_TOXIC || aiMove == MOVE_BANEFUL_BUNKER 
+        || aiMove == MOVE_WILL_O_WISP 
+        || aiMove == MOVE_TRICK || aiMove == MOVE_TRICK_ROOM || aiMove== MOVE_WONDER_ROOM || aiMove ==  MOVE_PSYCHO_SHIFT || aiMove == MOVE_FAKE_OUT
+        || aiMove == MOVE_STUN_SPORE || aiMove == MOVE_THUNDER_WAVE || aiMove == MOVE_NUZZLE || aiMove == MOVE_GLARE
+        )
+        {
+            hasStatusMove = TRUE;
+        }
+
+        // Get maximum damage mon can deal
         damageDealt = AI_CalcDamage(aiMove, gActiveBattler, opposingBattler, &effectiveness, FALSE);
         if(damageDealt > maxDamageDealt)
             maxDamageDealt = damageDealt;
@@ -112,7 +135,7 @@ static bool8 HasBadOdds(void)
         // Check if current mon can revenge kill in spite of bad matchup, and don't switch out if it can
         if(damageDealt > gBattleMons[opposingBattler].hp)
         {
-            if (gBattleMons[gActiveBattler].speed > gBattleMons[opposingBattler].speed || gBattleMoves[move].priority > 0)
+            if (gBattleMons[gActiveBattler].speed > gBattleMons[opposingBattler].speed || gBattleMoves[aiMove].priority > 0)
                 return FALSE;
         }
     }
@@ -133,38 +156,38 @@ static bool8 HasBadOdds(void)
     }
 
     // Start assessing whether or not mon has bad odds
-	if (typeDmg>=UQ_4_12(2.0) // If the player has a 2x type advantage
-    || (getsOneShot && gBattleMons[opposingBattler].speed > gBattleMons[gActiveBattler].speed) // Or the player OHKOs and outspeeds
+    // Jump straight to swtiching out in OHKO cases
+    if ((getsOneShot && gBattleMons[opposingBattler].speed > gBattleMons[gActiveBattler].speed) // If the player OHKOs and outspeeds
     || (getsOneShot && gBattleMons[opposingBattler].speed <= gBattleMons[gActiveBattler].speed && maxDamageDealt < gBattleMons[opposingBattler].hp / 2)) // Or the player OHKOs, doesn't outspeed but isn't 2HKO'd
+    {
+        // 50% chance to stay in anyways
+        if (Random() % 2 == 0) 
+            return FALSE;
+
+        // Switch mon out
+        *(gBattleStruct->AI_monToSwitchIntoId + gActiveBattler) = PARTY_SIZE; 
+        BtlController_EmitTwoReturnValues(1, B_ACTION_SWITCH, 0);
+        return TRUE;
+    }
+    // General bad type matchups have more wiggle room
+	if (typeDmg>=UQ_4_12(2.0)) // If the player has a 2x type advantage
 	{
-		if (GetMostSuitableMonToSwitchInto()==PARTY_SIZE) //If there is no better option...
-			return FALSE;
+        // If the AI doesn't have a super effective move AND they have >1/2 their HP, or >1/4 HP and Regenerator
 		if ((!HasSuperEffectiveMoveAgainstOpponents(FALSE))
-			&& (gBattleMons[gActiveBattler].hp >= gBattleMons[gActiveBattler].maxHP/2 
-                || (gBattleMons[gActiveBattler].ability == ABILITY_REGENERATOR 
-                && gBattleMons[gActiveBattler].hp >= gBattleMons[gActiveBattler].maxHP/4))) //If the computer doesn't have a super effective move AND they have >1/2 their HP, or >1/4 HP and Regenerator
+		&& (gBattleMons[gActiveBattler].hp >= gBattleMons[gActiveBattler].maxHP/2 
+        || (gBattleMons[gActiveBattler].ability == ABILITY_REGENERATOR 
+        && gBattleMons[gActiveBattler].hp >= gBattleMons[gActiveBattler].maxHP/4))) 
 		{
- 			for (i = 0; i < MAX_MON_MOVES; i++) //Then check their moves to see if they have a status move. If you have a status move, you probably want to use it even if you don't have the advantage.
-			{
-				move = gBattleMons[gActiveBattler].moves[i]; //List of status moves under consideration
-				if ((move == MOVE_REFLECT || move == MOVE_LIGHT_SCREEN 
-				|| move == MOVE_SPIKES || move == MOVE_TOXIC_SPIKES || move == MOVE_STEALTH_ROCK || move == MOVE_STICKY_WEB || move == MOVE_LEECH_SEED
-				|| move == MOVE_EXPLOSION || move == MOVE_SELF_DESTRUCT 
-				|| move == MOVE_SLEEP_POWDER || move == MOVE_YAWN || move == MOVE_LOVELY_KISS || move == MOVE_GRASS_WHISTLE || move == MOVE_HYPNOSIS 
-				|| move == MOVE_TOXIC || move == MOVE_BANEFUL_BUNKER 
-				|| move == MOVE_WILL_O_WISP 
-				|| move == MOVE_TRICK || move == MOVE_TRICK_ROOM || move== MOVE_WONDER_ROOM || move ==  MOVE_PSYCHO_SHIFT || move == MOVE_FAKE_OUT
-				|| move == MOVE_STUN_SPORE || move == MOVE_THUNDER_WAVE || move == MOVE_NUZZLE || move == MOVE_GLARE
-				))
-				{
-					return FALSE;
-				}
-			}
-            if (Random() % 2 == 0)
-            {
+            // Then check if they have an important status move, which is worth using even in a bad matchup
+            if(hasStatusMove)
                 return FALSE;
-            }
-			*(gBattleStruct->AI_monToSwitchIntoId + gActiveBattler) = PARTY_SIZE; //Status move check failed. Let's get the Pokémon out of there.
+
+            // 50% chance to stay in anyways
+            if (Random() % 2 == 0) 
+                return FALSE;
+
+            // Switch mon out
+			*(gBattleStruct->AI_monToSwitchIntoId + gActiveBattler) = PARTY_SIZE; 
 			BtlController_EmitTwoReturnValues(1, B_ACTION_SWITCH, 0);
 			return TRUE;
 		}
