@@ -149,8 +149,8 @@ static const LoopedTask sMenuHandlerLoopTaskFuncs[] =
     [POKENAV_MENU_FUNC_RETURN_TO_CONDITION]   = LoopedTask_ReturnToConditionMenu,
     [POKENAV_MENU_FUNC_NO_RIBBON_WINNERS]     = LoopedTask_SelectRibbonsNoWinners,
     [POKENAV_MENU_FUNC_RESHOW_DESCRIPTION]    = LoopedTask_ReShowDescription,
-    [POKENAV_MENU_FUNC_OPEN_FEATURE]          = LoopedTask_OpenPokenavFeature,
-    [POKENAV_MENU_FUNC_CANNOT_ACCESS_PC]      = LoopedTask_CannotAccesPC
+    [POKENAV_MENU_FUNC_OPEN_FEATURE]          = LoopedTask_OpenPokenavFeature
+    // [POKENAV_MENU_FUNC_CANNOT_ACCESS_PC]      = LoopedTask_CannotAccesPC
 };
 
 static const struct CompressedSpriteSheet sPokenavOptionsSpriteSheets[] =
@@ -236,10 +236,11 @@ struct
     },
     [POKENAV_MENU_TYPE_CONDITION] =
     {
-        .yStart = 49,
+        .yStart = 56,
+        // .yStart = 49,
         .deltaY = 20,
         .gfx = {
-            sOptionsLabelGfx_AccessPC,
+            // sOptionsLabelGfx_AccessPC,
             sOptionsLabelGfx_Party,
             sOptionsLabelGfx_Search,
             sOptionsLabelGfx_Cancel
@@ -278,7 +279,7 @@ static const u8 *const sPageDescriptions[] =
     [POKENAV_MENUITEM_MATCH_CALL]              = gText_CallRegisteredTrainer,
     [POKENAV_MENUITEM_RIBBONS]                 = gText_CheckObtainedRibbons,
     [POKENAV_MENUITEM_SWITCH_OFF]              = gText_PutAwayPokenav,
-    [POKENAV_MENUITEM_CONDITION_ACCESS_PC]     = gText_Pokenav_Access_PC,
+    // [POKENAV_MENUITEM_CONDITION_ACCESS_PC]     = gText_Pokenav_Access_PC,
     [POKENAV_MENUITEM_CONDITION_PARTY]         = gText_CheckPartyPokemonInDetail,
     [POKENAV_MENUITEM_CONDITION_SEARCH]        = gText_CheckAllPokemonInDetail,
     [POKENAV_MENUITEM_CONDITION_CANCEL]        = gText_ReturnToPokenavMenu,
