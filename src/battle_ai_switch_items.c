@@ -1065,23 +1065,32 @@ static u32 GetBestMonTypeMatchup(struct Pokemon *party, int firstId, int lastId,
 {
     int i, bits = 0;
     bool8 checkedAllMonsForSEMoves = FALSE;
+    u16 bestResist;
+    int bestMonId;
+    u16 species;
+    u16 typeEffectiveness;
+    u8 atkType1;
+    u8 atkType2;
+    u8 defType1;
+    u8 defType2;
+    u32 aiMove;
 
     while (bits != 0x3F) // All mons were checked.
     {
-        u16 bestResist = UQ_4_12(1.0);
-        int bestMonId = PARTY_SIZE;
+        bestResist = UQ_4_12(1.0);
+        bestMonId = PARTY_SIZE;
         // Find the mon whose type is the most suitable defensively.
         for (i = firstId; i < lastId; i++)
         {
             if (!(gBitTable[i] & invalidMons) && !(gBitTable[i] & bits))
             {
-                u16 species = GetMonData(&party[i], MON_DATA_SPECIES);
-                u16 typeEffectiveness = UQ_4_12(1.0);
+                species = GetMonData(&party[i], MON_DATA_SPECIES);
+                typeEffectiveness = UQ_4_12(1.0);
 
-                u8 atkType1 = gBattleMons[opposingBattler].type1;
-                u8 atkType2 = gBattleMons[opposingBattler].type2;
-                u8 defType1 = gSpeciesInfo[species].types[0];
-                u8 defType2 = gSpeciesInfo[species].types[1];
+                atkType1 = gBattleMons[opposingBattler].type1;
+                atkType2 = gBattleMons[opposingBattler].type2;
+                defType1 = gSpeciesInfo[species].types[0];
+                defType2 = gSpeciesInfo[species].types[1];
 
                 if (IsAiPartyMonOHKOBy(opposingBattler, &party[i]))
                     continue;
@@ -1108,8 +1117,8 @@ static u32 GetBestMonTypeMatchup(struct Pokemon *party, int firstId, int lastId,
             // Check if it has a super effective move
             for (i = 0; i < MAX_MON_MOVES; i++)
             {
-                u32 move = GetMonData(&party[bestMonId], MON_DATA_MOVE1 + i);
-                if (move != MOVE_NONE && AI_GetTypeEffectiveness(move, gActiveBattler, opposingBattler) >= UQ_4_12(2.0))
+                aiMove = GetMonData(&party[bestMonId], MON_DATA_MOVE1 + i);
+                if (aiMove != MOVE_NONE && AI_GetTypeEffectiveness(aiMove, gActiveBattler, opposingBattler) >= UQ_4_12(2.0))
                     break;
             }
             /// If it has a super effective move or we've already checked other options, it's the best mon
@@ -1147,6 +1156,7 @@ static u32 GetBestMonDefensive(struct Pokemon *party, int firstId, int lastId, u
     s32 hitsToKO = 0;
     s32 hp = 0;
     s32 hitKOThreshold = 3; // 3HKO threshold to exceed
+    u32 playerMove;
 
     // Iterate through mons
     for (i = firstId; i < lastId; i++)
@@ -1157,7 +1167,7 @@ static u32 GetBestMonDefensive(struct Pokemon *party, int firstId, int lastId, u
             // Find most damaging move player could use
             for (j = 0; j < MAX_MON_MOVES; j++)
             {
-                u32 playerMove = gBattleMons[opposingBattler].moves[j];
+                playerMove = gBattleMons[opposingBattler].moves[j];
                 damageTaken = AI_CalcPartyMonDamageReceived(playerMove, opposingBattler, gActiveBattler, &party[i]);
                 if (damageTaken > maxDamageTaken)
                     maxDamageTaken = damageTaken;
@@ -1202,17 +1212,20 @@ static u32 GetBestMonRevengeKiller(struct Pokemon *party, int firstId, int lastI
 
     // Variables
     int i, j = 0;
-    s32 maxDamageTaken, damageTaken, hitsToKO = 0;
+    s32 maxDamageTaken, damageTaken, hitsToKO, damageDealt, aiMonSpeed = 0;
+    s32 playerMonSpeed = gBattleMons[opposingBattler].speed;
+    u32 aiMove, playerMove;
         // Iterate through mons
     for (i = firstId; i < lastId; i++)
     {
         if (!(gBitTable[i] & invalidMons))
         {
             maxDamageTaken = 0;
+            aiMonSpeed = GetMonData(&party[i], MON_DATA_SPEED);
             // Find most damaging move player could use
             for (j = 0; j < MAX_MON_MOVES; j++)
             {
-                u32 playerMove = gBattleMons[opposingBattler].moves[j];
+                playerMove = gBattleMons[opposingBattler].moves[j];
                 damageTaken = AI_CalcPartyMonDamageReceived(playerMove, opposingBattler, gActiveBattler, &party[i]);
                 if (damageTaken > maxDamageTaken)
                     maxDamageTaken = damageTaken;
@@ -1223,12 +1236,13 @@ static u32 GetBestMonRevengeKiller(struct Pokemon *party, int firstId, int lastI
             // Check if current mon can revenge kill
             for (j = 0; j < MAX_MON_MOVES; j++)
             {
-                u32 aiMove = GetMonData(&party[i], MON_DATA_MOVE1 + j);
+                aiMove = GetMonData(&party[i], MON_DATA_MOVE1 + j);
+                damageDealt = AI_CalcPartyMonDamageDealt(aiMove, gActiveBattler, opposingBattler, &party[i]);
                 // If mon can one shot
-                if(AI_CalcPartyMonDamageDealt(aiMove, gActiveBattler, opposingBattler, &party[i]) > gBattleMons[opposingBattler].hp)
+                if(damageDealt > gBattleMons[opposingBattler].hp)
                 {
                     // If mon is faster
-                    if (GetMonData(&party[i], MON_DATA_SPEED) > gBattleMons[opposingBattler].speed || gBattleMoves[aiMove].priority > 0)
+                    if (aiMonSpeed > playerMonSpeed || gBattleMoves[aiMove].priority > 0)
                     {
                         // We have a revenge killer
                         revengeKillerId = i;
@@ -1248,10 +1262,10 @@ static u32 GetBestMonRevengeKiller(struct Pokemon *party, int firstId, int lastI
                 }
 
                 // If mon can two shot
-                if(AI_CalcPartyMonDamageDealt(aiMove, gActiveBattler, opposingBattler, &party[i]) > gBattleMons[opposingBattler].hp / 2)
+                if(damageDealt > gBattleMons[opposingBattler].hp / 2)
                 {
                     // If mon is faster
-                    if (GetMonData(&party[i], MON_DATA_SPEED) > gBattleMons[opposingBattler].speed || gBattleMoves[aiMove].priority > 0)
+                    if (aiMonSpeed > playerMonSpeed || gBattleMoves[aiMove].priority > 0)
                     {
                         // If mon can't be OHKO'd, have a fast threaten
                         if (hitsToKO > 1)
@@ -1304,6 +1318,7 @@ static u32 GetBestMonDmg(struct Pokemon *party, int firstId, int lastId, u8 inva
     int dmg, bestDmg = 0;
     s32 damageDealt, maxDamageDealt = 0;
     int bestMonId = PARTY_SIZE;
+    u32 aiMove;
 
     gMoveResultFlags = 0;
     // If we couldn't find the best mon in terms of typing, find the one that deals most damage.
@@ -1317,7 +1332,7 @@ static u32 GetBestMonDmg(struct Pokemon *party, int firstId, int lastId, u8 inva
         // Find max damage mon can deal
         for (j = 0; j < MAX_MON_MOVES; j++)
         {
-            u32 aiMove = GetMonData(&party[i], MON_DATA_MOVE1 + j);
+            aiMove = GetMonData(&party[i], MON_DATA_MOVE1 + j);
             damageDealt = AI_CalcPartyMonDamageDealt(aiMove, gActiveBattler, opposingBattler, &party[i]);
             if (damageDealt > maxDamageDealt)
                 maxDamageDealt = damageDealt;
@@ -1392,12 +1407,15 @@ u8 GetMostSuitableMonToSwitchInto(void)
             aliveCount++;
         }
     }
+
     bestMonId = GetBestMonBatonPass(party, firstId, lastId, invalidMons, aliveCount, opposingBattler);
     if (bestMonId != PARTY_SIZE)
         return bestMonId;
+
     bestMonId = GetBestMonTypeMatchup(party, firstId, lastId, invalidMons, opposingBattler);
     if (bestMonId != PARTY_SIZE)
         return bestMonId;
+        
     bestMonId = GetBestMonDefensive(party, firstId, lastId, invalidMons, opposingBattler);
     if (bestMonId != PARTY_SIZE)
         return bestMonId;
