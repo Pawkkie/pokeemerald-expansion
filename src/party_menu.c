@@ -126,7 +126,6 @@ enum {
 enum {
     FIELD_MOVE_TELEPORT,
     FIELD_MOVE_DIG,
-    FIELD_MOVE_SECRET_POWER,
     FIELD_MOVE_MILK_DRINK,
     FIELD_MOVE_SOFT_BOILED,
     FIELD_MOVE_SWEET_SCENT,
@@ -5059,9 +5058,6 @@ bool8 PlayerHasMove(u16 move)
     u16 item;
     switch (move)
     {
-    case MOVE_SECRET_POWER:
-        item = ITEM_HM01;
-        break;
     case MOVE_CUT:
         item = ITEM_AXE;
         break;
