@@ -1452,8 +1452,11 @@ static u32 GetBestMonIntegrated(struct Pokemon *party, int firstId, int lastId, 
     }
 
     // Return GetBestMonTypeMatchup > GetBestMonDefensive
+    else if (typeMatchupEffectiveId != PARTY_SIZE)
+        return typeMatchupEffectiveId;
 
-
+    else if (typeMatchupId != PARTY_SIZE)
+        return typeMatchupId;
 
     if (defensiveMonId != PARTY_SIZE)
         return defensiveMonId;
