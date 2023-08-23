@@ -63,7 +63,7 @@ void GetAIPartyIndexes(u32 battlerId, s32 *firstId, s32 *lastId)
 // Note that as many return statements as possible are INTENTIONALLY put after all of the loops;
 // the function can take up to ~2s or so to run, and this prevents the player from identifying 
 // whether the mon will switch or not by seeing how long the delay is before they select a move
-static bool8 HasBadOdds(void)
+static bool8 HasBadOdds(u8 mostSuitableMonId)
 {
     //Variable initialization
 	u8 opposingPosition, opposingBattler, atkType1, atkType2, defType1, defType2, effectiveness;
@@ -158,7 +158,7 @@ static bool8 HasBadOdds(void)
     }
 
     // If we don't have any other viable options, don't switch out
-    if (GetMostSuitableMonToSwitchInto()==PARTY_SIZE)
+    if (mostSuitableMonId == PARTY_SIZE)
         return FALSE;
 
     // Start assessing whether or not mon has bad odds
@@ -561,13 +561,12 @@ static bool8 ShouldSwitchIfGameStatePrompt(void)
     }
 }
 
-static bool8 ShouldSwitchIfAbilityBenefit(void)
+static bool8 ShouldSwitchIfAbilityBenefit(u8 mostSuitableMonId)
 {
     s32 monToSwitchId;
     s32 moduloChance = 4; //25% Chance Default
     s32 chanceReducer = 1; //No Reduce default. Increase to reduce
     u8 battlerId = GetBattlerPosition(gActiveBattler);
-    u8 mostSuitableMonId = GetMostSuitableMonToSwitchInto();
 
     if (AnyStatIsRaised(battlerId))
         chanceReducer = 5; // Reduce switchout probability by factor of 5 if setup
@@ -847,7 +846,7 @@ static bool8 AreAttackingStatsLowered(void)
     return TRUE;
 }
 
-bool32 ShouldSwitch(void)
+bool32 ShouldSwitch(u8 mostSuitableMonId)
 {
     u8 battlerIn1, battlerIn2;
     s32 firstId;
@@ -940,9 +939,9 @@ bool32 ShouldSwitch(void)
     //These Functions can prompt switch to generic pary members
     if (ShouldSwitchIfAllBadMoves())
         return TRUE;
-    if (ShouldSwitchIfAbilityBenefit())
+    if (ShouldSwitchIfAbilityBenefit(mostSuitableMonId))
         return TRUE;
-    if (HasBadOdds())
+    if (HasBadOdds(mostSuitableMonId))
 		return TRUE;
 
     //Removing switch capabilites under specific conditions
@@ -980,11 +979,13 @@ void AI_TrySwitchOrUseItem(void)
 
     if (gBattleTypeFlags & BATTLE_TYPE_TRAINER)
     {
-        if (ShouldSwitch())
+        // Precalculate most suitable mon, this is used in some switch decisions and it's expensive to run multiple times
+        u8 mostSuitableMonId = GetMostSuitableMonToSwitchInto();
+        if (ShouldSwitch(mostSuitableMonId))
         {
             if (*(gBattleStruct->AI_monToSwitchIntoId + gActiveBattler) == PARTY_SIZE)
             {
-                s32 monToSwitchId = GetMostSuitableMonToSwitchInto();
+                u8 monToSwitchId = mostSuitableMonId;
                 if (monToSwitchId == PARTY_SIZE)
                 {
                     if (!(gBattleTypeFlags & BATTLE_TYPE_DOUBLE))
@@ -1351,11 +1352,11 @@ static u32 GetBestMonDmg(struct Pokemon *party, int firstId, int lastId, u8 inva
     return bestMonId;
 }
 
-static u32 GetBestMonIntegrated(struct Pokemon *party, int firstId, int lastId, u8 invalidMons, int aliveCount, u32 opposingBattler)
+static u32 GetBestMonIntegrated(struct Pokemon *party, int firstId, int lastId, u32 opposingBattler, u8 battlerIn1, u8 battlerIn2)
 {
     // Variables
-    int batonPassId = PARTY_SIZE, typeMatchupId = PARTY_SIZE, typeMatchupEffectiveId = PARTY_SIZE, defensiveMonId = PARTY_SIZE;
-    int i, j, bits = 0;
+    int batonPassId = PARTY_SIZE, typeMatchupId = PARTY_SIZE, typeMatchupEffectiveId = PARTY_SIZE, defensiveMonId = PARTY_SIZE, aceMonId = PARTY_SIZE;
+    int i, j, aliveCount = 0, bits = 0;
     s32 damageTaken = 0, maxDamageTaken = 0, maxHitsToKO = 0, hitsToKO = 0;
     s32 hitKOThreshold = 3; // 3HKO threshold that candidate defensive mons must exceed
     u32 playerMove, aiMove;
@@ -1366,76 +1367,93 @@ static u32 GetBestMonIntegrated(struct Pokemon *party, int firstId, int lastId, 
     // Iterate through mons
     for (i = firstId; i < lastId; i++)
     {
-        if (!(gBitTable[i] & invalidMons))
+        // Check mon validity
+        if (!IsValidForBattle(&party[i])
+            || gBattlerPartyIndexes[battlerIn1] == i
+            || gBattlerPartyIndexes[battlerIn2] == i
+            || i == *(gBattleStruct->monToSwitchIntoId + battlerIn1)
+            || i == *(gBattleStruct->monToSwitchIntoId + battlerIn2)
+            || (GetMonAbility(&party[i]) == ABILITY_TRUANT && IsTruantMonVulnerable(gActiveBattler, opposingBattler))) // While not really invalid per say, not really wise to switch into this mon.
         {
-            // Find most damaging move player could use
-            maxDamageTaken = 0;
-            for (j = 0; j < MAX_MON_MOVES; j++)
+            continue;
+        }
+        else if (IsAceMon(gActiveBattler, i)) // Save Ace Pokemon for last.
+        {
+            aceMonId = i;
+            continue;
+        }
+        else
+        {
+            aliveCount++;
+        }
+
+        // Find most damaging move player could use
+        maxDamageTaken = 0;
+        for (j = 0; j < MAX_MON_MOVES; j++)
+        {
+            playerMove = gBattleMons[opposingBattler].moves[j];
+            if (playerMove != MOVE_NONE && gBattleMoves[playerMove].power != 0)
             {
-                playerMove = gBattleMons[opposingBattler].moves[j];
-                if (playerMove != MOVE_NONE && gBattleMoves[playerMove].power != 0)
-                {
-                    damageTaken = AI_CalcPartyMonDamageReceived(playerMove, opposingBattler, gActiveBattler, &party[i]);
-                    if (damageTaken > maxDamageTaken)
-                        maxDamageTaken = damageTaken;
-                }
+                damageTaken = AI_CalcPartyMonDamageReceived(playerMove, opposingBattler, gActiveBattler, &party[i]);
+                if (damageTaken > maxDamageTaken)
+                    maxDamageTaken = damageTaken;
             }
+        }
 
-            // Get max number of hits to KO mon
-            hitsToKO = GetNoOfHitsToKO(maxDamageTaken, GetMonData(&party[i], MON_DATA_HP));
-            if(hitsToKO > maxHitsToKO)
-            {
-                maxHitsToKO = hitsToKO;
-                // If hitKOThreshold is exceeded, have candidate for defensive mon
-                if(maxHitsToKO > hitKOThreshold)
-                    defensiveMonId = i;
-            }
+        // Get max number of hits to KO mon
+        hitsToKO = GetNoOfHitsToKO(maxDamageTaken, GetMonData(&party[i], MON_DATA_HP));
+        if(hitsToKO > maxHitsToKO)
+        {
+            maxHitsToKO = hitsToKO;
+            // If hitKOThreshold is exceeded, have candidate for defensive mon
+            if(maxHitsToKO > hitKOThreshold)
+                defensiveMonId = i;
+        }
 
-            // GetBestMonTypeMatchup
-            species = GetMonData(&party[i], MON_DATA_SPECIES);
-            typeEffectiveness = UQ_4_12(1.0);
+        // GetBestMonTypeMatchup
+        species = GetMonData(&party[i], MON_DATA_SPECIES);
+        typeEffectiveness = UQ_4_12(1.0);
 
-            atkType1 = gBattleMons[opposingBattler].type1;
-            atkType2 = gBattleMons[opposingBattler].type2;
-            defType1 = gSpeciesInfo[species].types[0];
-            defType2 = gSpeciesInfo[species].types[1];
+        atkType1 = gBattleMons[opposingBattler].type1;
+        atkType2 = gBattleMons[opposingBattler].type2;
+        defType1 = gSpeciesInfo[species].types[0];
+        defType2 = gSpeciesInfo[species].types[1];
 
-            // Multiply type effectiveness by a factor depending on type matchup
-            MulModifier(&typeEffectiveness, (GetTypeModifier(atkType1, defType1))); 
+        // Multiply type effectiveness by a factor depending on type matchup
+        MulModifier(&typeEffectiveness, (GetTypeModifier(atkType1, defType1))); 
+        if (atkType2 != atkType1)
+            MulModifier(&typeEffectiveness, (GetTypeModifier(atkType2, defType1)));
+        if (defType2 != defType1)
+        {
+            MulModifier(&typeEffectiveness, (GetTypeModifier(atkType1, defType2)));
             if (atkType2 != atkType1)
-                MulModifier(&typeEffectiveness, (GetTypeModifier(atkType2, defType1)));
-            if (defType2 != defType1)
-            {
-                MulModifier(&typeEffectiveness, (GetTypeModifier(atkType1, defType2)));
-                if (atkType2 != atkType1)
-                    MulModifier(&typeEffectiveness, (GetTypeModifier(atkType2, defType2)));
-            }
-            if (typeEffectiveness < bestResist)
-            {
-                bestResist = typeEffectiveness;
-                if(hitsToKO > 1)
-                    typeMatchupId = i;
-            }
+                MulModifier(&typeEffectiveness, (GetTypeModifier(atkType2, defType2)));
+        }
+        if (typeEffectiveness < bestResist)
+        {
+            bestResist = typeEffectiveness;
+            if(hitsToKO > 1)
+                typeMatchupId = i;
+        }
 
-            // Check through current mon's moves
-            for (j = 0; j < MAX_MON_MOVES; j++)
+        // Check through current mon's moves
+        for (j = 0; j < MAX_MON_MOVES; j++)
+        {
+            aiMove = GetMonData(&party[i], MON_DATA_MOVE1 + j);
+
+            // Check for Baton Pass
+            if (aiMove == MOVE_BATON_PASS && hitsToKO > 1)
+                bits |= gBitTable[i];
+
+            if (aiMove != MOVE_NONE && gBattleMoves[aiMove].power != 0)
             {
-                aiMove = GetMonData(&party[i], MON_DATA_MOVE1 + j);
-
-                // Check for Baton Pass
-                if (aiMove == MOVE_BATON_PASS && hitsToKO > 1)
-                    bits |= gBitTable[i];
-
-                if (aiMove != MOVE_NONE && gBattleMoves[aiMove].power != 0)
+                if (AI_GetTypeEffectiveness(aiMove, gActiveBattler, opposingBattler) >= UQ_4_12(2.0) && typeMatchupEffectiveId != i)
                 {
-                    if (AI_GetTypeEffectiveness(aiMove, gActiveBattler, opposingBattler) >= UQ_4_12(2.0) && typeMatchupEffectiveId != i)
+                    if (typeEffectiveness < bestResistEffective)
                     {
-                        if (typeEffectiveness < bestResistEffective)
-                        {
-                            bestResistEffective = typeEffectiveness;
-                            if(hitsToKO > 1)
-                                typeMatchupEffectiveId = i;
-                        }
+                        bestResistEffective = typeEffectiveness;
+                        if(hitsToKO > 1)
+                            typeMatchupEffectiveId = i;
                     }
                 }
             }
@@ -1462,16 +1480,21 @@ static u32 GetBestMonIntegrated(struct Pokemon *party, int firstId, int lastId, 
     if (defensiveMonId != PARTY_SIZE)
         return defensiveMonId;
 
+    // If ace mon is the last available Pokemon and U-Turn/Volt Switch was used - switch to the mon.
+    if (aceMonId != PARTY_SIZE
+        && (gBattleMoves[gLastUsedMove].effect == EFFECT_HIT_ESCAPE || gBattleMoves[gLastUsedMove].effect == EFFECT_PARTING_SHOT))
+        return aceMonId;
+
     else
         return PARTY_SIZE;
 }
 
-static u32 GetBestMonAfterKOIntegrated(struct Pokemon *party, int firstId, int lastId, u8 invalidMons, int aliveCount, u32 opposingBattler)
+static u32 GetBestMonAfterKOIntegrated(struct Pokemon *party, int firstId, int lastId, u8 battlerIn1, u8 battlerIn2, u32 opposingBattler)
 {
     // Variables
     int batonPassId = PARTY_SIZE, revengeKillerId = PARTY_SIZE, slowRevengeKillerId = PARTY_SIZE, fastThreatenId = PARTY_SIZE;
-    int slowThreatenId = PARTY_SIZE, typeMatchupId = PARTY_SIZE, typeMatchupEffectiveId = PARTY_SIZE, damageMonId = PARTY_SIZE;
-    int i, j, bits = 0;
+    int slowThreatenId = PARTY_SIZE, typeMatchupId = PARTY_SIZE, typeMatchupEffectiveId = PARTY_SIZE, damageMonId = PARTY_SIZE, aceMonId = PARTY_SIZE;
+    int i, j, aliveCount = 0, bits = 0;
     s32 maxDamageTaken = 0, damageTaken = 0, hitsToKO = 0, maxDamageDealt = 0, damageDealt = 0, aiMonSpeed = 0;
     s32 playerMonSpeed = gBattleMons[opposingBattler].speed;
     u32 aiMove, playerMove;
@@ -1482,128 +1505,145 @@ static u32 GetBestMonAfterKOIntegrated(struct Pokemon *party, int firstId, int l
     // Iterate through mons
     for (i = firstId; i < lastId; i++)
     {
-        if (!(gBitTable[i] & invalidMons))
+        // Check mon validity
+        if (!IsValidForBattle(&party[i])
+            || gBattlerPartyIndexes[battlerIn1] == i
+            || gBattlerPartyIndexes[battlerIn2] == i
+            || i == *(gBattleStruct->monToSwitchIntoId + battlerIn1)
+            || i == *(gBattleStruct->monToSwitchIntoId + battlerIn2)
+            || (GetMonAbility(&party[i]) == ABILITY_TRUANT && IsTruantMonVulnerable(gActiveBattler, opposingBattler))) // While not really invalid per say, not really wise to switch into this mon.
         {
-            // Find most damaging move player could use
-            maxDamageTaken = 0;
-            for (j = 0; j < MAX_MON_MOVES; j++)
+            continue;
+        }
+        else if (IsAceMon(gActiveBattler, i))// Save Ace Pokemon for last.
+        {
+            aceMonId = i;
+            continue;
+        }
+        else
+        {
+            aliveCount++;
+        }
+
+        // Find most damaging move player could use
+        maxDamageTaken = 0;
+        for (j = 0; j < MAX_MON_MOVES; j++)
+        {
+            playerMove = gBattleMons[opposingBattler].moves[j];
+            if (playerMove != MOVE_NONE && gBattleMoves[playerMove].power != 0)
             {
-                playerMove = gBattleMons[opposingBattler].moves[j];
-                if (playerMove != MOVE_NONE && gBattleMoves[playerMove].power != 0)
-                {
-                    damageTaken = AI_CalcPartyMonDamageReceived(playerMove, opposingBattler, gActiveBattler, &party[i]);
-                    if (damageTaken > maxDamageTaken)
-                        maxDamageTaken = damageTaken;
-                }
+                damageTaken = AI_CalcPartyMonDamageReceived(playerMove, opposingBattler, gActiveBattler, &party[i]);
+                if (damageTaken > maxDamageTaken)
+                    maxDamageTaken = damageTaken;
             }
+        }
 
-            // Get max number of hits to KO mon
-            hitsToKO = GetNoOfHitsToKO(maxDamageTaken, GetMonData(&party[i], MON_DATA_HP));
+        // Get max number of hits to KO mon
+        hitsToKO = GetNoOfHitsToKO(maxDamageTaken, GetMonData(&party[i], MON_DATA_HP));
 
-            // GetBestMonTypeMatchup
-            species = GetMonData(&party[i], MON_DATA_SPECIES);
-            typeEffectiveness = UQ_4_12(1.0);
+        // GetBestMonTypeMatchup
+        species = GetMonData(&party[i], MON_DATA_SPECIES);
+        typeEffectiveness = UQ_4_12(1.0);
 
-            atkType1 = gBattleMons[opposingBattler].type1;
-            atkType2 = gBattleMons[opposingBattler].type2;
-            defType1 = gSpeciesInfo[species].types[0];
-            defType2 = gSpeciesInfo[species].types[1];
+        atkType1 = gBattleMons[opposingBattler].type1;
+        atkType2 = gBattleMons[opposingBattler].type2;
+        defType1 = gSpeciesInfo[species].types[0];
+        defType2 = gSpeciesInfo[species].types[1];
 
-            // Multiply type effectiveness by a factor depending on type matchup
-            MulModifier(&typeEffectiveness, (GetTypeModifier(atkType1, defType1))); 
+        // Multiply type effectiveness by a factor depending on type matchup
+        MulModifier(&typeEffectiveness, (GetTypeModifier(atkType1, defType1))); 
+        if (atkType2 != atkType1)
+            MulModifier(&typeEffectiveness, (GetTypeModifier(atkType2, defType1)));
+        if (defType2 != defType1)
+        {
+            MulModifier(&typeEffectiveness, (GetTypeModifier(atkType1, defType2)));
             if (atkType2 != atkType1)
-                MulModifier(&typeEffectiveness, (GetTypeModifier(atkType2, defType1)));
-            if (defType2 != defType1)
-            {
-                MulModifier(&typeEffectiveness, (GetTypeModifier(atkType1, defType2)));
-                if (atkType2 != atkType1)
-                    MulModifier(&typeEffectiveness, (GetTypeModifier(atkType2, defType2)));
-            }
-            if (typeEffectiveness < bestResist)
-            {
-                bestResist = typeEffectiveness;
-                if(hitsToKO > 1)
-                    typeMatchupId = i;
-            }
+                MulModifier(&typeEffectiveness, (GetTypeModifier(atkType2, defType2)));
+        }
+        if (typeEffectiveness < bestResist)
+        {
+            bestResist = typeEffectiveness;
+            if(hitsToKO > 1)
+                typeMatchupId = i;
+        }
 
-            // Check if current mon can revenge kill
-            aiMonSpeed = GetMonData(&party[i], MON_DATA_SPEED);
-            for (j = 0; j < MAX_MON_MOVES; j++)
+        // Check if current mon can revenge kill
+        aiMonSpeed = GetMonData(&party[i], MON_DATA_SPEED);
+        for (j = 0; j < MAX_MON_MOVES; j++)
+        {
+            aiMove = GetMonData(&party[i], MON_DATA_MOVE1 + j);
+
+            // Check for Baton Pass
+            if (aiMove == MOVE_BATON_PASS && hitsToKO > 1)
+                bits |= gBitTable[i];
+
+            if (aiMove != MOVE_NONE && gBattleMoves[aiMove].power != 0)
             {
-                aiMove = GetMonData(&party[i], MON_DATA_MOVE1 + j);
+                damageDealt = AI_CalcPartyMonDamageDealt(aiMove, gActiveBattler, opposingBattler, &party[i]);
 
-                // Check for Baton Pass
-                if (aiMove == MOVE_BATON_PASS && hitsToKO > 1)
-                    bits |= gBitTable[i];
-
-                if (aiMove != MOVE_NONE && gBattleMoves[aiMove].power != 0)
+                // Check for mon with resistance and super effective move for GetBestMonTypeMatchup
+                if (AI_GetTypeEffectiveness(aiMove, gActiveBattler, opposingBattler) >= UQ_4_12(2.0) && typeMatchupEffectiveId != i)
                 {
-                    damageDealt = AI_CalcPartyMonDamageDealt(aiMove, gActiveBattler, opposingBattler, &party[i]);
-
-                    // Check for mon with resistance and super effective move for GetBestMonTypeMatchup
-                    if (AI_GetTypeEffectiveness(aiMove, gActiveBattler, opposingBattler) >= UQ_4_12(2.0) && typeMatchupEffectiveId != i)
+                    if (typeEffectiveness < bestResistEffective)
                     {
-                        if (typeEffectiveness < bestResistEffective)
-                        {
-                            bestResistEffective = typeEffectiveness;
-                            if(hitsToKO > 1)
-                                typeMatchupEffectiveId = i;
-                        }
-                    }
-
-                    // GetBestMonDmg
-                    if (damageDealt > maxDamageDealt)
-                    {
-                        maxDamageDealt = damageDealt;
+                        bestResistEffective = typeEffectiveness;
                         if(hitsToKO > 1)
-                            damageMonId = i;
+                            typeMatchupEffectiveId = i;
+                    }
+                }
+
+                // GetBestMonDmg
+                if (damageDealt > maxDamageDealt)
+                {
+                    maxDamageDealt = damageDealt;
+                    if(hitsToKO > 1)
+                        damageMonId = i;
+                }
+
+                // If mon can one shot
+                if(damageDealt > gBattleMons[opposingBattler].hp)
+                {
+                    // If mon is faster
+                    if (aiMonSpeed > playerMonSpeed || gBattleMoves[aiMove].priority > 0)
+                    {
+                        // We have a revenge killer
+                        revengeKillerId = i;
+                        return revengeKillerId;
                     }
 
-                    // If mon can one shot
-                    if(damageDealt > gBattleMons[opposingBattler].hp)
+                    // If mon is slower
+                    else
                     {
-                        // If mon is faster
-                        if (aiMonSpeed > playerMonSpeed || gBattleMoves[aiMove].priority > 0)
+                        // If mon can't be 2HKO'd, have a slow revenge killer
+                        if (hitsToKO > 2)
                         {
-                            // We have a revenge killer
-                            revengeKillerId = i;
-                            return revengeKillerId;
-                        }
-
-                        // If mon is slower
-                        else
-                        {
-                            // If mon can't be 2HKO'd, have a slow revenge killer
-                            if (hitsToKO > 2)
-                            {
-                                // We have a slow revenge killer
-                                slowRevengeKillerId = i;
-                            }
+                            // We have a slow revenge killer
+                            slowRevengeKillerId = i;
                         }
                     }
+                }
 
-                    // If mon can two shot
-                    if(damageDealt > gBattleMons[opposingBattler].hp / 2)
+                // If mon can two shot
+                if(damageDealt > gBattleMons[opposingBattler].hp / 2)
+                {
+                    // If mon is faster
+                    if (aiMonSpeed > playerMonSpeed || gBattleMoves[aiMove].priority > 0)
                     {
-                        // If mon is faster
-                        if (aiMonSpeed > playerMonSpeed || gBattleMoves[aiMove].priority > 0)
+                        // If mon can't be OHKO'd, have a fast threaten
+                        if (hitsToKO > 1)
                         {
-                            // If mon can't be OHKO'd, have a fast threaten
-                            if (hitsToKO > 1)
-                            {
-                                // We have a fast threaten
-                                fastThreatenId = i;
-                            }
+                            // We have a fast threaten
+                            fastThreatenId = i;
                         }
-                        // If mon is slower
-                        else
+                    }
+                    // If mon is slower
+                    else
+                    {
+                        // If mon can't be 2HKO'd, have a slow threaten
+                        if (hitsToKO > 2)
                         {
-                            // If mon can't be 2HKO'd, have a slow threaten
-                            if (hitsToKO > 2)
-                            {
-                                // We have a slow threaten
-                                slowThreatenId = i;
-                            }
+                            // We have a slow threaten
+                            slowThreatenId = i;
                         }
                     }
                 }
@@ -1655,8 +1695,6 @@ u8 GetMostSuitableMonToSwitchInto(void)
     s32 firstId = 0;
     s32 lastId = 0; // + 1
     struct Pokemon *party;
-    s32 i, j, aliveCount = 0;
-    u32 invalidMons = 0, aceMonId = PARTY_SIZE;
 
     if (*(gBattleStruct->monToSwitchIntoId + gActiveBattler) != PARTY_SIZE)
         return *(gBattleStruct->monToSwitchIntoId + gActiveBattler);
@@ -1689,30 +1727,7 @@ u8 GetMostSuitableMonToSwitchInto(void)
     else
         party = gEnemyParty;
 
-    // Get invalid slots ids.
-    for (i = firstId; i < lastId; i++)
-    {
-        if (!IsValidForBattle(&party[i])
-            || gBattlerPartyIndexes[battlerIn1] == i
-            || gBattlerPartyIndexes[battlerIn2] == i
-            || i == *(gBattleStruct->monToSwitchIntoId + battlerIn1)
-            || i == *(gBattleStruct->monToSwitchIntoId + battlerIn2)
-            || (GetMonAbility(&party[i]) == ABILITY_TRUANT && IsTruantMonVulnerable(gActiveBattler, opposingBattler))) // While not really invalid per say, not really wise to switch into this mon.)
-        {
-            invalidMons |= gBitTable[i];
-        }
-        else if (IsAceMon(gActiveBattler, i))// Save Ace Pokemon for last.
-        {
-            aceMonId = i;
-            invalidMons |= gBitTable[i];
-        }
-        else
-        {
-            aliveCount++;
-        }
-    }
-
-    bestMonId = GetBestMonIntegrated(party, firstId, lastId, invalidMons, aliveCount, opposingBattler);
+    bestMonId = GetBestMonIntegrated(party, firstId, lastId, opposingBattler, battlerIn1, battlerIn2);
     if (bestMonId != PARTY_SIZE)
         return bestMonId;
 
@@ -1729,9 +1744,9 @@ u8 GetMostSuitableMonToSwitchInto(void)
     //     return bestMonId;
 
     // If ace mon is the last available Pokemon and U-Turn/Volt Switch was used - switch to the mon.
-    if (aceMonId != PARTY_SIZE
-        && (gBattleMoves[gLastUsedMove].effect == EFFECT_HIT_ESCAPE || gBattleMoves[gLastUsedMove].effect == EFFECT_PARTING_SHOT))
-        return aceMonId;
+    // if (aceMonId != PARTY_SIZE
+    //     && (gBattleMoves[gLastUsedMove].effect == EFFECT_HIT_ESCAPE || gBattleMoves[gLastUsedMove].effect == EFFECT_PARTING_SHOT))
+    //     return aceMonId;
 
     return PARTY_SIZE;
 }
@@ -1822,9 +1837,9 @@ u8 GetMostSuitableMonToSwitchIntoAfterKO(void)
     //     return bestMonId;
 
     // If ace mon is the last available Pokemon and U-Turn/Volt Switch was used - switch to the mon.
-    if (aceMonId != PARTY_SIZE
-        && (gBattleMoves[gLastUsedMove].effect == EFFECT_HIT_ESCAPE || gBattleMoves[gLastUsedMove].effect == EFFECT_PARTING_SHOT))
-        return aceMonId;
+    // if (aceMonId != PARTY_SIZE
+    //     && (gBattleMoves[gLastUsedMove].effect == EFFECT_HIT_ESCAPE || gBattleMoves[gLastUsedMove].effect == EFFECT_PARTING_SHOT))
+    //     return aceMonId;
 
     return PARTY_SIZE;
 }

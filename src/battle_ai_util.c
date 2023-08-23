@@ -2589,9 +2589,11 @@ bool32 ShouldPivot(u8 battlerAtk, u8 battlerDef, u16 defAbility, u16 move, u8 mo
     u8 backupBattler = gActiveBattler;
     bool32 shouldSwitch;
     u8 battlerToSwitch;
+    // Precalculate most suitable mon, this is used in some switch decisions and it's expensive to run multiple times
+    u8 mostSuitableMonId = GetMostSuitableMonToSwitchInto();
 
     gActiveBattler = battlerAtk;
-    shouldSwitch = ShouldSwitch();
+    shouldSwitch = ShouldSwitch(mostSuitableMonId);
     battlerToSwitch = *(gBattleStruct->AI_monToSwitchIntoId + gActiveBattler);
     gActiveBattler = backupBattler;
 
