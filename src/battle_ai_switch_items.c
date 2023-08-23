@@ -567,6 +567,7 @@ static bool8 ShouldSwitchIfAbilityBenefit(void)
     s32 moduloChance = 4; //25% Chance Default
     s32 chanceReducer = 1; //No Reduce default. Increase to reduce
     u8 battlerId = GetBattlerPosition(gActiveBattler);
+    u8 mostSuitableMonId = GetMostSuitableMonToSwitchInto();
 
     if (AnyStatIsRaised(battlerId))
         chanceReducer = 5; // Reduce switchout probability by factor of 5 if setup
@@ -581,12 +582,12 @@ static bool8 ShouldSwitchIfAbilityBenefit(void)
             moduloChance = 4; //25%
             //Attempt to cure bad ailment
             if (gBattleMons[gActiveBattler].status1 & (STATUS1_SLEEP | STATUS1_FREEZE | STATUS1_TOXIC_POISON)
-                && GetMostSuitableMonToSwitchInto() != PARTY_SIZE)
+                && mostSuitableMonId != PARTY_SIZE)
                 break;
             //Attempt to cure lesser ailment
             if ((gBattleMons[gActiveBattler].status1 & STATUS1_ANY)
                 && (gBattleMons[gActiveBattler].hp >= gBattleMons[gActiveBattler].maxHP / 2)
-                && GetMostSuitableMonToSwitchInto() != PARTY_SIZE
+                && mostSuitableMonId != PARTY_SIZE
                 && Random() % (moduloChance*chanceReducer) == 0)
                 break;
 
@@ -598,7 +599,7 @@ static bool8 ShouldSwitchIfAbilityBenefit(void)
             if (gBattleMons[gActiveBattler].status1 & STATUS1_ANY)
                 return FALSE;
             if ((gBattleMons[gActiveBattler].hp <= ((gBattleMons[gActiveBattler].maxHP * 2) / 3))
-                 && GetMostSuitableMonToSwitchInto() != PARTY_SIZE
+                 && mostSuitableMonId != PARTY_SIZE
                  && Random() % (moduloChance*chanceReducer) == 0)
                 break;
 

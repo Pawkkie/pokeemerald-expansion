@@ -404,6 +404,7 @@ static u8 ChooseMoveOrAction_Singles(void)
     u32 numOfBestMoves;
     s32 i, id;
     u32 flags = AI_THINKING_STRUCT->aiFlags;
+    u8 mostSuitableMonId = GetMostSuitableMonToSwitchInto();
 
     AI_DATA->partnerMove = 0;   // no ally
     while (flags != 0)
@@ -449,7 +450,7 @@ static u8 ChooseMoveOrAction_Singles(void)
                     break;
             }
 
-            if (i == MAX_MON_MOVES && GetMostSuitableMonToSwitchInto() != PARTY_SIZE)
+            if (i == MAX_MON_MOVES && mostSuitableMonId != PARTY_SIZE)
             {
                 AI_THINKING_STRUCT->switchMon = TRUE;
                 return AI_CHOICE_SWITCH;
@@ -463,7 +464,7 @@ static u8 ChooseMoveOrAction_Singles(void)
             && gDisableStructs[sBattler_AI].truantCounter
             && gBattleMons[sBattler_AI].hp >= gBattleMons[sBattler_AI].maxHP / 2)
         {
-            if (GetMostSuitableMonToSwitchInto() != PARTY_SIZE)
+            if (mostSuitableMonId != PARTY_SIZE)
             {
                 AI_THINKING_STRUCT->switchMon = TRUE;
                 return AI_CHOICE_SWITCH;
