@@ -163,8 +163,11 @@ static bool8 HasBadOdds(u8 mostSuitableMonId)
 
     // Start assessing whether or not mon has bad odds
     // Jump straight to swtiching out in OHKO cases
-    if ((getsOneShot && gBattleMons[opposingBattler].speed > gBattleMons[gActiveBattler].speed) // If the player OHKOs and outspeeds
-    || (getsOneShot && gBattleMons[opposingBattler].speed <= gBattleMons[gActiveBattler].speed && maxDamageDealt < gBattleMons[opposingBattler].hp / 2)) // Or the player OHKOs, doesn't outspeed but isn't 2HKO'd
+    if (((getsOneShot && gBattleMons[opposingBattler].speed > gBattleMons[gActiveBattler].speed) // If the player OHKOs and outspeeds OR OHKOs, doesn't outspeed but isn't 2HKO'd
+     || (getsOneShot && gBattleMons[opposingBattler].speed <= gBattleMons[gActiveBattler].speed && maxDamageDealt < gBattleMons[opposingBattler].hp / 2)) 
+     && (gBattleMons[gActiveBattler].hp >= gBattleMons[gActiveBattler].maxHP/2 // And the current mon has at least 1/2 their HP or 1/4 of their HP and Regenerator
+     || (gBattleMons[gActiveBattler].ability == ABILITY_REGENERATOR 
+     && gBattleMons[gActiveBattler].hp >= gBattleMons[gActiveBattler].maxHP/4))) 
     {
         // 50% chance to stay in regardless
         if (Random() % 2 == 0) 
@@ -179,7 +182,7 @@ static bool8 HasBadOdds(u8 mostSuitableMonId)
     // General bad type matchups have more wiggle room
 	if (typeDmg>=UQ_4_12(2.0)) // If the player has a 2x type advantage
 	{
-        // If the AI doesn't have a super effective move AND they have >1/2 their HP, or >1/4 HP and Regenerator
+        // If the AI doesn't have a super effective move AND they have at least 1/2 their HP, or 1/4 HP and Regenerator
 		if (!hasSuperEffectiveMove
 		&& (gBattleMons[gActiveBattler].hp >= gBattleMons[gActiveBattler].maxHP/2 
         || (gBattleMons[gActiveBattler].ability == ABILITY_REGENERATOR 
