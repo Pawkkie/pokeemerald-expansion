@@ -1792,30 +1792,7 @@ u8 GetMostSuitableMonToSwitchIntoAfterKO(void)
         party = gPlayerParty;
     else
         party = gEnemyParty;
-
-    // Get invalid slots ids.
-    for (i = firstId; i < lastId; i++)
-    {
-        if (!IsValidForBattle(&party[i])
-            || gBattlerPartyIndexes[battlerIn1] == i
-            || gBattlerPartyIndexes[battlerIn2] == i
-            || i == *(gBattleStruct->monToSwitchIntoId + battlerIn1)
-            || i == *(gBattleStruct->monToSwitchIntoId + battlerIn2)
-            || (GetMonAbility(&party[i]) == ABILITY_TRUANT && IsTruantMonVulnerable(gActiveBattler, opposingBattler))) // While not really invalid per say, not really wise to switch into this mon.)
-        {
-            invalidMons |= gBitTable[i];
-        }
-        else if (IsAceMon(gActiveBattler, i))// Save Ace Pokemon for last.
-        {
-            aceMonId = i;
-            invalidMons |= gBitTable[i];
-        }
-        else
-        {
-            aliveCount++;
-        }
-    }
-    
+   
     bestMonId = GetBestMonAfterKOIntegrated(party, firstId, lastId, invalidMons, aliveCount, opposingBattler);
     if (bestMonId != PARTY_SIZE)
         return bestMonId;
