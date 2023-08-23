@@ -75,6 +75,8 @@ static bool8 HasBadOdds(void)
     s32 maxDamageDealt = 0;
     s32 damageTaken = 0;
     s32 maxDamageTaken = 0;
+    u32 aiMove;
+    u32 playerMove;
     bool8 getsOneShot = FALSE;
     bool8 hasStatusMove = FALSE;
 	struct Pokemon *party = NULL;
@@ -82,6 +84,14 @@ static bool8 HasBadOdds(void)
 
     // If we don't have any other viable options, don't switch out
     if (GetMostSuitableMonToSwitchInto()==PARTY_SIZE)
+        return FALSE;
+
+    // Won't bother configuring this for double battles
+    if (gBattleTypeFlags & BATTLE_TYPE_DOUBLE) 
+        return FALSE;
+
+    // 50% chance to stay in regardless
+    if (Random() % 2 == 0) 
         return FALSE;
 	
 	opposingPosition = BATTLE_OPPOSITE(GetBattlerPosition(gActiveBattler));
@@ -92,26 +102,11 @@ static bool8 HasBadOdds(void)
 	atkType2 = gBattleMons[opposingBattler].type2;
 	defType1 = gBattleMons[gActiveBattler].type1;
 	defType2 = gBattleMons[gActiveBattler].type2;
-	
-    // Won't bother configuring this for double battles
-    if (gBattleTypeFlags & BATTLE_TYPE_DOUBLE) 
-        return FALSE;
-
-    // Calculate type advantage
-	MulModifier(&typeDmg, GetTypeModifier(atkType1, defType1));
-	if (atkType2!=atkType1)
-		MulModifier(&typeDmg, GetTypeModifier(atkType2, defType1));
-	if (defType2!=defType1)
-	{
-		MulModifier(&typeDmg, GetTypeModifier(atkType1, defType2));
-		if (atkType2!=atkType1)
-			MulModifier(&typeDmg, GetTypeModifier(atkType2, defType2));
-	}
 
     // Check AI moves for damage dealt / status moves
     for (i = 0; i < MAX_MON_MOVES; i++)
     {
-        u32 aiMove = gBattleMons[gActiveBattler].moves[i];
+        aiMove = gBattleMons[gActiveBattler].moves[i];
 
         // Check if mon has an important status move
         if (aiMove == MOVE_REFLECT || aiMove == MOVE_LIGHT_SCREEN 
@@ -140,10 +135,21 @@ static bool8 HasBadOdds(void)
         }
     }
 
+    // Calculate type advantage
+	MulModifier(&typeDmg, GetTypeModifier(atkType1, defType1));
+	if (atkType2!=atkType1)
+		MulModifier(&typeDmg, GetTypeModifier(atkType2, defType1));
+	if (defType2!=defType1)
+	{
+		MulModifier(&typeDmg, GetTypeModifier(atkType1, defType2));
+		if (atkType2!=atkType1)
+			MulModifier(&typeDmg, GetTypeModifier(atkType2, defType2));
+	}
+
     // Get max damage mon could take
     for (i = 0; i < MAX_MON_MOVES; i++)
     {
-        u32 playerMove = gBattleMons[opposingBattler].moves[i];
+        playerMove = gBattleMons[opposingBattler].moves[i];
         damageTaken = AI_CalcDamage(playerMove, opposingBattler, gActiveBattler, &effectiveness, FALSE);
         if (damageTaken > maxDamageTaken)
             maxDamageTaken = damageTaken;
@@ -160,15 +166,12 @@ static bool8 HasBadOdds(void)
     if ((getsOneShot && gBattleMons[opposingBattler].speed > gBattleMons[gActiveBattler].speed) // If the player OHKOs and outspeeds
     || (getsOneShot && gBattleMons[opposingBattler].speed <= gBattleMons[gActiveBattler].speed && maxDamageDealt < gBattleMons[opposingBattler].hp / 2)) // Or the player OHKOs, doesn't outspeed but isn't 2HKO'd
     {
-        // 50% chance to stay in anyways
-        if (Random() % 2 == 0) 
-            return FALSE;
-
         // Switch mon out
         *(gBattleStruct->AI_monToSwitchIntoId + gActiveBattler) = PARTY_SIZE; 
         BtlController_EmitTwoReturnValues(1, B_ACTION_SWITCH, 0);
         return TRUE;
     }
+
     // General bad type matchups have more wiggle room
 	if (typeDmg>=UQ_4_12(2.0)) // If the player has a 2x type advantage
 	{
@@ -180,10 +183,6 @@ static bool8 HasBadOdds(void)
 		{
             // Then check if they have an important status move, which is worth using even in a bad matchup
             if(hasStatusMove)
-                return FALSE;
-
-            // 50% chance to stay in anyways
-            if (Random() % 2 == 0) 
                 return FALSE;
 
             // Switch mon out
