@@ -73,6 +73,10 @@ static bool8 HasBadOdds()
 	struct Pokemon *party = NULL;
 	u16 typeDmg = UQ_4_12(1.0); //baseline typing damage
 
+    // Only use this if AI_FLAG_SMART_SWITCHING is set for the trainer
+    if (!(AI_THINKING_STRUCT->aiFlags & AI_FLAG_SMART_SWITCHING))
+        return FALSE;
+
     // Won't bother configuring this for double battles
     if (gBattleTypeFlags & BATTLE_TYPE_DOUBLE) 
         return FALSE;
