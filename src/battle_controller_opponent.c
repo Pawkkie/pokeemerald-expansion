@@ -1545,7 +1545,8 @@ static void OpponentHandlePrintSelectionString(void)
 
 static void OpponentHandleChooseAction(void)
 {
-    AI_TrySwitchOrUseItem();
+    u8 mostSuitableMonId = gBattleResources->bufferA[gActiveBattler][4];
+    AI_TrySwitchOrUseItem(mostSuitableMonId);
     OpponentBufferExecCompleted();
 }
 

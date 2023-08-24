@@ -19,11 +19,11 @@
     return score;                   \
 }
 
-u8 ComputeBattleAiScores(u8 battler);
+u8 ComputeBattleAiScores(u8 battler, u8 mostSuitableMonId);
 void BattleAI_SetupItems(void);
 void BattleAI_SetupFlags(void);
 void BattleAI_SetupAIData(u8 defaultScoreMoves);
-u8 BattleAI_ChooseMoveOrAction(void);
+u8 BattleAI_ChooseMoveOrAction(u8 mostSuitableMonId);
 void Ai_InitPartyStruct(void);
 void Ai_UpdateSwitchInData(u32 battler);
 void Ai_UpdateFaintData(u32 battler);

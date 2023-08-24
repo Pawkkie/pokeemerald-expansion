@@ -170,8 +170,8 @@ static bool8 HasBadOdds(u8 mostSuitableMonId)
      && gBattleMons[gActiveBattler].hp >= gBattleMons[gActiveBattler].maxHP/4))) 
     {
         // 50% chance to stay in regardless
-        if (Random() % 2 == 0) 
-            return FALSE;
+        // if (Random() % 2 == 0) 
+        //     return FALSE;
 
         // Switch mon out
         *(gBattleStruct->AI_monToSwitchIntoId + gActiveBattler) = PARTY_SIZE; 
@@ -193,8 +193,8 @@ static bool8 HasBadOdds(u8 mostSuitableMonId)
                 return FALSE;
 
             // 50% chance to stay in regardless
-            if (Random() % 2 == 0) 
-                return FALSE;
+            // if (Random() % 2 == 0) 
+            //     return FALSE;
 
             // Switch mon out
 			*(gBattleStruct->AI_monToSwitchIntoId + gActiveBattler) = PARTY_SIZE; 
@@ -967,7 +967,7 @@ bool32 ShouldSwitch(u8 mostSuitableMonId)
     return FALSE;
 }
 
-void AI_TrySwitchOrUseItem(void)
+void AI_TrySwitchOrUseItem(u8 mostSuitableMonId)
 {
     struct Pokemon *party;
     u8 battlerIn1, battlerIn2;
@@ -982,8 +982,6 @@ void AI_TrySwitchOrUseItem(void)
 
     if (gBattleTypeFlags & BATTLE_TYPE_TRAINER)
     {
-        // Precalculate most suitable mon, this is used in some switch decisions and it's expensive to run multiple times
-        u8 mostSuitableMonId = GetMostSuitableMonToSwitchInto();
         if (ShouldSwitch(mostSuitableMonId))
         {
             if (*(gBattleStruct->AI_monToSwitchIntoId + gActiveBattler) == PARTY_SIZE)

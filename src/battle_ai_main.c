@@ -39,7 +39,7 @@ enum
     AIState_DoNotProcess
 };
 
-static u8 ChooseMoveOrAction_Singles(void);
+static u8 ChooseMoveOrAction_Singles(u8 mostSuitableMonId);
 static u8 ChooseMoveOrAction_Doubles(void);
 static void BattleAI_DoAIProcessing(void);
 static bool32 IsPinchBerryItemEffect(u16 holdEffect);
@@ -213,13 +213,13 @@ void BattleAI_SetupAIData(u8 defaultScoreMoves)
     gBattleStruct->aiChosenTarget[sBattler_AI] = gBattlerTarget;
 }
 
-u8 BattleAI_ChooseMoveOrAction(void)
+u8 BattleAI_ChooseMoveOrAction(u8 mostSuitableMonId)
 {
     u32 savedCurrentMove = gCurrentMove;
     u8 ret;
 
     if (!(gBattleTypeFlags & BATTLE_TYPE_DOUBLE))
-        ret = ChooseMoveOrAction_Singles();
+        ret = ChooseMoveOrAction_Singles(mostSuitableMonId);
     else
         ret = ChooseMoveOrAction_Doubles();
 
@@ -232,11 +232,11 @@ u8 BattleAI_ChooseMoveOrAction(void)
 }
 
 // damages/other info computed in GetAIDataAndCalcDmg
-u8 ComputeBattleAiScores(u8 battler)
+u8 ComputeBattleAiScores(u8 battler, u8 mostSuitableMonId)
 {
     sBattler_AI = battler;
     BattleAI_SetupAIData(0xF);
-    return BattleAI_ChooseMoveOrAction();
+    return BattleAI_ChooseMoveOrAction(mostSuitableMonId);
 }
 
 static void CopyBattlerDataToAIParty(u32 bPosition, u32 side)
@@ -397,14 +397,13 @@ void GetAiLogicData(void)
     }
 }
 
-static u8 ChooseMoveOrAction_Singles(void)
+static u8 ChooseMoveOrAction_Singles(u8 mostSuitableMonId)
 {
     u8 currentMoveArray[MAX_MON_MOVES];
     u8 consideredMoveArray[MAX_MON_MOVES];
     u32 numOfBestMoves;
     s32 i, id;
     u32 flags = AI_THINKING_STRUCT->aiFlags;
-    u8 mostSuitableMonId = GetMostSuitableMonToSwitchInto();
 
     AI_DATA->partnerMove = 0;   // no ally
     while (flags != 0)

@@ -159,7 +159,7 @@ u16 ChooseMoveAndTargetInBattlePalace(void)
         gBattleStruct->palaceFlags |= (selectedMoves << 4);
         sBattler_AI = gActiveBattler;
         BattleAI_SetupAIData(selectedMoves);
-        chosenMoveId = BattleAI_ChooseMoveOrAction();
+        chosenMoveId = BattleAI_ChooseMoveOrAction(PARTY_SIZE);
     }
 
     // If no moves matched the selected group, pick a new move from groups the pokemon has
