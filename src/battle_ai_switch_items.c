@@ -1357,6 +1357,11 @@ static u32 GetBestMonDmg(struct Pokemon *party, int firstId, int lastId, u8 inva
     return bestMonId;
 }
 
+// This function integrates GetBestMonBatonPass (vanilla), GetBestMonTypeMatchup (vanilla with modifications), and GetBestMonDefensive (custom)
+// the Baton Pass code will prioritize switching into a mon with Baton Pass, and randomize between multiple valid options
+// the Type Matchup code will prioritize switching into a mon with the best type matchup and also a super effective move, or just best type matchup if no super effective move is found
+// the Most Defensive code will prioritize switching into the mon that takes the most hits to KO, with a minimum of 4 hits required to be considered a valid option
+// Everything runs in the same loop to minimize computation time. This makes it harder to read, but hopefully the comments can guide you!
 static u32 GetBestMonIntegrated(struct Pokemon *party, int firstId, int lastId, u32 opposingBattler, u8 battlerIn1, u8 battlerIn2)
 {
     // Variables
@@ -1405,7 +1410,7 @@ static u32 GetBestMonIntegrated(struct Pokemon *party, int firstId, int lastId, 
             }
         }
 
-        // Get max number of hits to KO mon
+        // Get max number of hits for player to KO mon (GetBestMonDefensive)
         hitsToKO = GetNoOfHitsToKO(maxDamageTaken, GetMonData(&party[i], MON_DATA_HP));
         if(hitsToKO > maxHitsToKO)
         {
@@ -1450,6 +1455,7 @@ static u32 GetBestMonIntegrated(struct Pokemon *party, int firstId, int lastId, 
             if (aiMove == MOVE_BATON_PASS && hitsToKO > 1)
                 bits |= gBitTable[i];
 
+            // Check for mon with resistance and super effective move for GetBestMonTypeMatchup
             if (aiMove != MOVE_NONE && gBattleMoves[aiMove].power != 0)
             {
                 if (AI_GetTypeEffectiveness(aiMove, gActiveBattler, opposingBattler) >= UQ_4_12(2.0) && typeMatchupEffectiveId != i)
@@ -1493,7 +1499,12 @@ static u32 GetBestMonIntegrated(struct Pokemon *party, int firstId, int lastId, 
     else
         return PARTY_SIZE;
 }
-
+// This function integrates GetBestMonBatonPass (vanilla), GetBestMonRevengeKiller (custom), GetBestMonTypeMatchup (vanilla with modifications), and GetBestMonDmg (vanilla)
+// the Baton Pass code will prioritize switching into a mon with Baton Pass, and randomize between multiple valid options
+// the Revenge Killer code will prioritize, in order, OHKO and outspeeds / OHKO, slower but not 2HKO'd / 2HKO, outspeeds and not OHKO'd / 2HKO, slower but not 3HKO'd 
+// the Type Matchup code will prioritize switching into a mon with the best type matchup and also a super effective move, or just best type matchup if no super effective move is found
+// the Most Damage code will prioritize switching into whatever mon deals the most damage, which is generally not as good as having a good Type Matchup
+// Everything runs in the same loop to minimize computation time. This makes it harder to read, but hopefully the comments can guide you!
 static u32 GetBestMonAfterKOIntegrated(struct Pokemon *party, int firstId, int lastId, u32 opposingBattler, u8 battlerIn1, u8 battlerIn2)
 {
     // Variables
@@ -1543,7 +1554,7 @@ static u32 GetBestMonAfterKOIntegrated(struct Pokemon *party, int firstId, int l
             }
         }
 
-        // Get max number of hits to KO mon
+        // Get max number of hits for player to KO mon
         hitsToKO = GetNoOfHitsToKO(maxDamageTaken, GetMonData(&party[i], MON_DATA_HP));
 
         // GetBestMonTypeMatchup
@@ -1619,7 +1630,7 @@ static u32 GetBestMonAfterKOIntegrated(struct Pokemon *party, int firstId, int l
                     // If mon is slower
                     else
                     {
-                        // If mon can't be 2HKO'd, have a slow revenge killer
+                        // If mon can't be 2HKO'd
                         if (hitsToKO > 2)
                         {
                             // We have a slow revenge killer
@@ -1634,7 +1645,7 @@ static u32 GetBestMonAfterKOIntegrated(struct Pokemon *party, int firstId, int l
                     // If mon is faster
                     if (aiMonSpeed > playerMonSpeed || gBattleMoves[aiMove].priority > 0)
                     {
-                        // If mon can't be OHKO'd, have a fast threaten
+                        // If mon can't be OHKO'd
                         if (hitsToKO > 1)
                         {
                             // We have a fast threaten
@@ -1644,7 +1655,7 @@ static u32 GetBestMonAfterKOIntegrated(struct Pokemon *party, int firstId, int l
                     // If mon is slower
                     else
                     {
-                        // If mon can't be 2HKO'd, have a slow threaten
+                        // If mon can't be 2HKO'd
                         if (hitsToKO > 2)
                         {
                             // We have a slow threaten
@@ -1732,104 +1743,64 @@ u8 GetMostSuitableMonToSwitchInto(bool8 switchAfterMonKOd)
     else
         party = gEnemyParty;
 
-
-    // Split ideal mon decision between after previous mon KO'd (prioritize offensive options) and from switching active mon out (prioritize defensive options)
-    if(switchAfterMonKOd)
-        bestMonId = GetBestMonAfterKOIntegrated(party, firstId, lastId, opposingBattler, battlerIn1, battlerIn2);
-    else 
-        bestMonId = GetBestMonIntegrated(party, firstId, lastId, opposingBattler, battlerIn1, battlerIn2);
-
-    if (bestMonId != PARTY_SIZE)
+    // Only use better mon selection if AI_FLAG_SMART_MON_CHOICES is set for the trainer. 
+    // This will increase the delay before the player turn starts from 0.2s (vanilla) to up to 0.45s 
+    // in the worst case scenario (AI has 6 mons with 4 attacking moves each and AI_SMART_SWITCHING is enabled)
+    if(AI_THINKING_STRUCT->aiFlags & AI_FLAG_SMART_MON_CHOICES)
+    {
+        // Split ideal mon decision between after previous mon KO'd (prioritize offensive options) and from switching active mon out (prioritize defensive options), and expand the scope of both
+        if(switchAfterMonKOd)
+            bestMonId = GetBestMonAfterKOIntegrated(party, firstId, lastId, opposingBattler, battlerIn1, battlerIn2);
+        else 
+            bestMonId = GetBestMonIntegrated(party, firstId, lastId, opposingBattler, battlerIn1, battlerIn2);
         return bestMonId;
-
-    // bestMonId = GetBestMonBatonPass(party, firstId, lastId, invalidMons, aliveCount, opposingBattler);
-    // if (bestMonId != PARTY_SIZE)
-    //     return bestMonId;
-
-    // bestMonId = GetBestMonTypeMatchup(party, firstId, lastId, invalidMons, opposingBattler);
-    // if (bestMonId != PARTY_SIZE)
-    //     return bestMonId;
-        
-    // bestMonId = GetBestMonDefensive(party, firstId, lastId, invalidMons, opposingBattler);
-    // if (bestMonId != PARTY_SIZE)
-    //     return bestMonId;
-
-    // If ace mon is the last available Pokemon and U-Turn/Volt Switch was used - switch to the mon.
-    // if (aceMonId != PARTY_SIZE
-    //     && (gBattleMoves[gLastUsedMove].effect == EFFECT_HIT_ESCAPE || gBattleMoves[gLastUsedMove].effect == EFFECT_PARTING_SHOT))
-    //     return aceMonId;
-
-    return PARTY_SIZE;
-}
-
-u8 GetMostSuitableMonToSwitchIntoAfterKO(void)
-{
-    u32 opposingBattler = 0;
-    u32 bestMonId = PARTY_SIZE;
-    u8 battlerIn1 = 0, battlerIn2 = 0;
-    s32 firstId = 0;
-    s32 lastId = 0; // + 1
-    struct Pokemon *party;
-    s32 i, j, aliveCount = 0;
-    u32 invalidMons = 0, aceMonId = PARTY_SIZE;
-
-    if (*(gBattleStruct->monToSwitchIntoId + gActiveBattler) != PARTY_SIZE)
-        return *(gBattleStruct->monToSwitchIntoId + gActiveBattler);
-    if (gBattleTypeFlags & BATTLE_TYPE_ARENA)
-        return gBattlerPartyIndexes[gActiveBattler] + 1;
-
-    if (gBattleTypeFlags & BATTLE_TYPE_DOUBLE)
-    {
-        battlerIn1 = gActiveBattler;
-        if (gAbsentBattlerFlags & gBitTable[GetBattlerAtPosition(BATTLE_PARTNER(GetBattlerPosition(gActiveBattler)))])
-            battlerIn2 = gActiveBattler;
-        else
-            battlerIn2 = GetBattlerAtPosition(BATTLE_PARTNER(GetBattlerPosition(gActiveBattler)));
-
-        opposingBattler = BATTLE_OPPOSITE(battlerIn1);
-        if (gAbsentBattlerFlags & gBitTable[opposingBattler])
-            opposingBattler ^= BIT_FLANK;
-    }
-    else
-    {
-        opposingBattler = GetBattlerAtPosition(BATTLE_OPPOSITE(GetBattlerPosition(gActiveBattler)));
-        battlerIn1 = gActiveBattler;
-        battlerIn2 = gActiveBattler;
     }
 
-    GetAIPartyIndexes(gActiveBattler, &firstId, &lastId);
-
-    if (GetBattlerSide(gActiveBattler) == B_SIDE_PLAYER)
-        party = gPlayerParty;
+    // This all handled by the GetBestMonIntegrated functions if the AI_FLAG_SMART_MON_CHOICES flag is set
     else
-        party = gEnemyParty;
-   
-    bestMonId = GetBestMonAfterKOIntegrated(party, firstId, lastId, invalidMons, aliveCount, opposingBattler);
-    if (bestMonId != PARTY_SIZE)
-        return bestMonId;
+    {
+        s32 i, j, aliveCount = 0;
+        u32 invalidMons = 0, aceMonId = PARTY_SIZE;
+        // Get invalid slots ids.
+        for (i = firstId; i < lastId; i++)
+        {
+            if (!IsValidForBattle(&party[i])
+                || gBattlerPartyIndexes[battlerIn1] == i
+                || gBattlerPartyIndexes[battlerIn2] == i
+                || i == *(gBattleStruct->monToSwitchIntoId + battlerIn1)
+                || i == *(gBattleStruct->monToSwitchIntoId + battlerIn2)
+                || (GetMonAbility(&party[i]) == ABILITY_TRUANT && IsTruantMonVulnerable(gActiveBattler, opposingBattler))) // While not really invalid per say, not really wise to switch into this mon.)
+            {
+                invalidMons |= gBitTable[i];
+            }
+            else if (IsAceMon(gActiveBattler, i))// Save Ace Pokemon for last.
+            {
+                aceMonId = i;
+                invalidMons |= gBitTable[i];
+            }
+            else
+            {
+                aliveCount++;
+            }
+        }
+        bestMonId = GetBestMonBatonPass(party, firstId, lastId, invalidMons, aliveCount, opposingBattler);
+        if (bestMonId != PARTY_SIZE)
+            return bestMonId;
 
-    // bestMonId = GetBestMonBatonPass(party, firstId, lastId, invalidMons, aliveCount, opposingBattler);
-    // if (bestMonId != PARTY_SIZE)
-    //     return bestMonId;
+        bestMonId = GetBestMonTypeMatchup(party, firstId, lastId, invalidMons, opposingBattler);
+        if (bestMonId != PARTY_SIZE)
+            return bestMonId;
 
-    // bestMonId = GetBestMonRevengeKiller(party, firstId, lastId, invalidMons, opposingBattler);
-    // if (bestMonId != PARTY_SIZE)
-    //     return bestMonId;
+        bestMonId = GetBestMonDmg(party, firstId, lastId, invalidMons, opposingBattler);
+        if (bestMonId != PARTY_SIZE)
+            return bestMonId;
 
-    // bestMonId = GetBestMonTypeMatchup(party, firstId, lastId, invalidMons, opposingBattler);
-    // if (bestMonId != PARTY_SIZE)
-    //     return bestMonId;
+        // If ace mon is the last available Pokemon and switch move was used - switch to the mon.
+        if (aceMonId != PARTY_SIZE)
+            return aceMonId;
 
-    // bestMonId = GetBestMonDmg(party, firstId, lastId, invalidMons, opposingBattler);
-    // if (bestMonId != PARTY_SIZE)
-    //     return bestMonId;
-
-    // If ace mon is the last available Pokemon and U-Turn/Volt Switch was used - switch to the mon.
-    // if (aceMonId != PARTY_SIZE
-    //     && (gBattleMoves[gLastUsedMove].effect == EFFECT_HIT_ESCAPE || gBattleMoves[gLastUsedMove].effect == EFFECT_PARTING_SHOT))
-    //     return aceMonId;
-
-    return PARTY_SIZE;
+        return PARTY_SIZE;
+    }
 }
 
 static bool32 AiExpectsToFaintPlayer(void)
