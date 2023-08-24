@@ -1628,8 +1628,8 @@ static u32 GetBestMonAfterKOIntegrated(struct Pokemon *party, int firstId, int l
                     }
                 }
 
-                // If mon can two shot
-                if(damageDealt > gBattleMons[opposingBattler].hp / 2)
+                // If mon can two shot without blowing itself up
+                if(damageDealt > gBattleMons[opposingBattler].hp / 2 && gBattleMoves[aiMove].effect != EFFECT_EXPLOSION)
                 {
                     // If mon is faster
                     if (aiMonSpeed > playerMonSpeed || gBattleMoves[aiMove].priority > 0)

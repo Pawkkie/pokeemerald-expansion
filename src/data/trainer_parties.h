@@ -6125,7 +6125,7 @@ static const struct TrainerMonCustomized sParty_Nancy[] = {
     },
     {
     .iv = 0,
-    .lvl = 25,
+    .lvl = 30,
     .species = SPECIES_ELECTRODE,
     },
     {
