@@ -4145,7 +4145,7 @@ static void HandleTurnActionSelectionState(void)
             if ((gBattleTypeFlags & BATTLE_TYPE_HAS_AI || IsWildMonSmart())
                     && (BattlerHasAi(gActiveBattler) && !(gBattleTypeFlags & BATTLE_TYPE_PALACE)))
             {
-                AI_THINKING_STRUCT->mostSuitableMonId = GetMostSuitableMonToSwitchInto();
+                AI_THINKING_STRUCT->mostSuitableMonId = GetMostSuitableMonToSwitchInto(FALSE);
                 gBattleStruct->aiMoveOrAction[gActiveBattler] = ComputeBattleAiScores(gActiveBattler);
             }
 

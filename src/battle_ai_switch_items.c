@@ -1494,7 +1494,7 @@ static u32 GetBestMonIntegrated(struct Pokemon *party, int firstId, int lastId, 
         return PARTY_SIZE;
 }
 
-static u32 GetBestMonAfterKOIntegrated(struct Pokemon *party, int firstId, int lastId, u8 battlerIn1, u8 battlerIn2, u32 opposingBattler)
+static u32 GetBestMonAfterKOIntegrated(struct Pokemon *party, int firstId, int lastId, u32 opposingBattler, u8 battlerIn1, u8 battlerIn2)
 {
     // Variables
     int batonPassId = PARTY_SIZE, revengeKillerId = PARTY_SIZE, slowRevengeKillerId = PARTY_SIZE, fastThreatenId = PARTY_SIZE;
@@ -1692,7 +1692,7 @@ static u32 GetBestMonAfterKOIntegrated(struct Pokemon *party, int firstId, int l
         return PARTY_SIZE;
 }
 
-u8 GetMostSuitableMonToSwitchInto(void)
+u8 GetMostSuitableMonToSwitchInto(bool8 switchAfterMonKOd)
 {
     u32 opposingBattler = 0;
     u32 bestMonId = PARTY_SIZE;
@@ -1732,7 +1732,13 @@ u8 GetMostSuitableMonToSwitchInto(void)
     else
         party = gEnemyParty;
 
-    bestMonId = GetBestMonIntegrated(party, firstId, lastId, opposingBattler, battlerIn1, battlerIn2);
+
+    // Split ideal mon decision between after previous mon KO'd (prioritize offensive options) and from switching active mon out (prioritize defensive options)
+    if(switchAfterMonKOd)
+        bestMonId = GetBestMonAfterKOIntegrated(party, firstId, lastId, opposingBattler, battlerIn1, battlerIn2);
+    else 
+        bestMonId = GetBestMonIntegrated(party, firstId, lastId, opposingBattler, battlerIn1, battlerIn2);
+
     if (bestMonId != PARTY_SIZE)
         return bestMonId;
 

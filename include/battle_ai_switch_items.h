@@ -3,7 +3,7 @@
 
 void GetAIPartyIndexes(u32 battlerId, s32 *firstId, s32 *lastId);
 void AI_TrySwitchOrUseItem(void);
-u8 GetMostSuitableMonToSwitchInto(void);
+u8 GetMostSuitableMonToSwitchInto(bool8 switchAfterMonKOd);
 u8 GetMostSuitableMonToSwitchIntoAfterKO(void);
 bool32 ShouldSwitch(void);
 

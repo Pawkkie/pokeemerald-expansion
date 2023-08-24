@@ -1561,7 +1561,7 @@ static void PlayerPartnerHandleChoosePokemon(void)
     // Switching out
     else
     {
-        chosenMonId = GetMostSuitableMonToSwitchInto();
+        chosenMonId = GetMostSuitableMonToSwitchInto(TRUE);
         if (chosenMonId == PARTY_SIZE) // just switch to the next mon
         {
             u8 playerMonIdentity = GetBattlerAtPosition(B_POSITION_PLAYER_LEFT);
