@@ -59,7 +59,8 @@
 #define AI_FLAG_SMART_SWITCHING       (1 << 15)  // AI includes a lot more switching checks
 #define AI_FLAG_ACE_POKEMON           (1 << 16)  // AI has an Ace Pokemon. The last Pokemon in the party will not be used until it's the last one remaining.
 #define AI_FLAG_OMNISCIENT            (1 << 17)  // AI has full knowledge of player moves, abilities, hold items
-#define AI_FLAG_SMART_MON_CHOICES     (1 << 18)  // AI will make smarter decisions when choosing which mon to send out. Pairs very well with AI_FLAG_SMART_SWITCHING.
+#define AI_FLAG_SMART_MON_CHOICES     (1 << 18)  // AI will make smarter decisions when choosing which mon to send out mid-battle. Pairs very well with AI_FLAG_SMART_SWITCHING.
+#define AI_FLAG_SMART_MON_CHOICES_KO  (1 << 19)  // AI will make smarter decisions when choosing which mon to send out after previous mon was KO'd. Doesn't need to be paired with the other smart AI flags, but definitely can be.
 
 // 'other' ai logic flags
 #define AI_FLAG_ROAMING               (1 << 29)

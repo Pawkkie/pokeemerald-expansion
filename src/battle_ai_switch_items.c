@@ -1742,20 +1742,24 @@ u8 GetMostSuitableMonToSwitchInto(bool8 switchAfterMonKOd)
     else
         party = gEnemyParty;
 
-    // Only use better mon selection if AI_FLAG_SMART_MON_CHOICES is set for the trainer. 
-    // This will increase the delay before the player turn starts from 0.2s (vanilla) to up to 0.5s 
-    // in the worst case scenario (AI has 6 mons with 4 attacking moves each and AI_SMART_SWITCHING is enabled)
-    if(AI_THINKING_STRUCT->aiFlags & AI_FLAG_SMART_MON_CHOICES)
+    // Split ideal mon decision between after previous mon KO'd (prioritize offensive options) and after switching active mon out (prioritize defensive options), and expand the scope of both.
+    // Only use better mon selection if AI_FLAG_SMART_MON_CHOICES is set for the trainer. AI_FLAG_SMART_MON_CHOICES is for smart switches in battle, AI_FLAG_SMART_MON_CHOICES_KO is for after a KO.
+    // This will increase the delay before the player turn starts from 0.2s (vanilla) to up to 0.5s
+    // in the worst case scenario (AI has 6 mons with 4 attacking moves each and AI_SMART_SWITCHING is enabled).
+    // AI_FLAG_SMART_MON_CHOICES will have this delay to start every turn, AI_FLAG_SMART_MON_CHOICES_KO only after a KO. Both can be used together.
+    if((AI_THINKING_STRUCT->aiFlags & AI_FLAG_SMART_MON_CHOICES) && !switchAfterMonKOd)
     {
-        // Split ideal mon decision between after previous mon KO'd (prioritize offensive options) and from switching active mon out (prioritize defensive options), and expand the scope of both
-        if(switchAfterMonKOd)
-            bestMonId = GetBestMonAfterKOIntegrated(party, firstId, lastId, opposingBattler, battlerIn1, battlerIn2);
-        else 
-            bestMonId = GetBestMonIntegrated(party, firstId, lastId, opposingBattler, battlerIn1, battlerIn2);
-        return bestMonId;
+        bestMonId = GetBestMonIntegrated(party, firstId, lastId, opposingBattler, battlerIn1, battlerIn2);
+        return bestMonId;           
     }
 
-    // This all handled by the GetBestMonIntegrated functions if the AI_FLAG_SMART_MON_CHOICES flag is set
+    if((AI_THINKING_STRUCT->aiFlags & AI_FLAG_SMART_MON_CHOICES_KO) && switchAfterMonKOd)
+    {
+        bestMonId = GetBestMonAfterKOIntegrated(party, firstId, lastId, opposingBattler, battlerIn1, battlerIn2);
+        return bestMonId; 
+    }
+
+    // This all handled by the GetBestMonIntegrated functions if the appropriate AI_FLAG_SMART_MON_CHOICES flag is set
     else
     {
         s32 i, j, aliveCount = 0;
