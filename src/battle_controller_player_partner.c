@@ -1507,9 +1507,7 @@ static void PlayerPartnerHandlePrintSelectionString(void)
 
 static void PlayerPartnerHandleChooseAction(void)
 {
-
-    u8 mostSuitableMonId = gBattleResources->bufferA[gActiveBattler][4];
-    AI_TrySwitchOrUseItem(mostSuitableMonId);
+    AI_TrySwitchOrUseItem();
     PlayerPartnerBufferExecCompleted();
 }
 

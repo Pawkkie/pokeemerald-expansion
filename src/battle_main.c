@@ -4130,7 +4130,7 @@ enum
 static void HandleTurnActionSelectionState(void)
 {
     s32 i;
-    u8 mostSuitableMonId = PARTY_SIZE;
+    AI_THINKING_STRUCT->mostSuitableMonId = PARTY_SIZE;
     gBattleCommunication[ACTIONS_CONFIRMED_COUNT] = 0;
     for (gActiveBattler = 0; gActiveBattler < gBattlersCount; gActiveBattler++)
     {
@@ -4146,8 +4146,8 @@ static void HandleTurnActionSelectionState(void)
             if ((gBattleTypeFlags & BATTLE_TYPE_HAS_AI || IsWildMonSmart())
                     && (BattlerHasAi(gActiveBattler) && !(gBattleTypeFlags & BATTLE_TYPE_PALACE)))
             {
-                mostSuitableMonId = GetMostSuitableMonToSwitchInto();
-                gBattleStruct->aiMoveOrAction[gActiveBattler] = ComputeBattleAiScores(gActiveBattler, mostSuitableMonId);
+                AI_THINKING_STRUCT->mostSuitableMonId = GetMostSuitableMonToSwitchInto();
+                gBattleStruct->aiMoveOrAction[gActiveBattler] = ComputeBattleAiScores(gActiveBattler);
             }
 
             *(gBattleStruct->monToSwitchIntoId + gActiveBattler) = PARTY_SIZE;
@@ -4184,7 +4184,7 @@ static void HandleTurnActionSelectionState(void)
                     else
                     {
                         gBattleStruct->itemPartyIndex[gActiveBattler] = PARTY_SIZE;
-                        BtlController_EmitChooseAction(BUFFER_A, gChosenActionByBattler[0], gBattleResources->bufferB[0][1] | (gBattleResources->bufferB[0][2] << 8), mostSuitableMonId);
+                        BtlController_EmitChooseAction(BUFFER_A, gChosenActionByBattler[0], gBattleResources->bufferB[0][1] | (gBattleResources->bufferB[0][2] << 8));
                         MarkBattlerForControllerExec(gActiveBattler);
                         gBattleCommunication[gActiveBattler]++;
                     }

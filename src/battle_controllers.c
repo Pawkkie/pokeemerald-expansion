@@ -1142,14 +1142,13 @@ void BtlController_EmitPrintSelectionString(u8 bufferId, u16 stringID)
 }
 
 // itemId only relevant for B_ACTION_USE_ITEM
-void BtlController_EmitChooseAction(u8 bufferId, u8 action, u16 itemId, u8 mostSuitableMonId)
+void BtlController_EmitChooseAction(u8 bufferId, u8 action, u16 itemId)
 {
     sBattleBuffersTransferData[0] = CONTROLLER_CHOOSEACTION;
     sBattleBuffersTransferData[1] = action;
     sBattleBuffersTransferData[2] = itemId;
     sBattleBuffersTransferData[3] = (itemId & 0xFF00) >> 8;
-    sBattleBuffersTransferData[4] = mostSuitableMonId;
-    PrepareBufferDataTransfer(bufferId, sBattleBuffersTransferData, 5);
+    PrepareBufferDataTransfer(bufferId, sBattleBuffersTransferData, 4);
 }
 
 // Only used by the forfeit prompt in the Battle Frontier

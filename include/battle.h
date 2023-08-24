@@ -304,6 +304,7 @@ struct AI_ThinkingStruct
     u32 aiFlags;
     u8 aiAction;
     u8 aiLogicId;
+    u8 mostSuitableMonId; // Stores result of GetMostSuitableMonToSwitchInto, which decides which generic mon the AI would switch into if they decide to switch. This can be overruled by specific mons found in ShouldSwitch; the final resulting mon is stored in AI_monToSwitchIntoId.
     struct AI_SavedBattleMon saved[4];
     bool8 switchMon; // Because all available moves have no/little effect.
 };
@@ -599,7 +600,7 @@ struct BattleStruct
     u8 atkCancellerTracker;
     struct BattleTvMovePoints tvMovePoints;
     struct BattleTv tv;
-    u8 AI_monToSwitchIntoId[MAX_BATTLERS_COUNT];
+    u8 AI_monToSwitchIntoId[MAX_BATTLERS_COUNT]; // Stores the actual decided mon to be switched into, factoring in everything in ShouldSwitch
     s8 arenaMindPoints[2];
     s8 arenaSkillPoints[2];
     u16 arenaStartHp[2];

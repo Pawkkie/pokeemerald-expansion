@@ -39,7 +39,7 @@ enum
     AIState_DoNotProcess
 };
 
-static u8 ChooseMoveOrAction_Singles(u8 mostSuitableMonId);
+static u8 ChooseMoveOrAction_Singles(void);
 static u8 ChooseMoveOrAction_Doubles(void);
 static void BattleAI_DoAIProcessing(void);
 static bool32 IsPinchBerryItemEffect(u16 holdEffect);
@@ -183,10 +183,12 @@ void BattleAI_SetupAIData(u8 defaultScoreMoves)
     s32 i, move, dmg;
     u8 moveLimitations;
 
-    // Clear AI data but preserve the flags.
+    // Clear AI data but preserve the flags and most suitable mon (pre-calculated in HandleTurnActionSelectionState).
+    u8 mostSuitableMonId = AI_THINKING_STRUCT->mostSuitableMonId;
     u32 flags = AI_THINKING_STRUCT->aiFlags;
     memset(AI_THINKING_STRUCT, 0, sizeof(struct AI_ThinkingStruct));
     AI_THINKING_STRUCT->aiFlags = flags;
+    AI_THINKING_STRUCT->mostSuitableMonId = mostSuitableMonId;
 
     // Conditional score reset, unlike Ruby.
     for (i = 0; i < MAX_MON_MOVES; i++)
@@ -213,13 +215,13 @@ void BattleAI_SetupAIData(u8 defaultScoreMoves)
     gBattleStruct->aiChosenTarget[sBattler_AI] = gBattlerTarget;
 }
 
-u8 BattleAI_ChooseMoveOrAction(u8 mostSuitableMonId)
+u8 BattleAI_ChooseMoveOrAction(void)
 {
     u32 savedCurrentMove = gCurrentMove;
     u8 ret;
 
     if (!(gBattleTypeFlags & BATTLE_TYPE_DOUBLE))
-        ret = ChooseMoveOrAction_Singles(mostSuitableMonId);
+        ret = ChooseMoveOrAction_Singles();
     else
         ret = ChooseMoveOrAction_Doubles();
 
@@ -232,11 +234,11 @@ u8 BattleAI_ChooseMoveOrAction(u8 mostSuitableMonId)
 }
 
 // damages/other info computed in GetAIDataAndCalcDmg
-u8 ComputeBattleAiScores(u8 battler, u8 mostSuitableMonId)
+u8 ComputeBattleAiScores(u8 battler)
 {
     sBattler_AI = battler;
     BattleAI_SetupAIData(0xF);
-    return BattleAI_ChooseMoveOrAction(mostSuitableMonId);
+    return BattleAI_ChooseMoveOrAction();
 }
 
 static void CopyBattlerDataToAIParty(u32 bPosition, u32 side)
@@ -397,7 +399,7 @@ void GetAiLogicData(void)
     }
 }
 
-static u8 ChooseMoveOrAction_Singles(u8 mostSuitableMonId)
+static u8 ChooseMoveOrAction_Singles()
 {
     u8 currentMoveArray[MAX_MON_MOVES];
     u8 consideredMoveArray[MAX_MON_MOVES];
@@ -449,7 +451,7 @@ static u8 ChooseMoveOrAction_Singles(u8 mostSuitableMonId)
                     break;
             }
 
-            if (i == MAX_MON_MOVES && mostSuitableMonId != PARTY_SIZE)
+            if (i == MAX_MON_MOVES && AI_THINKING_STRUCT->mostSuitableMonId != PARTY_SIZE)
             {
                 AI_THINKING_STRUCT->switchMon = TRUE;
                 return AI_CHOICE_SWITCH;
@@ -463,7 +465,7 @@ static u8 ChooseMoveOrAction_Singles(u8 mostSuitableMonId)
             && gDisableStructs[sBattler_AI].truantCounter
             && gBattleMons[sBattler_AI].hp >= gBattleMons[sBattler_AI].maxHP / 2)
         {
-            if (mostSuitableMonId != PARTY_SIZE)
+            if (AI_THINKING_STRUCT->mostSuitableMonId != PARTY_SIZE)
             {
                 AI_THINKING_STRUCT->switchMon = TRUE;
                 return AI_CHOICE_SWITCH;
@@ -3128,7 +3130,6 @@ static s16 AI_CheckViability(u8 battlerAtk, u8 battlerDef, u16 move, s16 score)
     u16 predictedMove = AI_DATA->predictedMoves[battlerDef];
     bool32 isDoubleBattle = IsValidDoubleBattle(battlerAtk);
     u32 i;
-    u8 mostSuitableMonId;
     // We only check for moves that have a 20% chance or more for their secondary effect to happen because moves with a smaller chance are rather worthless. We don't want the AI to use those.
     bool32 sereneGraceBoost = (AI_DATA->abilities[battlerAtk] == ABILITY_SERENE_GRACE && (gBattleMoves[move].secondaryEffectChance >= 20 && gBattleMoves[move].secondaryEffectChance < 100));
 
@@ -3719,9 +3720,7 @@ static s16 AI_CheckViability(u8 battlerAtk, u8 battlerDef, u16 move, s16 score)
         }
         break;
     case EFFECT_BATON_PASS:
-        // Precalculate most suitable mon, this is used in some switch decisions and it's expensive to run multiple times
-        mostSuitableMonId = GetMostSuitableMonToSwitchInto();
-        if (ShouldSwitch(mostSuitableMonId) && (gBattleMons[battlerAtk].status2 & STATUS2_SUBSTITUTE
+        if (ShouldSwitch() && (gBattleMons[battlerAtk].status2 & STATUS2_SUBSTITUTE
           || (gStatuses3[battlerAtk] & (STATUS3_ROOTED | STATUS3_AQUA_RING | STATUS3_MAGNET_RISE | STATUS3_POWER_TRICK))
           || AnyStatIsRaised(battlerAtk)))
             score += 5;

@@ -220,7 +220,7 @@ void BtlController_EmitBallThrowAnim(u8 bufferId, u8 caseId);
 void BtlController_EmitMoveAnimation(u8 bufferId, u16 move, u8 turnOfMove, u16 movePower, s32 dmg, u8 friendship, struct DisableStruct *disableStructPtr, u8 multihit);
 void BtlController_EmitPrintString(u8 bufferId, u16 stringId);
 void BtlController_EmitPrintSelectionString(u8 bufferId, u16 stringId);
-void BtlController_EmitChooseAction(u8 bufferId, u8 action, u16 itemId, u8 mostSuitableMon);
+void BtlController_EmitChooseAction(u8 bufferId, u8 action, u16 itemId);
 void BtlController_EmitYesNoBox(u8 bufferId);
 void BtlController_EmitChooseMove(u8 bufferId, bool8 isDoubleBattle, bool8 NoPpNumber, struct ChooseMoveStruct *movePpData);
 void BtlController_EmitChooseItem(u8 bufferId, u8 *battlePartyOrder);

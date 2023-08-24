@@ -63,7 +63,7 @@ void GetAIPartyIndexes(u32 battlerId, s32 *firstId, s32 *lastId)
 // Note that as many return statements as possible are INTENTIONALLY put after all of the loops;
 // the function can take up to ~2s or so to run, and this prevents the player from identifying 
 // whether the mon will switch or not by seeing how long the delay is before they select a move
-static bool8 HasBadOdds(u8 mostSuitableMonId)
+static bool8 HasBadOdds()
 {
     //Variable initialization
 	u8 opposingPosition, opposingBattler, atkType1, atkType2, defType1, defType2, effectiveness;
@@ -158,7 +158,7 @@ static bool8 HasBadOdds(u8 mostSuitableMonId)
     }
 
     // If we don't have any other viable options, don't switch out
-    if (mostSuitableMonId == PARTY_SIZE)
+    if (AI_THINKING_STRUCT->mostSuitableMonId == PARTY_SIZE)
         return FALSE;
 
     // Start assessing whether or not mon has bad odds
@@ -564,7 +564,7 @@ static bool8 ShouldSwitchIfGameStatePrompt(void)
     }
 }
 
-static bool8 ShouldSwitchIfAbilityBenefit(u8 mostSuitableMonId)
+static bool8 ShouldSwitchIfAbilityBenefit()
 {
     s32 monToSwitchId;
     s32 moduloChance = 4; //25% Chance Default
@@ -584,12 +584,12 @@ static bool8 ShouldSwitchIfAbilityBenefit(u8 mostSuitableMonId)
             moduloChance = 4; //25%
             //Attempt to cure bad ailment
             if (gBattleMons[gActiveBattler].status1 & (STATUS1_SLEEP | STATUS1_FREEZE | STATUS1_TOXIC_POISON)
-                && mostSuitableMonId != PARTY_SIZE)
+                && AI_THINKING_STRUCT->mostSuitableMonId != PARTY_SIZE)
                 break;
             //Attempt to cure lesser ailment
             if ((gBattleMons[gActiveBattler].status1 & STATUS1_ANY)
                 && (gBattleMons[gActiveBattler].hp >= gBattleMons[gActiveBattler].maxHP / 2)
-                && mostSuitableMonId != PARTY_SIZE
+                && AI_THINKING_STRUCT->mostSuitableMonId != PARTY_SIZE
                 && Random() % (moduloChance*chanceReducer) == 0)
                 break;
 
@@ -601,7 +601,7 @@ static bool8 ShouldSwitchIfAbilityBenefit(u8 mostSuitableMonId)
             if (gBattleMons[gActiveBattler].status1 & STATUS1_ANY)
                 return FALSE;
             if ((gBattleMons[gActiveBattler].hp <= ((gBattleMons[gActiveBattler].maxHP * 2) / 3))
-                 && mostSuitableMonId != PARTY_SIZE
+                 && AI_THINKING_STRUCT->mostSuitableMonId != PARTY_SIZE
                  && Random() % (moduloChance*chanceReducer) == 0)
                 break;
 
@@ -849,7 +849,7 @@ static bool8 AreAttackingStatsLowered(void)
     return TRUE;
 }
 
-bool32 ShouldSwitch(u8 mostSuitableMonId)
+bool32 ShouldSwitch()
 {
     u8 battlerIn1, battlerIn2;
     s32 firstId;
@@ -942,9 +942,9 @@ bool32 ShouldSwitch(u8 mostSuitableMonId)
     //These Functions can prompt switch to generic pary members
     if (ShouldSwitchIfAllBadMoves())
         return TRUE;
-    if (ShouldSwitchIfAbilityBenefit(mostSuitableMonId))
+    if (ShouldSwitchIfAbilityBenefit())
         return TRUE;
-    if (HasBadOdds(mostSuitableMonId))
+    if (HasBadOdds())
 		return TRUE;
 
     //Removing switch capabilites under specific conditions
@@ -967,7 +967,7 @@ bool32 ShouldSwitch(u8 mostSuitableMonId)
     return FALSE;
 }
 
-void AI_TrySwitchOrUseItem(u8 mostSuitableMonId)
+void AI_TrySwitchOrUseItem()
 {
     struct Pokemon *party;
     u8 battlerIn1, battlerIn2;
@@ -982,11 +982,11 @@ void AI_TrySwitchOrUseItem(u8 mostSuitableMonId)
 
     if (gBattleTypeFlags & BATTLE_TYPE_TRAINER)
     {
-        if (ShouldSwitch(mostSuitableMonId))
+        if (ShouldSwitch())
         {
             if (*(gBattleStruct->AI_monToSwitchIntoId + gActiveBattler) == PARTY_SIZE)
             {
-                u8 monToSwitchId = mostSuitableMonId;
+                u8 monToSwitchId = AI_THINKING_STRUCT->mostSuitableMonId;
                 if (monToSwitchId == PARTY_SIZE)
                 {
                     if (!(gBattleTypeFlags & BATTLE_TYPE_DOUBLE))
