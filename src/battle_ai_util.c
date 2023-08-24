@@ -895,6 +895,109 @@ s32 AI_CalcDamage(u16 move, u8 battlerAtk, u8 battlerDef, u8 *typeEffectiveness,
     return dmg;
 }
 
+s32 AI_CalcDamageGetMostSuitable(u16 move, u8 battlerAtk, u8 battlerDef, u8 *typeEffectiveness, bool32 considerZPower)
+{
+    s32 dmg, moveType, critDmg, normalDmg, fixedBasePower, n;
+    u16 effectivenessMultiplier;
+
+    if (considerZPower && IsViableZMove(battlerAtk, move))
+    {
+        //temporarily enable z moves for damage calcs
+        gBattleStruct->zmove.baseMoves[battlerAtk] = move;
+        gBattleStruct->zmove.active = TRUE;
+    }
+
+    SaveBattlerData(battlerAtk);
+    SaveBattlerData(battlerDef);
+
+    SetBattlerData(battlerAtk);
+    SetBattlerData(battlerDef);
+
+    gBattleStruct->dynamicMoveType = 0;
+
+    if (move == MOVE_NATURE_POWER)
+        move = GetNaturePowerMove();
+
+    SetTypeBeforeUsingMove(move, battlerAtk);
+    GET_MOVE_TYPE(move, moveType);
+
+    if (gBattleMoves[move].power)
+    {
+        ProteanTryChangeType(battlerAtk, AI_DATA->abilities[battlerAtk], move, moveType);
+        // Certain moves like Rollout calculate damage based on values which change during the move execution, but before calling dmg calc.
+        switch (gBattleMoves[move].effect)
+        {
+        case EFFECT_ROLLOUT:
+            n = gDisableStructs[battlerAtk].rolloutTimer - 1;
+            fixedBasePower = CalcRolloutBasePower(battlerAtk, gBattleMoves[move].power, n < 0 ? 5 : n);
+            break;
+        case EFFECT_FURY_CUTTER:
+            fixedBasePower = CalcFuryCutterBasePower(gBattleMoves[move].power, min(gDisableStructs[battlerAtk].furyCutterCounter + 1, 5));
+            break;
+        default:
+            fixedBasePower = 0;
+            break;
+        }
+        normalDmg = CalculateMoveDamageAndEffectiveness(move, battlerAtk, battlerDef, moveType, fixedBasePower, &effectivenessMultiplier);
+        if (!gBattleStruct->zmove.active)
+        {
+            // Handle dynamic move damage
+            switch (gBattleMoves[move].effect)
+            {
+            case EFFECT_LEVEL_DAMAGE:
+            case EFFECT_PSYWAVE:
+                dmg = gBattleMons[battlerAtk].level * (AI_DATA->abilities[battlerAtk] == ABILITY_PARENTAL_BOND ? 2 : 1);
+                break;
+            case EFFECT_DRAGON_RAGE:
+                dmg = 40 * (AI_DATA->abilities[battlerAtk] == ABILITY_PARENTAL_BOND ? 2 : 1);
+                break;
+            case EFFECT_SONICBOOM:
+                dmg = 20 * (AI_DATA->abilities[battlerAtk] == ABILITY_PARENTAL_BOND ? 2 : 1);
+                break;
+            case EFFECT_MULTI_HIT:
+                dmg *= (AI_DATA->abilities[battlerAtk] == ABILITY_SKILL_LINK ? 5 : 3);
+                break;
+            case EFFECT_ENDEAVOR:
+                // If target has less HP than user, Endeavor does no damage
+                dmg = max(0, gBattleMons[battlerDef].hp - gBattleMons[battlerAtk].hp);
+                break;
+            case EFFECT_SUPER_FANG:
+                dmg = (AI_DATA->abilities[battlerAtk] == ABILITY_PARENTAL_BOND
+                    ? max(2, gBattleMons[battlerDef].hp * 3 / 4)
+                    : max(1, gBattleMons[battlerDef].hp / 2));
+                break;
+            case EFFECT_FINAL_GAMBIT:
+                dmg = gBattleMons[battlerAtk].hp;
+                break;
+            }
+
+            // Handle other multi-strike moves
+            if (gBattleMoves[move].flags & FLAG_TWO_STRIKES)
+                dmg *= 2;
+            else if (gBattleMoves[move].flags & FLAG_THREE_STRIKES || (move == MOVE_WATER_SHURIKEN && gBattleMons[battlerAtk].species == SPECIES_GRENINJA_ASH))
+                dmg *= 3;
+
+            if (dmg == 0)
+                dmg = 1;
+        }
+    }
+    else
+    {
+        effectivenessMultiplier = CalcTypeEffectivenessMultiplier(move, moveType, battlerAtk, battlerDef, FALSE);
+        dmg = 0;
+    }
+
+    RestoreBattlerData(battlerAtk);
+    RestoreBattlerData(battlerDef);
+
+    // convert multiper to AI_EFFECTIVENESS_xX
+    *typeEffectiveness = AI_GetEffectiveness(effectivenessMultiplier);
+
+    gBattleStruct->zmove.active = FALSE;
+    gBattleStruct->zmove.baseMoves[battlerAtk] = MOVE_NONE;
+    return dmg;
+}
+
 // Checks if one of the moves has side effects or perks
 static u32 WhichMoveBetter(u32 move1, u32 move2)
 {
@@ -3438,7 +3541,7 @@ s32 AI_CalcPartyMonDamageReceived(u16 move, u8 battlerAtk, u8 battlerDef, struct
     u8 effectiveness;
     struct BattlePokemon *savedBattleMons = AllocSaveBattleMons();
     PokemonToBattleMonGetMostSuitable(mon, &gBattleMons[battlerDef]);
-    dmg = AI_CalcDamage(move, battlerAtk, battlerDef, &effectiveness, FALSE);
+    dmg = AI_CalcDamageGetMostSuitable(move, battlerAtk, battlerDef, &effectiveness, FALSE);
     FreeRestoreBattleMons(savedBattleMons);
     return dmg;
 }

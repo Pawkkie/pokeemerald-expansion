@@ -5702,10 +5702,10 @@ void PokemonToBattleMonGetMostSuitable(struct Pokemon *src, struct BattlePokemon
     dst->species = GetMonData(src, MON_DATA_SPECIES, NULL);
     dst->status1 = GetMonData(src, MON_DATA_STATUS, NULL); // needed for wake up slap etc.
     dst->personality = GetMonData(src, MON_DATA_PERSONALITY, NULL); // needed for captivate etc.
-    dst->hp = GetMonData(src, MON_DATA_HP, NULL); // needed for general damage
+    dst->hp = GetMonData(src, MON_DATA_HP, NULL); 
     dst->maxHP = GetMonData(src, MON_DATA_MAX_HP, NULL); // needed for wring out
-    dst->defense = GetMonData(src, MON_DATA_DEF, NULL); // needed for general damage
-    dst->spDefense = GetMonData(src, MON_DATA_SPDEF, NULL); // needed for general damage
+    dst->defense = GetMonData(src, MON_DATA_DEF, NULL); 
+    dst->spDefense = GetMonData(src, MON_DATA_SPDEF, NULL); 
     dst->speed = GetMonData(src, MON_DATA_SPEED, NULL); // needed for electro ball etc.
     dst->abilityNum = GetMonData(src, MON_DATA_ABILITY_NUM, NULL); 
     dst->type1 = gSpeciesInfo[dst->species].types[0];
