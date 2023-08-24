@@ -61,7 +61,7 @@ void GetAIPartyIndexes(u32 battlerId, s32 *firstId, s32 *lastId)
 }
 
 // Note that as many return statements as possible are INTENTIONALLY put after all of the loops;
-// the function can take a max of about 0.1s to run, and this prevents the player from identifying 
+// the function can take a max of about 0.06s to run, and this prevents the player from identifying 
 // whether the mon will switch or not by seeing how long the delay is before they select a move
 static bool8 HasBadOdds()
 {
@@ -90,13 +90,13 @@ static bool8 HasBadOdds()
 	defType1 = gBattleMons[gActiveBattler].type1;
 	defType2 = gBattleMons[gActiveBattler].type2;
 
-    // Check AI moves for damage dealt / status moves
+    // Check AI moves for damage dealt
     for (i = 0; i < MAX_MON_MOVES; i++)
     {
         aiMove = gBattleMons[gActiveBattler].moves[i];
         if (aiMove != MOVE_NONE)
         {
-            // Check if mon has an important status move
+            // Check if mon has an "important" status move
             if (aiMove == MOVE_REFLECT || aiMove == MOVE_LIGHT_SCREEN 
             || aiMove == MOVE_SPIKES || aiMove == MOVE_TOXIC_SPIKES || aiMove == MOVE_STEALTH_ROCK || aiMove == MOVE_STICKY_WEB || aiMove == MOVE_LEECH_SEED
             || aiMove == MOVE_EXPLOSION || aiMove == MOVE_SELF_DESTRUCT 
@@ -154,7 +154,7 @@ static bool8 HasBadOdds()
         getsOneShot = TRUE;
     }
 
-    // Check if current mon can revenge kill in spite of bad matchup, and don't switch out if it can
+    // Check if current mon can outspeed and KO in spite of bad matchup, and don't switch out if it can
     if(damageDealt > gBattleMons[opposingBattler].hp)
     {
         if (gBattleMons[gActiveBattler].speed > gBattleMons[opposingBattler].speed || gBattleMoves[aiMove].priority > 0)
@@ -166,12 +166,12 @@ static bool8 HasBadOdds()
         return FALSE;
 
     // Start assessing whether or not mon has bad odds
-    // Jump straight to swtiching out in OHKO cases
+    // Jump straight to swtiching out in cases where mon gets OHKO'd
     if (((getsOneShot && gBattleMons[opposingBattler].speed > gBattleMons[gActiveBattler].speed) // If the player OHKOs and outspeeds OR OHKOs, doesn't outspeed but isn't 2HKO'd
-     || (getsOneShot && gBattleMons[opposingBattler].speed <= gBattleMons[gActiveBattler].speed && maxDamageDealt < gBattleMons[opposingBattler].hp / 2)) 
-     && (gBattleMons[gActiveBattler].hp >= gBattleMons[gActiveBattler].maxHP/2 // And the current mon has at least 1/2 their HP or 1/4 of their HP and Regenerator
-     || (gBattleMons[gActiveBattler].ability == ABILITY_REGENERATOR 
-     && gBattleMons[gActiveBattler].hp >= gBattleMons[gActiveBattler].maxHP/4))) 
+            || (getsOneShot && gBattleMons[opposingBattler].speed <= gBattleMons[gActiveBattler].speed && maxDamageDealt < gBattleMons[opposingBattler].hp / 2)) 
+        && (gBattleMons[gActiveBattler].hp >= gBattleMons[gActiveBattler].maxHP/2 // And the current mon has at least 1/2 their HP, or 1/4 HP and Regenerator
+            || (gBattleMons[gActiveBattler].ability == ABILITY_REGENERATOR 
+            && gBattleMons[gActiveBattler].hp >= gBattleMons[gActiveBattler].maxHP/4))) 
     {
         // 50% chance to stay in regardless
         if (Random() % 2 == 0) 
@@ -184,13 +184,12 @@ static bool8 HasBadOdds()
     }
 
     // General bad type matchups have more wiggle room
-	if (typeDmg>=UQ_4_12(2.0)) // If the player has a 2x type advantage
+	if (typeDmg>=UQ_4_12(2.0)) // If the player has at least a 2x type advantage
 	{
-        // If the AI doesn't have a super effective move AND they have at least 1/2 their HP, or 1/4 HP and Regenerator
-		if (!hasSuperEffectiveMove
-		&& (gBattleMons[gActiveBattler].hp >= gBattleMons[gActiveBattler].maxHP/2 
-        || (gBattleMons[gActiveBattler].ability == ABILITY_REGENERATOR 
-        && gBattleMons[gActiveBattler].hp >= gBattleMons[gActiveBattler].maxHP/4))) 
+		if (!hasSuperEffectiveMove // If the AI doesn't have a super effective move
+		&& (gBattleMons[gActiveBattler].hp >= gBattleMons[gActiveBattler].maxHP/2 // And the current mon has at least 1/2 their HP, or 1/4 HP and Regenerator
+            || (gBattleMons[gActiveBattler].ability == ABILITY_REGENERATOR 
+            && gBattleMons[gActiveBattler].hp >= gBattleMons[gActiveBattler].maxHP/4))) 
 		{
             // Then check if they have an important status move, which is worth using even in a bad matchup
             if(hasStatusMove)
