@@ -897,7 +897,7 @@ s32 AI_CalcDamage(u16 move, u8 battlerAtk, u8 battlerDef, u8 *typeEffectiveness,
 
 s32 AI_CalcDamageGetMostSuitable(u16 move, u8 battlerAtk, u8 battlerDef, u8 *typeEffectiveness, bool32 considerZPower)
 {
-    s32 dmg, moveType, critDmg, normalDmg, fixedBasePower, n;
+    s32 dmg, moveType, fixedBasePower, n;
     u16 effectivenessMultiplier;
 
     if (considerZPower && IsViableZMove(battlerAtk, move))
@@ -938,7 +938,7 @@ s32 AI_CalcDamageGetMostSuitable(u16 move, u8 battlerAtk, u8 battlerDef, u8 *typ
             fixedBasePower = 0;
             break;
         }
-        normalDmg = CalculateMoveDamageAndEffectiveness(move, battlerAtk, battlerDef, moveType, fixedBasePower, &effectivenessMultiplier);
+        dmg = CalculateMoveDamageAndEffectiveness(move, battlerAtk, battlerDef, moveType, fixedBasePower, &effectivenessMultiplier);
         if (!gBattleStruct->zmove.active)
         {
             // Handle dynamic move damage
