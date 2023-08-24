@@ -5696,7 +5696,7 @@ void PokemonToBattleMon(struct Pokemon *src, struct BattlePokemon *dst)
     dst->status2 = 0;
 }
 
-void PokemonToBattleMonGetMostSuitable(struct Pokemon *src, struct BattlePokemon *dst)
+void PokemonToBattleMonDamageReceived(struct Pokemon *src, struct BattlePokemon *dst)
 {
     s32 i;
     dst->species = GetMonData(src, MON_DATA_SPECIES, NULL);
