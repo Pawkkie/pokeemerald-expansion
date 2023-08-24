@@ -1744,7 +1744,7 @@ u8 GetMostSuitableMonToSwitchInto(bool8 switchAfterMonKOd)
         party = gEnemyParty;
 
     // Only use better mon selection if AI_FLAG_SMART_MON_CHOICES is set for the trainer. 
-    // This will increase the delay before the player turn starts from 0.2s (vanilla) to up to 0.45s 
+    // This will increase the delay before the player turn starts from 0.2s (vanilla) to up to 0.5s 
     // in the worst case scenario (AI has 6 mons with 4 attacking moves each and AI_SMART_SWITCHING is enabled)
     if(AI_THINKING_STRUCT->aiFlags & AI_FLAG_SMART_MON_CHOICES)
     {
