@@ -170,8 +170,8 @@ static bool8 HasBadOdds()
      && gBattleMons[gActiveBattler].hp >= gBattleMons[gActiveBattler].maxHP/4))) 
     {
         // 50% chance to stay in regardless
-        // if (Random() % 2 == 0) 
-        //     return FALSE;
+        if (Random() % 2 == 0) 
+            return FALSE;
 
         // Switch mon out
         *(gBattleStruct->AI_monToSwitchIntoId + gActiveBattler) = PARTY_SIZE; 
@@ -193,8 +193,8 @@ static bool8 HasBadOdds()
                 return FALSE;
 
             // 50% chance to stay in regardless
-            // if (Random() % 2 == 0) 
-            //     return FALSE;
+            if (Random() % 2 == 0) 
+                return FALSE;
 
             // Switch mon out
 			*(gBattleStruct->AI_monToSwitchIntoId + gActiveBattler) = PARTY_SIZE; 
