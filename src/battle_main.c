@@ -4130,11 +4130,11 @@ enum
 static void HandleTurnActionSelectionState(void)
 {
     s32 i;
-    u8 mostSuitableMonId = PARTY_SIZE, position;
+    u8 mostSuitableMonId = PARTY_SIZE;
     gBattleCommunication[ACTIONS_CONFIRMED_COUNT] = 0;
     for (gActiveBattler = 0; gActiveBattler < gBattlersCount; gActiveBattler++)
     {
-        position = GetBattlerPosition(gActiveBattler);
+        u8 position = GetBattlerPosition(gActiveBattler);
         switch (gBattleCommunication[gActiveBattler])
         {
         case STATE_TURN_START_RECORD: // Recorded battle related action on start of every turn.
@@ -4142,12 +4142,11 @@ static void HandleTurnActionSelectionState(void)
             gBattleCommunication[gActiveBattler] = STATE_BEFORE_ACTION_CHOSEN;
             break;
         case STATE_BEFORE_ACTION_CHOSEN: // Choose an action.
-            mostSuitableMonId = GetMostSuitableMonToSwitchInto();
-
             // Do AI score computations here so we can use them in AI_TrySwitchOrUseItem
             if ((gBattleTypeFlags & BATTLE_TYPE_HAS_AI || IsWildMonSmart())
                     && (BattlerHasAi(gActiveBattler) && !(gBattleTypeFlags & BATTLE_TYPE_PALACE)))
             {
+                mostSuitableMonId = GetMostSuitableMonToSwitchInto();
                 gBattleStruct->aiMoveOrAction[gActiveBattler] = ComputeBattleAiScores(gActiveBattler, mostSuitableMonId);
             }
 
