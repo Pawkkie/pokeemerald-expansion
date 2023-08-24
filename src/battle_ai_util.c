@@ -3437,7 +3437,7 @@ s32 AI_CalcPartyMonDamageReceived(u16 move, u8 battlerAtk, u8 battlerDef, struct
     s32 dmg, i;
     u8 effectiveness;
     struct BattlePokemon *savedBattleMons = AllocSaveBattleMons();
-    PokemonToBattleMon(mon, &gBattleMons[battlerDef]);
+    PokemonToBattleMonGetMostSuitable(mon, &gBattleMons[battlerDef]);
     dmg = AI_CalcDamage(move, battlerAtk, battlerDef, &effectiveness, FALSE);
     FreeRestoreBattleMons(savedBattleMons);
     return dmg;

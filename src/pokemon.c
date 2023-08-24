@@ -5696,6 +5696,25 @@ void PokemonToBattleMon(struct Pokemon *src, struct BattlePokemon *dst)
     dst->status2 = 0;
 }
 
+void PokemonToBattleMonGetMostSuitable(struct Pokemon *src, struct BattlePokemon *dst)
+{
+    s32 i;
+    dst->species = GetMonData(src, MON_DATA_SPECIES, NULL);
+    dst->status1 = GetMonData(src, MON_DATA_STATUS, NULL); // needed for wake up slap etc.
+    dst->personality = GetMonData(src, MON_DATA_PERSONALITY, NULL); // needed for captivate etc.
+    dst->hp = GetMonData(src, MON_DATA_HP, NULL); // needed for general damage
+    dst->maxHP = GetMonData(src, MON_DATA_MAX_HP, NULL); // needed for wring out
+    dst->defense = GetMonData(src, MON_DATA_DEF, NULL); // needed for general damage
+    dst->spDefense = GetMonData(src, MON_DATA_SPDEF, NULL); // needed for general damage
+    dst->speed = GetMonData(src, MON_DATA_SPEED, NULL); // needed for electro ball etc.
+    dst->abilityNum = GetMonData(src, MON_DATA_ABILITY_NUM, NULL); 
+    dst->type1 = gSpeciesInfo[dst->species].types[0];
+    dst->type2 = gSpeciesInfo[dst->species].types[1];
+    dst->ability = GetAbilityBySpecies(dst->species, dst->abilityNum);
+    for (i = 0; i < NUM_BATTLE_STATS; i++) // Needed for punishment etc.
+        dst->statStages[i] = DEFAULT_STAT_STAGE;
+}
+
 void CopyPlayerPartyMonToBattleData(u8 battlerId, u8 partyIndex)
 {
     PokemonToBattleMon(&gPlayerParty[partyIndex], &gBattleMons[battlerId]);
