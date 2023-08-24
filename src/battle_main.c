@@ -4130,7 +4130,6 @@ enum
 static void HandleTurnActionSelectionState(void)
 {
     s32 i;
-    AI_THINKING_STRUCT->mostSuitableMonId = PARTY_SIZE;
     gBattleCommunication[ACTIONS_CONFIRMED_COUNT] = 0;
     for (gActiveBattler = 0; gActiveBattler < gBattlersCount; gActiveBattler++)
     {
