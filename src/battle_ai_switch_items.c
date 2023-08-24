@@ -61,7 +61,7 @@ void GetAIPartyIndexes(u32 battlerId, s32 *firstId, s32 *lastId)
 }
 
 // Note that as many return statements as possible are INTENTIONALLY put after all of the loops;
-// the function can take up to ~2s or so to run, and this prevents the player from identifying 
+// the function can take a max of about 0.1s to run, and this prevents the player from identifying 
 // whether the mon will switch or not by seeing how long the delay is before they select a move
 static bool8 HasBadOdds()
 {
