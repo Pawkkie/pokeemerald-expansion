@@ -82,6 +82,7 @@ static void InitMainCallbacks(void);
 static void CallCallbacks(void);
 static void SeedRngWithRtc(void);
 static void ReadKeys(void);
+static void IterateRTC(void);
 void InitIntrHandlers(void);
 static void WaitForVBlank(void);
 void EnableVCountIntrAtLine150(void);
@@ -136,6 +137,7 @@ void AgbMain()
 
 void AgbMainLoop(void)
 {
+    int advanceRTCCounter;
     for (;;)
     {
         ReadKeys();
@@ -171,9 +173,20 @@ void AgbMainLoop(void)
         }
 
         PlayTimeCounter_Update();
+        if(advanceRTCCounter >= 180)
+        {
+            IterateRTC();
+            advanceRTCCounter = 0;
+        }
+        advanceRTCCounter++;
         MapMusicMain();
         WaitForVBlank();
     }
+}
+
+static void IterateRTC(void)
+{
+    AdvanceRealtimeClock(1, 0);
 }
 
 static void UpdateLinkAndCallCallbacks(void)

@@ -344,3 +344,52 @@ u32 RtcGetLocalDayCount(void)
 {
     return RtcGetDayCount(&sRtc);
 }
+
+void RtcCalcLocalTimeFast(void)
+{
+    if (sErrorStatus & RTC_ERR_FLAG_MASK)
+    {
+        sRtc = sRtcDummy;
+    }
+    else
+    {
+        RtcGetStatus(&sRtc);
+        RtcDisableInterrupts();
+        SiiRtcGetTime(&sRtc);
+        RtcRestoreInterrupts();
+    }
+    RtcCalcTimeDifference(&sRtc, &gLocalTime, &gSaveBlock2Ptr->localTimeOffset);
+}
+
+void AdvanceRealtimeClock(int hours, int minutes)
+{
+    // Calculate local time
+    RtcGetInfo(&sRtc);
+    RtcCalcTimeDifference(&sRtc, &gLocalTime, &gSaveBlock2Ptr->localTimeOffset);
+    
+    // Advance by the requested amounts
+    gLocalTime.hours += hours;
+    gLocalTime.minutes += minutes;
+    
+    // Make sure local time is within expected results
+    while (gLocalTime.minutes >= 60)
+    {
+        gLocalTime.minutes -= 60;
+        ++gLocalTime.hours;
+    }
+    
+    while (gLocalTime.hours >= 24)
+    {
+        gLocalTime.hours -= 24;
+        ++gLocalTime.days;
+        // ++gLocalTime.dayOfWeek;
+    }
+    
+    // while (gLocalTime.dayOfWeek >= 7)
+    // {
+    //     gLocalTime.dayOfWeek -= 7;
+    // }
+    
+    // Set the offset back to the save block
+    RtcCalcTimeDifference(&sRtc, &gSaveBlock2Ptr->localTimeOffset, &gLocalTime);
+}

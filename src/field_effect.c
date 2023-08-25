@@ -31,6 +31,7 @@
 #include "constants/metatile_behaviors.h"
 #include "constants/rgb.h"
 #include "constants/songs.h"
+#include "day_night.h"
 
 #define subsprite_table(ptr) {.subsprites = ptr, .subspriteCount = (sizeof ptr) / (sizeof(struct Subsprite))}
 
@@ -276,6 +277,10 @@ bool8 (*const gFieldEffectScriptFuncs[])(u8 **, u32 *) =
     FieldEffectCmd_loadgfx_callnative,
     FieldEffectCmd_loadtiles_callnative,
     FieldEffectCmd_loadfadedpal_callnative,
+    // Added for day and night system
+    FieldEffectCmd_loadpaldaynight,
+    FieldEffectCmd_loadfadedpaldaynight,
+    FieldEffectCmd_loadfadedpaldaynight_callnative,
 };
 
 static const struct OamData sOam_64x64 =
@@ -3851,3 +3856,40 @@ static void Task_MoveDeoxysRock(u8 taskId)
 #undef tVelocityY
 #undef tMoveSteps
 #undef tObjEventId
+
+bool8 FieldEffectCmd_loadpaldaynight(u8 **script, u32 *val)
+{
+    (*script)++;
+    FieldEffectScript_LoadPaletteDayNight(script);
+    return TRUE;
+}
+
+bool8 FieldEffectCmd_loadfadedpaldaynight(u8 **script, u32 *val)
+{
+    (*script)++;
+    FieldEffectScript_LoadFadedPaletteDayNight(script);
+    return TRUE;
+}
+
+bool8 FieldEffectCmd_loadfadedpaldaynight_callnative(u8 **script, u32 *val)
+{
+    (*script)++;
+    FieldEffectScript_LoadFadedPaletteDayNight(script);
+    FieldEffectScript_CallNative(script, val);
+    return TRUE;
+}
+
+void FieldEffectScript_LoadFadedPaletteDayNight(u8 **script)
+{
+    struct SpritePalette *palette = (struct SpritePalette *)FieldEffectScript_ReadWord(script);
+    LoadSpritePaletteDayNight(palette);
+    UpdateSpritePaletteWithWeather(IndexOfSpritePaletteTag(palette->tag));
+    (*script) += 4;
+}
+
+void FieldEffectScript_LoadPaletteDayNight(u8 **script)
+{
+    struct SpritePalette *palette = (struct SpritePalette *)FieldEffectScript_ReadWord(script);
+    LoadSpritePaletteDayNight(palette);
+    (*script) += 4;
+}
