@@ -1181,7 +1181,7 @@ static u32 GetBestMonDefensive(struct Pokemon *party, int firstId, int lastId, u
             for (j = 0; j < MAX_MON_MOVES; j++)
             {
                 playerMove = gBattleMons[opposingBattler].moves[j];
-                damageTaken = AI_CalcPartyMonDamageReceived(playerMove, opposingBattler, gActiveBattler, &party[i]);
+                damageTaken = AI_CalcPartyMonDamage(playerMove, opposingBattler, gActiveBattler, &party[i], FALSE);
                 if (damageTaken > maxDamageTaken)
                     maxDamageTaken = damageTaken;
             }
@@ -1239,7 +1239,7 @@ static u32 GetBestMonRevengeKiller(struct Pokemon *party, int firstId, int lastI
             for (j = 0; j < MAX_MON_MOVES; j++)
             {
                 playerMove = gBattleMons[opposingBattler].moves[j];
-                damageTaken = AI_CalcPartyMonDamageReceived(playerMove, opposingBattler, gActiveBattler, &party[i]);
+                damageTaken = AI_CalcPartyMonDamage(playerMove, opposingBattler, gActiveBattler, &party[i], FALSE);
                 if (damageTaken > maxDamageTaken)
                     maxDamageTaken = damageTaken;
             }
@@ -1250,7 +1250,7 @@ static u32 GetBestMonRevengeKiller(struct Pokemon *party, int firstId, int lastI
             for (j = 0; j < MAX_MON_MOVES; j++)
             {
                 aiMove = GetMonData(&party[i], MON_DATA_MOVE1 + j);
-                damageDealt = AI_CalcPartyMonDamageDealt(aiMove, gActiveBattler, opposingBattler, &party[i]);
+                damageDealt = AI_CalcPartyMonDamage(aiMove, gActiveBattler, opposingBattler, &party[i], TRUE);
                 // If mon can one shot
                 if(damageDealt > gBattleMons[opposingBattler].hp)
                 {
@@ -1346,7 +1346,7 @@ static u32 GetBestMonDmg(struct Pokemon *party, int firstId, int lastId, u8 inva
         for (j = 0; j < MAX_MON_MOVES; j++)
         {
             aiMove = GetMonData(&party[i], MON_DATA_MOVE1 + j);
-            damageDealt = AI_CalcPartyMonDamageDealt(aiMove, gActiveBattler, opposingBattler, &party[i]);
+            damageDealt = AI_CalcPartyMonDamage(aiMove, gActiveBattler, opposingBattler, &party[i], TRUE);
             if (damageDealt > maxDamageDealt)
                 maxDamageDealt = damageDealt;
                 bestMonId = i;
@@ -1403,7 +1403,7 @@ static u32 GetBestMonIntegrated(struct Pokemon *party, int firstId, int lastId, 
             playerMove = gBattleMons[opposingBattler].moves[j];
             if (playerMove != MOVE_NONE && gBattleMoves[playerMove].power != 0)
             {
-                damageTaken = AI_CalcPartyMonDamageReceived(playerMove, opposingBattler, gActiveBattler, &party[i]);
+                damageTaken = AI_CalcPartyMonDamage(playerMove, opposingBattler, gActiveBattler, &party[i], FALSE);
                 if (damageTaken > maxDamageTaken)
                     maxDamageTaken = damageTaken;
             }
@@ -1547,7 +1547,7 @@ static u32 GetBestMonAfterKOIntegrated(struct Pokemon *party, int firstId, int l
             playerMove = gBattleMons[opposingBattler].moves[j];
             if (playerMove != MOVE_NONE && gBattleMoves[playerMove].power != 0)
             {
-                damageTaken = AI_CalcPartyMonDamageReceived(playerMove, opposingBattler, gActiveBattler, &party[i]);
+                damageTaken = AI_CalcPartyMonDamage(playerMove, opposingBattler, gActiveBattler, &party[i], FALSE);
                 if (damageTaken > maxDamageTaken)
                     maxDamageTaken = damageTaken;
             }
@@ -1594,7 +1594,7 @@ static u32 GetBestMonAfterKOIntegrated(struct Pokemon *party, int firstId, int l
 
             if (aiMove != MOVE_NONE && gBattleMoves[aiMove].power != 0)
             {
-                damageDealt = AI_CalcPartyMonDamageDealt(aiMove, gActiveBattler, opposingBattler, &party[i]);
+                damageDealt = AI_CalcPartyMonDamage(aiMove, gActiveBattler, opposingBattler, &party[i], TRUE);
 
                 // Check for mon with resistance and super effective move for GetBestMonTypeMatchup
                 if (AI_GetTypeEffectiveness(aiMove, gActiveBattler, opposingBattler) >= UQ_4_12(2.0) && typeMatchupEffectiveId != i)
@@ -1976,7 +1976,7 @@ static bool32 IsAiPartyMonOHKOBy(u32 battlerAtk, struct Pokemon *aiMon)
     for (i = 0; i < MAX_MON_MOVES; i++)
     {
         u32 playerMove = gBattleMons[battlerAtk].moves[i];
-        damageTaken = AI_CalcPartyMonDamageReceived(playerMove, battlerAtk, gActiveBattler, aiMon);
+        damageTaken = AI_CalcPartyMonDamage(playerMove, battlerAtk, gActiveBattler, aiMon, FALSE);
         if (damageTaken > maxDamageTaken)
             maxDamageTaken = damageTaken;
     }
