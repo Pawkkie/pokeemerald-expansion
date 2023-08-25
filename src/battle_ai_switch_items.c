@@ -118,7 +118,7 @@ static bool8 HasBadOdds()
                     hasSuperEffectiveMove = TRUE;
 
                 // Get maximum damage mon can deal
-                damageDealt = AI_CalcDamage(aiMove, gActiveBattler, opposingBattler, &effectiveness, FALSE);
+                damageDealt = AI_DATA->simulatedDmg[gActiveBattler][opposingBattler][i];
                 if(damageDealt > maxDamageDealt)
                     maxDamageDealt = damageDealt;
             }
@@ -142,7 +142,7 @@ static bool8 HasBadOdds()
         playerMove = gBattleMons[opposingBattler].moves[i];
         if (playerMove != MOVE_NONE && gBattleMoves[playerMove].power != 0)
         {
-            damageTaken = AI_CalcDamage(playerMove, opposingBattler, gActiveBattler, &effectiveness, FALSE);
+            damageTaken = AI_DATA->simulatedDmg[opposingBattler][gActiveBattler][i];
             if (damageTaken > maxDamageTaken)
                 maxDamageTaken = damageTaken;
         }
