@@ -1264,8 +1264,8 @@ static u32 GetBestMonRevengeKiller(struct Pokemon *party, int firstId, int lastI
                     // If mon is slower
                     else
                     {
-                        // If mon can't be 2HKO'd, have a slow revenge killer
-                        if (hitsToKO > 2)
+                        // If mon can't be OHKO'd, have a slow revenge killer
+                        if (hitsToKO > 1)
                         {
                             // We have a slow revenge killer
                             slowRevengeKillerId = i;
