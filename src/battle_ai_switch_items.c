@@ -1471,17 +1471,17 @@ static u32 GetBestMonIntegrated(struct Pokemon *party, int firstId, int lastId, 
     }
 
     // Return GetBestMonTypeMatchup > GetBestMonDefensive > GetBestMonBatonPass
-    else if (typeMatchupEffectiveId != PARTY_SIZE)
+    if (typeMatchupEffectiveId != PARTY_SIZE)
         return typeMatchupEffectiveId;
 
     else if (typeMatchupId != PARTY_SIZE)
         return typeMatchupId;
 
-    if (defensiveMonId != PARTY_SIZE)
+    else if (defensiveMonId != PARTY_SIZE)
         return defensiveMonId;
 
     // GetBestMonBatonPass randomly chooses between all mons that met Baton Pass check
-    if ((aliveCount == 2 || (aliveCount > 2 && Random() % 3 == 0)) && bits)
+    else if ((aliveCount == 2 || (aliveCount > 2 && Random() % 3 == 0)) && bits)
     {
         do
         {
@@ -1491,7 +1491,7 @@ static u32 GetBestMonIntegrated(struct Pokemon *party, int firstId, int lastId, 
     }
 
     // If ace mon is the last available Pokemon and U-Turn/Volt Switch was used - switch to the mon.
-    if (aceMonId != PARTY_SIZE
+    else if (aceMonId != PARTY_SIZE
         && (gBattleMoves[gLastUsedMove].effect == EFFECT_HIT_ESCAPE || gBattleMoves[gLastUsedMove].effect == EFFECT_PARTING_SHOT))
         return aceMonId;
 
@@ -1687,7 +1687,7 @@ static u32 GetBestMonAfterKOIntegrated(struct Pokemon *party, int firstId, int l
 
 
     // GetBestMonBatonPass randomly chooses between all mons that met Baton Pass check
-    if ((aliveCount == 2 || (aliveCount > 2 && Random() % 3 == 0)) && bits)
+    else if ((aliveCount == 2 || (aliveCount > 2 && Random() % 3 == 0)) && bits)
     {
         do
         {
