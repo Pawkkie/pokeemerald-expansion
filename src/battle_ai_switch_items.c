@@ -771,15 +771,16 @@ static bool8 FindMonWithFlagsAndSuperEffective(u16 flags, u8 moduloPercent)
 }
 
 static bool8 ShouldSwitchIfEncored(void)
-{
-    if (gDisableStructs[gActiveBattler].encoredMove == MOVE_NONE)
+{   
+    // Only use this if AI_FLAG_SMART_SWITCHING is set for the trainer
+    if (!(AI_THINKING_STRUCT->aiFlags & AI_FLAG_SMART_SWITCHING))
         return FALSE;
 
-    if (FindMonWithFlagsAndSuperEffective(MOVE_RESULT_DOESNT_AFFECT_FOE, 1))
-        return TRUE;
-    if (FindMonWithFlagsAndSuperEffective(MOVE_RESULT_NOT_VERY_EFFECTIVE, 1))
-        return TRUE;
+    // If not Encored or if no good switchin, don't switch
+    if (gDisableStructs[gActiveBattler].encoredMove == MOVE_NONE || AI_THINKING_STRUCT->mostSuitableMonId == PARTY_SIZE)
+        return FALSE;
 
+    // Otherwise 50% chance to switch out
     if (Random() & 1)
     {
         *(gBattleStruct->AI_monToSwitchIntoId + gActiveBattler) = PARTY_SIZE;
@@ -828,28 +829,63 @@ static bool8 ShouldSwitchIfNaturalCure(void)
 // AI should switch if it's become setup fodder and has something better to switch to
 static bool8 AreAttackingStatsLowered(void)
 {
-    // Mon is physical attacker and its attack isn't below -1, don't switch
-    if (gBattleMons[gActiveBattler].statStages[MON_DATA_ATK - MON_DATA_MAX_HP] > DEFAULT_STAT_STAGE - 2)
+    s8 attackingStage = gBattleMons[gActiveBattler].statStages[MON_DATA_ATK - MON_DATA_MAX_HP];
+    s8 spAttackingStage = gBattleMons[gActiveBattler].statStages[MON_DATA_SPATK - MON_DATA_MAX_HP];
+
+    // Only use this if AI_FLAG_SMART_SWITCHING is set for the trainer
+    if (!(AI_THINKING_STRUCT->aiFlags & AI_FLAG_SMART_SWITCHING))
+        return FALSE;
+
+    // Physical attacker
+    if (gBattleMons[gActiveBattler].attack >= gBattleMons[gActiveBattler].spAttack)
     {
-        if (gBattleMons[gActiveBattler].attack >= gBattleMons[gActiveBattler].spAttack)
+        // Don't switch if attack isn't below -1
+        if (attackingStage > DEFAULT_STAT_STAGE - 2)
             return FALSE;
+        // 50% chance if attack at -2 and have a good candidate mon
+        else if (attackingStage == DEFAULT_STAT_STAGE - 2)
+        {
+            if (AI_THINKING_STRUCT->mostSuitableMonId != PARTY_SIZE && (Random() & 1))
+            {
+                *(gBattleStruct->AI_monToSwitchIntoId + gActiveBattler) = PARTY_SIZE;
+                BtlController_EmitTwoReturnValues(1, B_ACTION_SWITCH, 0);
+                return TRUE;
+            }
+        }
+        // If at -3 or worse, switch out regardless
+        else if (attackingStage < DEFAULT_STAT_STAGE - 2)
+        {
+            *(gBattleStruct->AI_monToSwitchIntoId + gActiveBattler) = PARTY_SIZE;
+            BtlController_EmitTwoReturnValues(1, B_ACTION_SWITCH, 0);
+            return TRUE;
+        }
     }
 
-    // Mon is special attacker and its special attack isn't below -1, don't switch
-    if (gBattleMons[gActiveBattler].statStages[MON_DATA_SPATK - MON_DATA_MAX_HP] > DEFAULT_STAT_STAGE - 2)
+    // Special attacker
+    if (gBattleMons[gActiveBattler].spAttack >= gBattleMons[gActiveBattler].attack)
     {
-        if (gBattleMons[gActiveBattler].spAttack >= gBattleMons[gActiveBattler].attack)
+        // Don't switch if attack isn't below -1
+        if (spAttackingStage > DEFAULT_STAT_STAGE - 2)
             return FALSE;
+        // 50% chance if attack at -2 and have a good candidate mon
+        else if (spAttackingStage == DEFAULT_STAT_STAGE - 2)
+        {
+            if (AI_THINKING_STRUCT->mostSuitableMonId != PARTY_SIZE && (Random() & 1))
+            {
+                *(gBattleStruct->AI_monToSwitchIntoId + gActiveBattler) = PARTY_SIZE;
+                BtlController_EmitTwoReturnValues(1, B_ACTION_SWITCH, 0);
+                return TRUE;
+            }
+        }
+        // If at -3 or worse, switch out regardless
+        else if (spAttackingStage < DEFAULT_STAT_STAGE - 2)
+        {
+            *(gBattleStruct->AI_monToSwitchIntoId + gActiveBattler) = PARTY_SIZE;
+            BtlController_EmitTwoReturnValues(1, B_ACTION_SWITCH, 0);
+            return TRUE;
+        }
     }
-    
-    if (FindMonWithFlagsAndSuperEffective(MOVE_RESULT_DOESNT_AFFECT_FOE, 1))
-        return TRUE;
-    if (FindMonWithFlagsAndSuperEffective(MOVE_RESULT_NOT_VERY_EFFECTIVE, 1))
-        return TRUE;
-
-    *(gBattleStruct->AI_monToSwitchIntoId + gActiveBattler) = PARTY_SIZE;
-    BtlController_EmitTwoReturnValues(1, B_ACTION_SWITCH, 0);
-    return TRUE;
+    return FALSE;
 }
 
 bool32 ShouldSwitch()
@@ -938,8 +974,6 @@ bool32 ShouldSwitch()
     if (!IsMonHealthyEnoughToSwitch())
         return FALSE;
     if (ShouldSwitchIfEncored())
-        return TRUE;
-    if (ShouldSwitchIfNaturalCure())
         return TRUE;
 
     //These Functions can prompt switch to generic pary members
@@ -1868,7 +1902,7 @@ static bool8 IsMonHealthyEnoughToSwitch(void)
     u32 battlerHp = gBattleMons[gActiveBattler].hp;
 
     if (gBattleMons[gActiveBattler].ability == ABILITY_REGENERATOR)
-        battlerHp = (battlerHp * 130) / 100; // Account for Regenerator healing
+        battlerHp = (battlerHp * 133) / 100; // Account for Regenerator healing
     
     if (CalculateHazardDamage() > battlerHp) // Battler will die to hazards
         return FALSE;
