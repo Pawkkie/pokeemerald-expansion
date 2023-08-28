@@ -6440,12 +6440,6 @@ bool32 HasEnoughHpToEatBerry(u32 battlerId, u32 hpFraction, u32 itemId)
     return FALSE;
 }
 
-#if B_CONFUSE_BERRIES_HEAL >= GEN_7
-    #define CONFUSE_BERRY_HP_FRACTION 4
-#else
-    #define CONFUSE_BERRY_HP_FRACTION 2
-#endif
-
 static u8 HealConfuseBerry(u32 battlerId, u32 itemId, u8 flavorId, bool32 end2)
 {
     if (HasEnoughHpToEatBerry(battlerId, CONFUSE_BERRY_HP_FRACTION, itemId)

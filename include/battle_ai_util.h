@@ -166,7 +166,6 @@ bool32 PartnerMoveIsSameNoTarget(u8 battlerAtkPartner, u16 move, u16 partnerMove
 bool32 ShouldUseWishAromatherapy(u8 battlerAtk, u8 battlerDef, u16 move);
 
 // party logic
-s32 AI_CalcPartyMonDamage(u16 move, u8 battlerAtk, u8 battlerDef, struct Pokemon *mon, bool8 isPartyMonAttacker);
 struct BattlePokemon *AllocSaveBattleMons(void);
 void FreeRestoreBattleMons(struct BattlePokemon *savedBattleMons);
 s32 CountUsablePartyMons(u8 battlerId);
@@ -182,5 +181,49 @@ void IncreaseParalyzeScore(u8 battlerAtk, u8 battlerDef, u16 move, s16 *score);
 void IncreaseSleepScore(u8 battlerAtk, u8 battlerDef, u16 move, s16 *score);
 void IncreaseConfusionScore(u8 battlerAtk, u8 battlerDef, u16 move, s16 *score);
 void IncreaseFrostbiteScore(u8 battlerAtk, u8 battlerDef, u16 move, s16 *score);
+
+struct SwitchinCandidate
+{
+    u16 species;
+    u16 attack;
+    u16 defense;
+    u16 speed;
+    u16 spAttack;
+    u16 spDefense;
+    u16 moves[MAX_MON_MOVES];
+    u32 hpIV:5;
+    u32 attackIV:5;
+    u32 defenseIV:5;
+    u32 speedIV:5;
+    u32 spAttackIV:5;
+    u32 spDefenseIV:5;
+    u32 abilityNum:2;
+    s8 statStages[NUM_BATTLE_STATS];
+    u16 ability;
+    u8 type1;
+    u8 type2;
+    u8 type3;
+    u8 pp[MAX_MON_MOVES];
+    u16 hp;
+    u8 level;
+    u8 friendship;
+    u16 maxHP;
+    u16 item;
+    u8 nickname[POKEMON_NAME_LENGTH + 1];
+    u8 ppBonuses;
+    u8 otName[PLAYER_NAME_LENGTH + 1];
+    u32 experience;
+    u32 personality;
+    u32 status1;
+    u32 status2;
+    u32 otId;
+    u8 metLevel;
+    bool8 hypotheticalStatus;
+};
+
+extern struct SwitchinCandidate switchinCandidate;
+
+void SwitchinCandidateToBattleMon(struct SwitchinCandidate *switchinCandidate, struct BattlePokemon *dst);
+s32 AI_CalcPartyMonDamage(u16 move, u8 battlerAtk, u8 battlerDef, struct SwitchinCandidate *switchinCandidate, bool8 isPartyMonAttacker);
 
 #endif //GUARD_BATTLE_AI_UTIL_H
