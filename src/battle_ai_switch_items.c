@@ -247,10 +247,10 @@ static bool8 HasBadOdds()
 
 static bool8 ShouldSwitchIfAllBadMoves(void)
 {
-    if (gBattleResources->ai->switchMon)
+    if (AI_DATA->shouldSwitchMon & gBitTable[gActiveBattler])
     {
-        gBattleResources->ai->switchMon = 0;
-        *(gBattleStruct->AI_monToSwitchIntoId + gActiveBattler) = PARTY_SIZE;
+        AI_DATA->shouldSwitchMon &= ~(gBitTable[gActiveBattler]);
+        gBattleStruct->AI_monToSwitchIntoId[gActiveBattler] = AI_DATA->monToSwitchId[gActiveBattler];
         BtlController_EmitTwoReturnValues(BUFFER_B, B_ACTION_SWITCH, 0);
         return TRUE;
     }
