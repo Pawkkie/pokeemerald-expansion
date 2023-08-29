@@ -29,7 +29,6 @@ static bool32 AiExpectsToFaintPlayer(void);
 static bool32 AI_ShouldHeal(u32 healAmount);
 static bool32 AI_OpponentCanFaintAiWithMod(u32 healAmount);
 static bool8 CanMonSurviveHazardSwitchin(void);
-static u32 CalculateHazardDamage(void);
 
 EWRAM_DATA struct SwitchinCandidate switchinCandidate = {0};
 
@@ -2234,35 +2233,6 @@ static bool32 AI_OpponentCanFaintAiWithMod(u32 healAmount)
         }
     }
     return FALSE;
-}
-
-// Doesn't account for max moves as I don't intend to use those
-static u32 CalculateHazardDamage(void)
-{
-    u32 totalHazardDmg = 0;
-    s32 stealthHazardDmg = 0;
-    u32 spikesDmg = 0;
-    u32 holdEffect = GetBattlerHoldEffect(gActiveBattler, TRUE);
-
-    if (gBattleMons[gActiveBattler].ability == ABILITY_MAGIC_GUARD || holdEffect == HOLD_EFFECT_HEAVY_DUTY_BOOTS)
-        return totalHazardDmg;
-
-    if ((gSideTimers[GetBattlerSide(gActiveBattler)].spikesAmount > 0) 
-       && gBattleMons[gActiveBattler].ability != ABILITY_LEVITATE
-       && holdEffect != HOLD_EFFECT_AIR_BALLOON
-       && !IS_BATTLER_OF_TYPE(gActiveBattler, TYPE_FLYING)
-       )
-    {
-        spikesDmg = (5 - gSideTimers[GetBattlerSide(gActiveBattler)].spikesAmount) * 2;
-        spikesDmg = gBattleMons[gActiveBattler].maxHP / (spikesDmg);
-    }
-
-    if (gSideStatuses[GetBattlerSide(gActiveBattler)] & SIDE_STATUS_STEALTH_ROCK)
-        stealthHazardDmg = GetStealthHazardDamage(gBattleMoves[MOVE_STEALTH_ROCK].type, gActiveBattler);
-
-    totalHazardDmg = spikesDmg + stealthHazardDmg;
-    
-    return totalHazardDmg;
 }
 
 static bool8 CanMonSurviveHazardSwitchin(void)
