@@ -384,8 +384,9 @@
 #define MOVE_EFFECT_DIRE_CLAW           75
 #define MOVE_EFFECT_STEALTH_ROCK        76
 #define MOVE_EFFECT_SPIKES              77
+#define MOVE_EFFECT_TRIPLE_ARROWS       78
 
-#define NUM_MOVE_EFFECTS                78
+#define NUM_MOVE_EFFECTS                79
 
 #define MOVE_EFFECT_AFFECTS_USER        0x4000
 #define MOVE_EFFECT_CERTAIN             0x8000
@@ -421,16 +422,6 @@
 #define B_WAIT_TIME_MED         (B_WAIT_TIME_MULTIPLIER * 3)
 #define B_WAIT_TIME_SHORT       (B_WAIT_TIME_MULTIPLIER * 2)
 #define B_WAIT_TIME_SHORTEST    (B_WAIT_TIME_MULTIPLIER)
-
-#define CHERRIM_OVERCAST  0
-#define CHERRIM_SUNSHINE  1
-
-#define CASTFORM_NORMAL     0
-#define CASTFORM_FIRE       1
-#define CASTFORM_WATER      2
-#define CASTFORM_ICE        3
-#define NUM_CASTFORM_FORMS  4
-#define CASTFORM_SUBSTITUTE (1 << 7)
 
 #define FLEE_ITEM    1
 #define FLEE_ABILITY 2

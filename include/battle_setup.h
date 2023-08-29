@@ -69,4 +69,7 @@ void ShouldTryGetTrainerScript(void);
 u16 CountBattledRematchTeams(u16 trainerId);
 bool8 levelCapped(u8 level);
 
+void DoStandardWildBattle_Debug(void);
+void BattleSetup_StartTrainerBattle_Debug(void);
+
 #endif // GUARD_BATTLE_SETUP_H

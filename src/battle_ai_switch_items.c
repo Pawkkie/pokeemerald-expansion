@@ -385,13 +385,15 @@ static bool8 FindMonThatAbsorbsOpponentsMove(void)
         numAbsorbingAbilities = 1;
     }
     else
+    {
         return FALSE;
+    }
 
     // Check current mon for all absorbing abilities
     for (i = 0; i < numAbsorbingAbilities; i++)
     {
         if (AI_DATA->abilities[gActiveBattler] == absorbingTypeAbilities[i])
-        return FALSE;
+            return FALSE;
     }
 
     GetAIPartyIndexes(gActiveBattler, &firstId, &lastId);
@@ -782,7 +784,6 @@ static bool8 FindMonWithFlagsAndSuperEffective(u16 flags, u8 moduloPercent)
 
         species = GetMonData(&party[i], MON_DATA_SPECIES_OR_EGG);
         monAbility = GetMonAbility(&party[i]);
-
         CalcPartyMonTypeEffectivenessMultiplier(gLastLandedMoves[gActiveBattler], species, monAbility);
         if (gMoveResultFlags & flags)
         {
@@ -1120,6 +1121,8 @@ static u32 GetBestMonBatonPass(struct Pokemon *party, int firstId, int lastId, u
     {
         if (invalidMons & gBitTable[i])
             continue;
+        if (IsAiPartyMonOHKOBy(opposingBattler, &party[i]))
+            continue;
 
         for (j = 0; j < MAX_MON_MOVES; j++)
         {
@@ -1159,29 +1162,32 @@ static u32 GetBestMonTypeMatchup(struct Pokemon *party, int firstId, int lastId,
 
     while (bits != 0x3F) // All mons were checked.
     {
-        bestResist = UQ_4_12(1.0);
-        bestMonId = PARTY_SIZE;
+        uq4_12_t bestResist = UQ_4_12(1.0);
+        int bestMonId = PARTY_SIZE;
         // Find the mon whose type is the most suitable defensively.
         for (i = firstId; i < lastId; i++)
         {
             if (!(gBitTable[i] & invalidMons) && !(gBitTable[i] & bits))
             {
-                species = GetMonData(&party[i], MON_DATA_SPECIES);
-                typeEffectiveness = UQ_4_12(1.0);
+                u16 species = GetMonData(&party[i], MON_DATA_SPECIES);
+                uq4_12_t typeEffectiveness = UQ_4_12(1.0);
 
                 atkType1 = gBattleMons[opposingBattler].type1;
                 atkType2 = gBattleMons[opposingBattler].type2;
                 defType1 = gSpeciesInfo[species].types[0];
                 defType2 = gSpeciesInfo[species].types[1];
 
-                MulModifier(&typeEffectiveness, (GetTypeModifier(atkType1, defType1))); // Multiply type effectiveness by a factor depending on type matchup
+                if (IsAiPartyMonOHKOBy(opposingBattler, &party[i]))
+                    continue;
+
+                typeEffectiveness = uq4_12_multiply(typeEffectiveness, (GetTypeModifier(atkType1, defType1))); // Multiply type effectiveness by a factor depending on type matchup
                 if (atkType2 != atkType1)
-                    MulModifier(&typeEffectiveness, (GetTypeModifier(atkType2, defType1)));
+                    typeEffectiveness = uq4_12_multiply(typeEffectiveness, (GetTypeModifier(atkType2, defType1)));
                 if (defType2 != defType1)
                 {
-                    MulModifier(&typeEffectiveness, (GetTypeModifier(atkType1, defType2)));
+                    typeEffectiveness = uq4_12_multiply(typeEffectiveness, (GetTypeModifier(atkType1, defType2)));
                     if (atkType2 != atkType1)
-                        MulModifier(&typeEffectiveness, (GetTypeModifier(atkType2, defType2)));
+                        typeEffectiveness = uq4_12_multiply(typeEffectiveness, (GetTypeModifier(atkType2, defType2)));
                 }
                 if (typeEffectiveness < bestResist)
                 {
