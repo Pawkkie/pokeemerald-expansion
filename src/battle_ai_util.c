@@ -3383,21 +3383,6 @@ void FreeRestoreBattleMons(struct BattlePokemon *savedBattleMons)
     Free(savedBattleMons);
 }
 
-#define SIZE_G_BATTLE_MONS (sizeof(struct BattlePokemon) * MAX_BATTLERS_COUNT)
-
-struct BattlePokemon *AllocSaveBattleMons(void)
-{
-    struct BattlePokemon *savedBattleMons = Alloc(SIZE_G_BATTLE_MONS);
-    memcpy(savedBattleMons, gBattleMons, SIZE_G_BATTLE_MONS);
-    return savedBattleMons;
-}
-
-void FreeRestoreBattleMons(struct BattlePokemon *savedBattleMons)
-{
-    memcpy(gBattleMons, savedBattleMons, SIZE_G_BATTLE_MONS);
-    Free(savedBattleMons);
-}
-
 void SwitchinCandidateToBattleMon(struct SwitchinCandidate *switchinCandidate, struct BattlePokemon *dst)
 {
     int i = 0;

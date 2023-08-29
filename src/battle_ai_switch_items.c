@@ -163,15 +163,15 @@ static bool8 HasBadOdds()
     }
 
     // Calculate type advantage
-	MulModifier(&typeEffectiveness, GetTypeModifier(atkType1, defType1));
-	if (atkType2!=atkType1)
-		MulModifier(&typeEffectiveness, GetTypeModifier(atkType2, defType1));
-	if (defType2!=defType1)
-	{
-		MulModifier(&typeEffectiveness, GetTypeModifier(atkType1, defType2));
-		if (atkType2!=atkType1)
-			MulModifier(&typeEffectiveness, GetTypeModifier(atkType2, defType2));
-	}
+    typeEffectiveness = uq4_12_multiply(typeEffectiveness, (GetTypeModifier(atkType1, defType1)));
+    if (atkType2 != atkType1)
+        typeEffectiveness = uq4_12_multiply(typeEffectiveness, (GetTypeModifier(atkType2, defType1)));
+    if (defType2 != defType1)
+    {
+        typeEffectiveness = uq4_12_multiply(typeEffectiveness, (GetTypeModifier(atkType1, defType2)));
+        if (atkType2 != atkType1)
+            typeEffectiveness = uq4_12_multiply(typeEffectiveness, (GetTypeModifier(atkType2, defType2)));
+    }
 
     // Get max damage mon could take
     for (i = 0; i < MAX_MON_MOVES; i++)
@@ -1121,8 +1121,6 @@ static u32 GetBestMonBatonPass(struct Pokemon *party, int firstId, int lastId, u
     {
         if (invalidMons & gBitTable[i])
             continue;
-        if (IsAiPartyMonOHKOBy(opposingBattler, &party[i]))
-            continue;
 
         for (j = 0; j < MAX_MON_MOVES; j++)
         {
@@ -1176,9 +1174,6 @@ static u32 GetBestMonTypeMatchup(struct Pokemon *party, int firstId, int lastId,
                 atkType2 = gBattleMons[opposingBattler].type2;
                 defType1 = gSpeciesInfo[species].types[0];
                 defType2 = gSpeciesInfo[species].types[1];
-
-                if (IsAiPartyMonOHKOBy(opposingBattler, &party[i]))
-                    continue;
 
                 typeEffectiveness = uq4_12_multiply(typeEffectiveness, (GetTypeModifier(atkType1, defType1))); // Multiply type effectiveness by a factor depending on type matchup
                 if (atkType2 != atkType1)
@@ -1662,15 +1657,15 @@ static u32 GetBestMonIntegrated(struct Pokemon *party, int firstId, int lastId, 
         defType1 = switchinCandidate.type1;
         defType2 = switchinCandidate.type2;
 
-        // Multiply type effectiveness by a factor depending on type matchup
-        MulModifier(&typeEffectiveness, (GetTypeModifier(atkType1, defType1))); 
+        // Calculate type advantage
+        typeEffectiveness = uq4_12_multiply(typeEffectiveness, (GetTypeModifier(atkType1, defType1)));
         if (atkType2 != atkType1)
-            MulModifier(&typeEffectiveness, (GetTypeModifier(atkType2, defType1)));
+            typeEffectiveness = uq4_12_multiply(typeEffectiveness, (GetTypeModifier(atkType2, defType1)));
         if (defType2 != defType1)
         {
-            MulModifier(&typeEffectiveness, (GetTypeModifier(atkType1, defType2)));
+            typeEffectiveness = uq4_12_multiply(typeEffectiveness, (GetTypeModifier(atkType1, defType2)));
             if (atkType2 != atkType1)
-                MulModifier(&typeEffectiveness, (GetTypeModifier(atkType1, defType2)));
+                typeEffectiveness = uq4_12_multiply(typeEffectiveness, (GetTypeModifier(atkType2, defType2)));
         }
 
         // Check that GetBestMonTypeMatchup gets at least two turns
@@ -1804,15 +1799,15 @@ static u32 GetBestMonAfterKOIntegrated(struct Pokemon *party, int firstId, int l
         defType1 = switchinCandidate.type1;
         defType2 = switchinCandidate.type2;
 
-        // Multiply type effectiveness by a factor depending on type matchup
-        MulModifier(&typeEffectiveness, (GetTypeModifier(atkType1, defType1))); 
+        // Calculate type advantage
+        typeEffectiveness = uq4_12_multiply(typeEffectiveness, (GetTypeModifier(atkType1, defType1)));
         if (atkType2 != atkType1)
-            MulModifier(&typeEffectiveness, (GetTypeModifier(atkType2, defType1)));
+            typeEffectiveness = uq4_12_multiply(typeEffectiveness, (GetTypeModifier(atkType2, defType1)));
         if (defType2 != defType1)
         {
-            MulModifier(&typeEffectiveness, (GetTypeModifier(atkType1, defType2)));
+            typeEffectiveness = uq4_12_multiply(typeEffectiveness, (GetTypeModifier(atkType1, defType2)));
             if (atkType2 != atkType1)
-                MulModifier(&typeEffectiveness, (GetTypeModifier(atkType1, defType2)));
+                typeEffectiveness = uq4_12_multiply(typeEffectiveness, (GetTypeModifier(atkType2, defType2)));
         }
 
         // Check that GetBestMonTypeMatchup isn't one shot

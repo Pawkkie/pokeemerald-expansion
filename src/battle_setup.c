@@ -1941,10 +1941,11 @@ u16 CountBattledRematchTeams(u16 trainerId)
     return i;
 }
 
-bool8 levelCapped(u8 level){
+bool8 levelCapped(u8 level)
+{
     u8 levelCap = 0;
     u16 nextLeader, i;
-    const struct TrainerMonItemCustomMoves *partyData;
+    const struct TrainerMon *partyData;
     if (!FlagGet(FLAG_BADGE01_GET))
         nextLeader = TRAINER_ROXANNE_1;
     else if (!FlagGet(FLAG_BADGE02_GET))
@@ -1964,7 +1965,7 @@ bool8 levelCapped(u8 level){
     else if (!FlagGet(FLAG_IS_CHAMPION))
         nextLeader = TRAINER_WALLACE;
 
-    partyData = gTrainers[nextLeader].party.ItemCustomMoves;
+    partyData = gTrainers[nextLeader].party;
     for (i = 0; i < gTrainers[nextLeader].partySize; i++)
     {
         if (partyData[i].lvl > levelCap)
