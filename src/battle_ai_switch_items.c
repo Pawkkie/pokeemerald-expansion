@@ -206,9 +206,9 @@ static bool8 HasBadOdds()
     // Jump straight to swtiching out in cases where mon gets OHKO'd
     if (((getsOneShot && gBattleMons[opposingBattler].speed > gBattleMons[gActiveBattler].speed) // If the player OHKOs and outspeeds OR OHKOs, doesn't outspeed but isn't 2HKO'd
             || (getsOneShot && gBattleMons[opposingBattler].speed <= gBattleMons[gActiveBattler].speed && maxDamageDealt < gBattleMons[opposingBattler].hp / 2)) 
-        && (gBattleMons[gActiveBattler].hp >= gBattleMons[gActiveBattler].maxHP/2 // And the current mon has at least 1/2 their HP, or 1/4 HP and Regenerator
+        && (gBattleMons[gActiveBattler].hp >= gBattleMons[gActiveBattler].maxHP / 2 // And the current mon has at least 1/2 their HP, or 1/4 HP and Regenerator
             || (gBattleMons[gActiveBattler].ability == ABILITY_REGENERATOR 
-            && gBattleMons[gActiveBattler].hp >= gBattleMons[gActiveBattler].maxHP/4))) 
+            && gBattleMons[gActiveBattler].hp >= gBattleMons[gActiveBattler].maxHP / 4))) 
     {
         // 50% chance to stay in regardless
         if (Random() % 2 == 0) 
@@ -221,12 +221,12 @@ static bool8 HasBadOdds()
     }
 
     // General bad type matchups have more wiggle room
-	if (typeEffectiveness>=UQ_4_12(2.0)) // If the player has at least a 2x type advantage
+	if (typeEffectiveness >= UQ_4_12(2.0)) // If the player has at least a 2x type advantage
 	{
 		if (!hasSuperEffectiveMove // If the AI doesn't have a super effective move
-		&& (gBattleMons[gActiveBattler].hp >= gBattleMons[gActiveBattler].maxHP/2 // And the current mon has at least 1/2 their HP, or 1/4 HP and Regenerator
+		&& (gBattleMons[gActiveBattler].hp >= gBattleMons[gActiveBattler].maxHP / 2 // And the current mon has at least 1/2 their HP, or 1/4 HP and Regenerator
             || (gBattleMons[gActiveBattler].ability == ABILITY_REGENERATOR 
-            && gBattleMons[gActiveBattler].hp >= gBattleMons[gActiveBattler].maxHP/4))) 
+            && gBattleMons[gActiveBattler].hp >= gBattleMons[gActiveBattler].maxHP / 4))) 
 		{
             // Then check if they have an important status move, which is worth using even in a bad matchup
             if(hasStatusMove)
@@ -1260,7 +1260,7 @@ static u32 GetSwitchinHazardsDamage(void)
     u8 defType1 = switchinCandidate.type1, defType2 = switchinCandidate.type2, tSpikesLayers;
     u16 heldItemEffect = gItems[switchinCandidate.item].holdEffect;
     u32 maxHP = switchinCandidate.maxHP, ability = switchinCandidate.ability, status = switchinCandidate.status1;
-    u32 spikesDamage = 0, hazardDamage = 0;
+    u32 spikesDamage = 0, tSpikesDamage = 0, hazardDamage = 0;
     u32 hazardFlags = gSideStatuses[GetBattlerSide(gActiveBattler)] & (SIDE_STATUS_SPIKES | SIDE_STATUS_STEALTH_ROCK | SIDE_STATUS_STICKY_WEB | SIDE_STATUS_TOXIC_SPIKES);
 
     // Check ways mon might avoid all hazards
@@ -1269,11 +1269,11 @@ static u32 GetSwitchinHazardsDamage(void)
     {
         // Stealth Rock
         if ((hazardFlags & SIDE_STATUS_STEALTH_ROCK) && heldItemEffect != HOLD_EFFECT_HEAVY_DUTY_BOOTS)
-            hazardDamage += GetStealthHazardDamageByTypesAndHP(gBattleMoves[MOVE_STEALTH_ROCK].type, defType1, defType2, maxHP);
+            hazardDamage += GetStealthHazardDamageByTypesAndHP(gBattleMoves[MOVE_STEALTH_ROCK].type, defType1, defType2, switchinCandidate.hp);
         // Spikes
         if ((hazardFlags & SIDE_STATUS_SPIKES) && ((defType1 != TYPE_FLYING && defType2 != TYPE_FLYING
             && ability != ABILITY_LEVITATE && heldItemEffect != HOLD_EFFECT_AIR_BALLOON)
-            || heldItemEffect == HOLD_EFFECT_IRON_BALL || gFieldStatuses & STATUS_FIELD_GRAVITY))
+            || (heldItemEffect == HOLD_EFFECT_IRON_BALL || (gFieldStatuses & STATUS_FIELD_GRAVITY))))
         {
             spikesDamage = maxHP / ((5 - gSideTimers[GetBattlerSide(gActiveBattler)].spikesAmount) * 2);
             if (spikesDamage == 0)
@@ -1289,18 +1289,20 @@ static u32 GetSwitchinHazardsDamage(void)
             && ability != ABILITY_LEVITATE && heldItemEffect != HOLD_EFFECT_AIR_BALLOON)
             || (heldItemEffect == HOLD_EFFECT_IRON_BALL || gFieldStatuses & STATUS_FIELD_GRAVITY)))
         {
-            // Poison damage depends on number of layers
             tSpikesLayers = gSideTimers[GetBattlerSide(gActiveBattler)].toxicSpikesAmount;
             if (tSpikesLayers == 1)
             {
-                switchinCandidate.status1 = STATUS1_POISON; // Assign "hypothetical" status to the switchin candidate so we can get the damage it would take from TSpikes
-                switchinCandidate.hypotheticalStatus = TRUE;
+                tSpikesDamage = maxHP / 8;
+                if (tSpikesDamage == 0)
+                    tSpikesDamage = 1;
             }
             else if (tSpikesLayers >= 2)
             {
-                switchinCandidate.status1 = STATUS1_TOXIC_POISON;
-                switchinCandidate.hypotheticalStatus = TRUE;
+                tSpikesDamage = maxHP / 16;
+                if (tSpikesDamage == 0)
+                    tSpikesDamage = 1;
             }
+            hazardDamage += tSpikesDamage;
         }
     }
     return hazardDamage;
@@ -1431,11 +1433,14 @@ static u32 GetSwitchinRecurringDamage()
 // Gets one turn of status damage
 static u32 GetSwitchinStatusDamage()
 {
+    u8 defType1 = switchinCandidate.type1, defType2 = switchinCandidate.type2;
+    u8 tSpikesLayers = gSideTimers[GetBattlerSide(gActiveBattler)].toxicSpikesAmount;
+    u16 heldItemEffect = gItems[switchinCandidate.item].holdEffect;
     u32 status = switchinCandidate.status1, ability = switchinCandidate.ability, maxHP = switchinCandidate.maxHP;
     u32 statusDamage = 0;
 
     // Status condition damage
-    if (status != 0) 
+    if ((status != 0) && switchinCandidate.ability != ABILITY_MAGIC_GUARD) 
     {
         if (status & STATUS1_BURN) 
         {
@@ -1468,10 +1473,35 @@ static u32 GetSwitchinStatusDamage()
         else if ((status & STATUS1_TOXIC_POISON) && ability != ABILITY_POISON_HEAL)
         {
             if ((status & STATUS1_TOXIC_COUNTER) != STATUS1_TOXIC_TURN(15)) // not 16 turns
-                status += STATUS1_TOXIC_TURN(1);
-            statusDamage *= status & STATUS1_TOXIC_COUNTER >> 8;
+                switchinCandidate.status1 += STATUS1_TOXIC_TURN(1);
+            statusDamage *= switchinCandidate.status1 & STATUS1_TOXIC_COUNTER >> 8;
             if (statusDamage == 0)
                 statusDamage = 1;
+        }
+    }
+    
+    // Apply hypothetical poisoning from Toxic Spikes, which means the first turn of damage already added in GetSwitchinHazardsDamage
+    // Do this last to skip one iteration of Poison / Toxic damage, and start counting Toxic damage one turn later.
+    if (tSpikesLayers != 0 && ((defType1 != TYPE_POISON && defType2 != TYPE_POISON
+        && ability != ABILITY_IMMUNITY && ability != ABILITY_POISON_HEAL
+        && status == 0
+        && !(heldItemEffect == HOLD_EFFECT_HEAVY_DUTY_BOOTS 
+            && (((gFieldStatuses & STATUS_FIELD_MAGIC_ROOM) || ability == ABILITY_KLUTZ)))
+        && heldItemEffect != HOLD_EFFECT_CURE_PSN && heldItemEffect != HOLD_EFFECT_CURE_STATUS
+        && defType1 != TYPE_FLYING && defType2 != TYPE_FLYING
+        && ability != ABILITY_LEVITATE && heldItemEffect != HOLD_EFFECT_AIR_BALLOON)
+        || (heldItemEffect == HOLD_EFFECT_IRON_BALL || (gFieldStatuses & STATUS_FIELD_GRAVITY))))
+    {
+        if (tSpikesLayers == 1)
+        {
+            switchinCandidate.status1 = STATUS1_POISON; // Assign "hypothetical" status to the switchin candidate so we can get the damage it would take from TSpikes
+            switchinCandidate.hypotheticalStatus = TRUE;
+        }
+        if (tSpikesLayers == 2)
+        {
+            switchinCandidate.status1 = STATUS1_TOXIC_POISON; // Assign "hypothetical" status to the switchin candidate so we can get the damage it would take from TSpikes
+            switchinCandidate.status1 += STATUS1_TOXIC_TURN(1);
+            switchinCandidate.hypotheticalStatus = TRUE;
         }
     }
     return statusDamage;
@@ -1484,7 +1514,7 @@ static u32 GetSwitchinHitsToKO(s32 damageTaken)
     s32 weatherImpact = GetSwitchinWeatherImpact(); // Signed to handle both damage and healing in the same value
     u32 recurringDamage = GetSwitchinRecurringDamage();
     u32 recurringHealing = GetSwitchinRecurringHealing();
-    u32 statusDamage = GetSwitchinStatusDamage(); // Have to check this after GetSwitchinHazardsDamage, because that function can set a hypothetical status for Toxic Spikes that this function uses
+    u32 statusDamage = GetSwitchinStatusDamage();
     u32 hitsToKO = 0, singleUseItemHeal = 0;
     u16 maxHP = switchinCandidate.maxHP, item = switchinCandidate.item;
     u8 weatherDuration = gWishFutureKnock.weatherDuration;
@@ -1689,9 +1719,9 @@ static u32 GetBestMonIntegrated(struct Pokemon *party, int firstId, int lastId, 
             // Check for mon with resistance and super effective move for GetBestMonTypeMatchup
             if (aiMove != MOVE_NONE && gBattleMoves[aiMove].power != 0)
             {
-                if (AI_GetTypeEffectiveness(aiMove, gActiveBattler, opposingBattler) >= UQ_4_12(2.0) && typeMatchupEffectiveId != i)
+                if (typeEffectiveness < bestResistEffective)
                 {
-                    if (typeEffectiveness < bestResistEffective)
+                    if (AI_GetTypeEffectiveness(aiMove, gActiveBattler, opposingBattler) >= UQ_4_12(2.0) && typeMatchupEffectiveId != i)
                     {
                         // Assuming a super effective move would do significant damage or scare the player out, so not being as conservative here
                         if (hitsToKO > 2)
@@ -1835,13 +1865,13 @@ static u32 GetBestMonAfterKOIntegrated(struct Pokemon *party, int firstId, int l
                 damageDealt = AI_CalcPartyMonDamage(aiMove, gActiveBattler, opposingBattler, &switchinCandidate, TRUE);
 
                 // If a self destruction move doesn't OHKO, don't factor it into revenge killing
-                if (gBattleMoves[aiMove].effect != EFFECT_EXPLOSION && damageDealt < playerMonHP)
+                if (gBattleMoves[aiMove].effect == EFFECT_EXPLOSION && damageDealt < playerMonHP)
                     continue;
 
                 // Check for mon with resistance and super effective move for GetBestMonTypeMatchup
-                if (AI_GetTypeEffectiveness(aiMove, gActiveBattler, opposingBattler) >= UQ_4_12(2.0) && typeMatchupEffectiveId != i)
+                if (typeEffectiveness < bestResistEffective)
                 {
-                    if (typeEffectiveness < bestResistEffective)
+                    if (AI_GetTypeEffectiveness(aiMove, gActiveBattler, opposingBattler) >= UQ_4_12(2.0) && typeMatchupEffectiveId != i)
                     {
                         bestResistEffective = typeEffectiveness;
                         if(hitsToKO > 1)
@@ -1862,8 +1892,8 @@ static u32 GetBestMonAfterKOIntegrated(struct Pokemon *party, int firstId, int l
                 // If AI mon can one shot
                 if(damageDealt > playerMonHP)
                 {
-                    // If AI mon is faster
-                    if (aiMonSpeed > playerMonSpeed || gBattleMoves[aiMove].priority > 0)
+                    // If AI mon is faster and doesn't die to hazards
+                    if ((aiMonSpeed > playerMonSpeed || gBattleMoves[aiMove].priority > 0) && switchinCandidate.hp > GetSwitchinHazardsDamage())
                     {
                         // We have a revenge killer
                         revengeKillerId = i;
