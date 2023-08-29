@@ -28,7 +28,7 @@ static bool8 ShouldUseItem(void);
 static bool32 AiExpectsToFaintPlayer(void);
 static bool32 AI_ShouldHeal(u32 healAmount);
 static bool32 AI_OpponentCanFaintAiWithMod(u32 healAmount);
-static bool8 IsMonHealthyEnoughToSwitch(void);
+static bool8 CanMonSurviveHazardSwitchin(void);
 static u32 CalculateHazardDamage(void);
 
 EWRAM_DATA struct SwitchinCandidate switchinCandidate = {0};
@@ -1008,19 +1008,19 @@ bool32 ShouldSwitch()
     if (FindMonThatAbsorbsOpponentsMove())
         return TRUE;
 
-    // Ported from Inclement Emerald
-    if (!IsMonHealthyEnoughToSwitch())
-        return FALSE;
-    if (ShouldSwitchIfEncored())
-        return TRUE;
-
     //These Functions can prompt switch to generic pary members
+    if (!CanMonSurviveHazardSwitchin())
+        return FALSE;
     if (ShouldSwitchIfAllBadMoves())
         return TRUE;
     if (ShouldSwitchIfAbilityBenefit())
         return TRUE;
     if (HasBadOdds())
 		return TRUE;
+
+    // Ported from Inclement Emerald
+    if (ShouldSwitchIfEncored())
+        return TRUE;
 
     //Removing switch capabilites under specific conditions
     //These Functions prevent the "FindMonWithFlagsAndSuperEffective" from getting out of hand.
@@ -2265,20 +2265,64 @@ static u32 CalculateHazardDamage(void)
     return totalHazardDmg;
 }
 
-static bool8 IsMonHealthyEnoughToSwitch(void)
+static bool8 CanMonSurviveHazardSwitchin(void)
 {
     u32 battlerHp = gBattleMons[gActiveBattler].hp;
+    u8 defType1 = gBattleMons[gActiveBattler].type1, defType2 = gBattleMons[gActiveBattler].type2, tSpikesLayers;
+    u16 heldItemEffect = gItems[gBattleMons[gActiveBattler].item].holdEffect;
+    u32 maxHP = gBattleMons[gActiveBattler].maxHP, ability = gBattleMons[gActiveBattler].ability, status = gBattleMons[gActiveBattler].status1;
+    u32 spikesDamage = 0, tSpikesDamage = 0, hazardDamage = 0;
+    u32 hazardFlags = gSideStatuses[GetBattlerSide(gActiveBattler)] & (SIDE_STATUS_SPIKES | SIDE_STATUS_STEALTH_ROCK | SIDE_STATUS_STICKY_WEB | SIDE_STATUS_TOXIC_SPIKES);
 
-    if (gBattleMons[gActiveBattler].ability == ABILITY_REGENERATOR)
+    if (ability == ABILITY_REGENERATOR)
         battlerHp = (battlerHp * 133) / 100; // Account for Regenerator healing
     
-    if (CalculateHazardDamage() > battlerHp) // Battler will die to hazards
-        return FALSE;
+    // Check ways mon might avoid all hazards
+    if (ability != ABILITY_MAGIC_GUARD || (heldItemEffect == HOLD_EFFECT_HEAVY_DUTY_BOOTS &&
+        !((gFieldStatuses & STATUS_FIELD_MAGIC_ROOM) || ability == ABILITY_KLUTZ)))
+    {
+        // Stealth Rock
+        if ((hazardFlags & SIDE_STATUS_STEALTH_ROCK) && heldItemEffect != HOLD_EFFECT_HEAVY_DUTY_BOOTS)
+            hazardDamage += GetStealthHazardDamageByTypesAndHP(gBattleMoves[MOVE_STEALTH_ROCK].type, defType1, defType2, switchinCandidate.hp);
+        // Spikes
+        if ((hazardFlags & SIDE_STATUS_SPIKES) && ((defType1 != TYPE_FLYING && defType2 != TYPE_FLYING
+            && ability != ABILITY_LEVITATE && heldItemEffect != HOLD_EFFECT_AIR_BALLOON)
+            || (heldItemEffect == HOLD_EFFECT_IRON_BALL || (gFieldStatuses & STATUS_FIELD_GRAVITY))))
+        {
+            spikesDamage = maxHP / ((5 - gSideTimers[GetBattlerSide(gActiveBattler)].spikesAmount) * 2);
+            if (spikesDamage == 0)
+                spikesDamage = 1;
+            hazardDamage += spikesDamage;
+        }
+        // Toxic Spikes
+        if ((hazardFlags & SIDE_STATUS_TOXIC_SPIKES) && ((defType1 != TYPE_POISON && defType2 != TYPE_POISON
+            && ability != ABILITY_IMMUNITY && ability != ABILITY_POISON_HEAL
+            && status == 0
+            && heldItemEffect != HOLD_EFFECT_CURE_PSN && heldItemEffect != HOLD_EFFECT_CURE_STATUS
+            && defType1 != TYPE_FLYING && defType2 != TYPE_FLYING
+            && ability != ABILITY_LEVITATE && heldItemEffect != HOLD_EFFECT_AIR_BALLOON)
+            || (heldItemEffect == HOLD_EFFECT_IRON_BALL || gFieldStatuses & STATUS_FIELD_GRAVITY)))
+        {
+            tSpikesLayers = gSideTimers[GetBattlerSide(gActiveBattler)].toxicSpikesAmount;
+            if (tSpikesLayers == 1)
+            {
+                tSpikesDamage = maxHP / 8;
+                if (tSpikesDamage == 0)
+                    tSpikesDamage = 1;
+            }
+            else if (tSpikesLayers >= 2)
+            {
+                tSpikesDamage = maxHP / 16;
+                if (tSpikesDamage == 0)
+                    tSpikesDamage = 1;
+            }
+            hazardDamage += tSpikesDamage;
+        }
+    }
 
-    if (battlerHp < gBattleMons[gActiveBattler].maxHP / 8) // Mon unlikey to be useful, at least for the AI
+    // Battler will die to hazards, don't switch out
+    if (hazardDamage > battlerHp)
         return FALSE;
     
     return TRUE;
 }
-
-
