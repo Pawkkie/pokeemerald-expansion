@@ -550,4 +550,4 @@ gSpecials::
 	def_special ChangeChosenMonHiddenPower
 	def_special BufferChosenMonNature
 	def_special ChangePokemonNature
-
+	def_special GetDayOrNight

@@ -4573,3 +4573,18 @@ void BufferChosenMonNature (void)
     nature = GetMonData(&gPlayerParty[gSpecialVar_0x8004], MON_DATA_NATURE, NULL);
     StringCopy (gStringVar2, gNatureNamePointers[nature]);
 }
+
+void GetDayOrNight(void)
+{
+	u8 nightorday;
+	RtcCalcLocalTime();
+	if (gLocalTime.hours >= 8 && gLocalTime.hours <= 20) // 12 hour day window, 12 hour night window
+	{
+		nightorday = 0; //Day
+	}
+	else
+	{
+		nightorday = 1; //Night
+	}
+	gSpecialVar_Result = nightorday;
+}

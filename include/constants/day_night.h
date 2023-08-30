@@ -2,7 +2,7 @@
 #define GUARD_CONSTANTS_DAY_NIGHT_H
 
 #define HOUR_MORNING 4
-#define HOUR_DAY 10
+#define HOUR_DAY 8
 #define HOUR_NIGHT 20
 
 // not real times of day but useful for specifying override times
