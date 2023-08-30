@@ -870,6 +870,8 @@ u8 GetTrainerBattleTransition(void)
             return B_TRANSITION_DRAKE;
         return B_TRANSITION_CHAMPION;
     }
+    if (gTrainerBattleOpponent_A == TRAINER_MAY_ROUTE_103_MUDKIP)
+        return B_TRANSITION_MAY;
 
     if (gTrainers[gTrainerBattleOpponent_A].trainerClass == TRAINER_CLASS_CHAMPION)
         return B_TRANSITION_CHAMPION;
