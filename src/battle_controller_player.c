@@ -97,6 +97,7 @@ static void ReloadMoveNames(u32 battler);
 
 static void MoveSelectionDisplayMoveDescription(void);
 static void MoveSelectionDisplaySplitIcon(void);
+static void MoveSelectionDisplayTypeIcon(u8);
 
 static void (*const sPlayerBufferCommands[CONTROLLER_CMDS_COUNT])(u32 battler) =
 {
@@ -1701,6 +1702,7 @@ static void MoveSelectionDisplayPpNumber(u32 battler)
 static void MoveSelectionDisplayMoveType(u32 battler)
 {
     u8 *txtPtr;
+    u8 type;
     struct ChooseMoveStruct *moveInfo = (struct ChooseMoveStruct *)(&gBattleResources->bufferA[battler][4]);
 
     txtPtr = StringCopy(gDisplayedStringBattle, gText_MoveInterfaceType);
@@ -1708,8 +1710,10 @@ static void MoveSelectionDisplayMoveType(u32 battler)
     *(txtPtr)++ = EXT_CTRL_CODE_FONT;
     *(txtPtr)++ = FONT_NORMAL;
 
-    StringCopy(txtPtr, gTypeNames[gBattleMoves[moveInfo->moves[gMoveSelectionCursor[battler]]].type]);
-    BattlePutTextOnWindow(gDisplayedStringBattle, B_WIN_MOVE_TYPE);
+    // StringCopy(txtPtr, gTypeNames[gBattleMoves[moveInfo->moves[gMoveSelectionCursor[battler]]].type]);
+    // BattlePutTextOnWindow(gDisplayedStringBattle, B_WIN_MOVE_TYPE);
+    type = gBattleMoves[moveInfo->moves[gMoveSelectionCursor[gActiveBattler]]].type;
+    MoveSelectionDisplayTypeIcon(type);
     MoveSelectionDisplaySplitIcon();
 }
 
@@ -2304,3 +2308,13 @@ static void MoveSelectionDisplaySplitIcon(void){
 	PutWindowTilemap(B_WIN_SPLIT_ICON);
 	CopyWindowToVram(B_WIN_SPLIT_ICON, 3);
 }
+
+static void MoveSelectionDisplayTypeIcon(u8 type)
+{
+    ListMenuLoadStdPalAt(BG_PLTT_ID(12), 1);
+	PutWindowTilemap(B_WIN_MOVE_TYPE);
+    FillWindowPixelBuffer(B_WIN_MOVE_TYPE, PIXEL_FILL(15));
+    BlitMenuInfoIcon(B_WIN_MOVE_TYPE, type + 1, 16, 2);
+	CopyWindowToVram(B_WIN_MOVE_TYPE, COPYWIN_FULL);
+}
+
