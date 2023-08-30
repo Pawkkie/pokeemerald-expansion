@@ -435,6 +435,122 @@ static bool8 FindMonThatAbsorbsOpponentsMove(void)
     return FALSE;
 }
 
+static bool8 CanMonSurviveHazardSwitchin(void)
+{
+    u32 battlerHp = gBattleMons[gActiveBattler].hp;
+    u8 defType1 = gBattleMons[gActiveBattler].type1, defType2 = gBattleMons[gActiveBattler].type2, tSpikesLayers, battlerIn1, battlerIn2;
+    u16 heldItemEffect = gItems[gBattleMons[gActiveBattler].item].holdEffect;
+    u32 maxHP = gBattleMons[gActiveBattler].maxHP, ability = gBattleMons[gActiveBattler].ability, status = gBattleMons[gActiveBattler].status1;
+    u32 spikesDamage = 0, tSpikesDamage = 0, hazardDamage = 0;
+    u32 hazardFlags = gSideStatuses[GetBattlerSide(gActiveBattler)] & (SIDE_STATUS_SPIKES | SIDE_STATUS_STEALTH_ROCK | SIDE_STATUS_STICKY_WEB | SIDE_STATUS_TOXIC_SPIKES), aiMove;
+    s32 firstId, lastId, i, j;
+    struct Pokemon *party;
+
+    // Only use this if AI_FLAG_SMART_SWITCHING is set for the trainer
+    if (!(AI_THINKING_STRUCT->aiFlags & AI_FLAG_SMART_SWITCHING))
+        return FALSE;
+
+    if (ability == ABILITY_REGENERATOR)
+        battlerHp = (battlerHp * 133) / 100; // Account for Regenerator healing
+    
+    // Check ways mon might avoid all hazards
+    if (ability != ABILITY_MAGIC_GUARD || (heldItemEffect == HOLD_EFFECT_HEAVY_DUTY_BOOTS &&
+        !((gFieldStatuses & STATUS_FIELD_MAGIC_ROOM) || ability == ABILITY_KLUTZ)))
+    {
+        // Stealth Rock
+        if ((hazardFlags & SIDE_STATUS_STEALTH_ROCK) && heldItemEffect != HOLD_EFFECT_HEAVY_DUTY_BOOTS)
+            hazardDamage += GetStealthHazardDamageByTypesAndHP(gBattleMoves[MOVE_STEALTH_ROCK].type, defType1, defType2, switchinCandidate.hp);
+        // Spikes
+        if ((hazardFlags & SIDE_STATUS_SPIKES) && ((defType1 != TYPE_FLYING && defType2 != TYPE_FLYING
+            && ability != ABILITY_LEVITATE && heldItemEffect != HOLD_EFFECT_AIR_BALLOON)
+            || (heldItemEffect == HOLD_EFFECT_IRON_BALL || (gFieldStatuses & STATUS_FIELD_GRAVITY))))
+        {
+            spikesDamage = maxHP / ((5 - gSideTimers[GetBattlerSide(gActiveBattler)].spikesAmount) * 2);
+            if (spikesDamage == 0)
+                spikesDamage = 1;
+            hazardDamage += spikesDamage;
+        }
+        // Toxic Spikes
+        if ((hazardFlags & SIDE_STATUS_TOXIC_SPIKES) && ((defType1 != TYPE_POISON && defType2 != TYPE_POISON
+            && ability != ABILITY_IMMUNITY && ability != ABILITY_POISON_HEAL
+            && status == 0
+            && heldItemEffect != HOLD_EFFECT_CURE_PSN && heldItemEffect != HOLD_EFFECT_CURE_STATUS
+            && defType1 != TYPE_FLYING && defType2 != TYPE_FLYING
+            && ability != ABILITY_LEVITATE && heldItemEffect != HOLD_EFFECT_AIR_BALLOON)
+            || (heldItemEffect == HOLD_EFFECT_IRON_BALL || gFieldStatuses & STATUS_FIELD_GRAVITY)))
+        {
+            tSpikesLayers = gSideTimers[GetBattlerSide(gActiveBattler)].toxicSpikesAmount;
+            if (tSpikesLayers == 1)
+            {
+                tSpikesDamage = maxHP / 8;
+                if (tSpikesDamage == 0)
+                    tSpikesDamage = 1;
+            }
+            else if (tSpikesLayers >= 2)
+            {
+                tSpikesDamage = maxHP / 16;
+                if (tSpikesDamage == 0)
+                    tSpikesDamage = 1;
+            }
+            hazardDamage += tSpikesDamage;
+        }
+    }
+
+    // Battler will faint to hazards, check to see if another mon can clear them
+    if (hazardDamage > battlerHp)
+    {
+        if (gBattleTypeFlags & BATTLE_TYPE_DOUBLE)
+        {
+            battlerIn1 = gActiveBattler;
+            if (gAbsentBattlerFlags & gBitTable[GetBattlerAtPosition(BATTLE_PARTNER(GetBattlerPosition(gActiveBattler)))])
+                battlerIn2 = gActiveBattler;
+            else
+                battlerIn2 = GetBattlerAtPosition(BATTLE_PARTNER(GetBattlerPosition(gActiveBattler)));
+        }
+        else
+        {
+            battlerIn1 = gActiveBattler;
+            battlerIn2 = gActiveBattler;
+        }
+
+        GetAIPartyIndexes(gActiveBattler, &firstId, &lastId);
+
+        if (GetBattlerSide(gActiveBattler) == B_SIDE_PLAYER)
+            party = gPlayerParty;
+        else
+            party = gEnemyParty;
+
+        for (i = firstId; i < lastId; i++)
+        {
+            if (!IsValidForBattle(&party[i]))
+                continue;
+            if (i == gBattlerPartyIndexes[battlerIn1])
+                continue;
+            if (i == gBattlerPartyIndexes[battlerIn2])
+                continue;
+            if (i == *(gBattleStruct->monToSwitchIntoId + battlerIn1))
+                continue;
+            if (i == *(gBattleStruct->monToSwitchIntoId + battlerIn2))
+                continue;
+            if (IsAceMon(gActiveBattler, i))
+                continue;
+
+            for (j = 0; j < MAX_MON_MOVES; j++)
+            {
+                aiMove = gBattleMons[gActiveBattler].moves[j];
+                if (aiMove == MOVE_RAPID_SPIN || aiMove == MOVE_DEFOG || aiMove == MOVE_MORTAL_SPIN || aiMove == MOVE_TIDY_UP)
+                {
+                    // Have a mon that can clear the hazards, so switching out is okay
+                    return TRUE;
+                }
+            }
+        }
+        // Faints to hazards and party can't clear them, don't switch out
+        return FALSE;
+    }
+    return TRUE;
+}
+
 static bool8 ShouldSwitchIfGameStatePrompt(void)
 {
     bool8 switchMon = FALSE;
@@ -2233,66 +2349,4 @@ static bool32 AI_OpponentCanFaintAiWithMod(u32 healAmount)
         }
     }
     return FALSE;
-}
-
-static bool8 CanMonSurviveHazardSwitchin(void)
-{
-    u32 battlerHp = gBattleMons[gActiveBattler].hp;
-    u8 defType1 = gBattleMons[gActiveBattler].type1, defType2 = gBattleMons[gActiveBattler].type2, tSpikesLayers;
-    u16 heldItemEffect = gItems[gBattleMons[gActiveBattler].item].holdEffect;
-    u32 maxHP = gBattleMons[gActiveBattler].maxHP, ability = gBattleMons[gActiveBattler].ability, status = gBattleMons[gActiveBattler].status1;
-    u32 spikesDamage = 0, tSpikesDamage = 0, hazardDamage = 0;
-    u32 hazardFlags = gSideStatuses[GetBattlerSide(gActiveBattler)] & (SIDE_STATUS_SPIKES | SIDE_STATUS_STEALTH_ROCK | SIDE_STATUS_STICKY_WEB | SIDE_STATUS_TOXIC_SPIKES);
-
-    if (ability == ABILITY_REGENERATOR)
-        battlerHp = (battlerHp * 133) / 100; // Account for Regenerator healing
-    
-    // Check ways mon might avoid all hazards
-    if (ability != ABILITY_MAGIC_GUARD || (heldItemEffect == HOLD_EFFECT_HEAVY_DUTY_BOOTS &&
-        !((gFieldStatuses & STATUS_FIELD_MAGIC_ROOM) || ability == ABILITY_KLUTZ)))
-    {
-        // Stealth Rock
-        if ((hazardFlags & SIDE_STATUS_STEALTH_ROCK) && heldItemEffect != HOLD_EFFECT_HEAVY_DUTY_BOOTS)
-            hazardDamage += GetStealthHazardDamageByTypesAndHP(gBattleMoves[MOVE_STEALTH_ROCK].type, defType1, defType2, switchinCandidate.hp);
-        // Spikes
-        if ((hazardFlags & SIDE_STATUS_SPIKES) && ((defType1 != TYPE_FLYING && defType2 != TYPE_FLYING
-            && ability != ABILITY_LEVITATE && heldItemEffect != HOLD_EFFECT_AIR_BALLOON)
-            || (heldItemEffect == HOLD_EFFECT_IRON_BALL || (gFieldStatuses & STATUS_FIELD_GRAVITY))))
-        {
-            spikesDamage = maxHP / ((5 - gSideTimers[GetBattlerSide(gActiveBattler)].spikesAmount) * 2);
-            if (spikesDamage == 0)
-                spikesDamage = 1;
-            hazardDamage += spikesDamage;
-        }
-        // Toxic Spikes
-        if ((hazardFlags & SIDE_STATUS_TOXIC_SPIKES) && ((defType1 != TYPE_POISON && defType2 != TYPE_POISON
-            && ability != ABILITY_IMMUNITY && ability != ABILITY_POISON_HEAL
-            && status == 0
-            && heldItemEffect != HOLD_EFFECT_CURE_PSN && heldItemEffect != HOLD_EFFECT_CURE_STATUS
-            && defType1 != TYPE_FLYING && defType2 != TYPE_FLYING
-            && ability != ABILITY_LEVITATE && heldItemEffect != HOLD_EFFECT_AIR_BALLOON)
-            || (heldItemEffect == HOLD_EFFECT_IRON_BALL || gFieldStatuses & STATUS_FIELD_GRAVITY)))
-        {
-            tSpikesLayers = gSideTimers[GetBattlerSide(gActiveBattler)].toxicSpikesAmount;
-            if (tSpikesLayers == 1)
-            {
-                tSpikesDamage = maxHP / 8;
-                if (tSpikesDamage == 0)
-                    tSpikesDamage = 1;
-            }
-            else if (tSpikesLayers >= 2)
-            {
-                tSpikesDamage = maxHP / 16;
-                if (tSpikesDamage == 0)
-                    tSpikesDamage = 1;
-            }
-            hazardDamage += tSpikesDamage;
-        }
-    }
-
-    // Battler will die to hazards, don't switch out
-    if (hazardDamage > battlerHp)
-        return FALSE;
-    
-    return TRUE;
 }
