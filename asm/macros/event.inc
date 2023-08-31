@@ -2041,7 +2041,7 @@
 	setvar VAR_0x8001, \canStopEvo
 	setvar VAR_0x8002, \tryMultiple
 	special TrySpecialOverworldEvo
-	.endm
+	.endm	
 
 	@ Calls a msgbox with a desired mugshot, string and msgbox type.
 	CLEAR_MUGSHOT = TRUE
@@ -2053,4 +2053,11 @@
 	.if \clear == CLEAR_MUGSHOT
 		callnative ClearMugshot
 	.endif
+	.endm
+
+	.macro ai_vs_ai_battle trainer1:req, trainer2:req
+	setflag B_FLAG_AI_VS_AI_BATTLE
+	setvar VAR_0x8004, \trainer1
+	callnative CreateTrainerPartyForPlayer
+	trainerbattle_no_intro \trainer2, NULL
 	.endm
