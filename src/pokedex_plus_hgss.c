@@ -5305,7 +5305,7 @@ static bool8 CalculateMoves(void)
         {
             if (GetTMHMMoves(j) == move)
             {
-                sStatsMovesTMHM_ID[numTMHMMoves] = (ITEM_TM01_FOCUS_PUNCH + j);
+                sStatsMovesTMHM_ID[numTMHMMoves] = (ITEM_TM01 + j);
                 numTMHMMoves++;
                 break;
             }
