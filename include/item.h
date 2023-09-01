@@ -2,6 +2,8 @@
 #define GUARD_ITEM_H
 
 #include "constants/item.h"
+#include "constants/items.h"
+#include "constants/tms_hms.h"
 
 typedef void (*ItemUseFunc)(u8);
 
@@ -84,5 +86,26 @@ enum ItemObtainFlags
     FLAG_SET_OBTAINED,
 };
 bool8 GetSetItemObtained(u16 item, u8 caseId);
+
+/* Expands to:
+ * enum
+ * {
+ *   ITEM_TM_FOCUS_PUNCH,
+ *   ...
+ *   ITEM_HM_CUT,
+ *   ...
+ * }; */
+#define ENUM_TM(id) CAT(ITEM_TM_, id),
+#define ENUM_HM(id) CAT(ITEM_HM_, id),
+enum
+{
+    ENUM_TM_START_ = ITEM_TM01 - 1,
+    FOREACH_TM(ENUM_TM)
+
+    ENUM_HM_START_ = ITEM_HM01 - 1,
+    FOREACH_HM(ENUM_HM)
+};
+#undef ENUM_TM
+#undef ENUM_HM
 
 #endif // GUARD_ITEM_H
