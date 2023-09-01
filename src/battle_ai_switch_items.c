@@ -1744,7 +1744,7 @@ static u32 GetBestMonIntegrated(struct Pokemon *party, int firstId, int lastId, 
     u32 playerMove, aiMove, hitsToKO, maxHitsToKO = 0;
     s32 playerMonSpeed = gBattleMons[opposingBattler].speed;
     u16 bestResist = UQ_4_12(1.0), bestResistEffective = UQ_4_12(1.0), typeEffectiveness;
-    u8 atkType1 = gBattleMons[opposingBattler].type1, atkType2 = gBattleMons[opposingBattler].type2, defType1, defType2;
+    u8 atkType1 = gSpeciesInfo[gBattleMons[opposingBattler].species].types[0], atkType2 = gSpeciesInfo[gBattleMons[opposingBattler].species].types[1], defType1, defType2;
 
     // Iterate through mons
     for (i = firstId; i < lastId; i++)
@@ -1895,7 +1895,7 @@ static u32 GetBestMonAfterKOIntegrated(struct Pokemon *party, int firstId, int l
     s32 playerMonSpeed = gBattleMons[opposingBattler].speed, playerMonHP = gBattleMons[opposingBattler].hp;
     u32 hitsToKO, aiMove, playerMove;
     u16 bestResist = UQ_4_12(1.0), bestResistEffective = UQ_4_12(1.0), typeEffectiveness;
-    u8 atkType1 = gBattleMons[opposingBattler].type1, atkType2 = gBattleMons[opposingBattler].type2, defType1, defType2;
+    u8 atkType1 = gSpeciesInfo[gBattleMons[opposingBattler].species].types[0], atkType2 = gSpeciesInfo[gBattleMons[opposingBattler].species].types[1], defType1, defType2;
 
     // Iterate through mons
     for (i = firstId; i < lastId; i++)
