@@ -473,6 +473,7 @@ extern const u8 BattleScript_BerserkGeneRet[];
 extern const u8 BattleScript_TargetFormChangeWithStringNoPopup[];
 extern const u8 BattleScript_DefDown[];
 extern const u8 BattleScript_UltraBurst[];
+extern const u8 BattleScript_ButItFailedAtkCanceler[];
 
 // zmoves
 extern const u8 BattleScript_ZMoveActivateDamaging[];
