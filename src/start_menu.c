@@ -725,7 +725,7 @@ static bool8 HandleStartMenuInput(void)
         return TRUE;
     }
 
-    if (!GetSafariZoneFlag() && !InBattlePyramid() && gSaveBlock2Ptr->playTimeSeconds == 0) 
+    if (!GetSafariZoneFlag() && !InBattlePyramid()) 
     {
         RemoveExtraStartMenuWindows();
         ShowTimeWindow();
