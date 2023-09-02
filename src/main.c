@@ -173,7 +173,7 @@ void AgbMainLoop(void)
         }
 
         PlayTimeCounter_Update();
-        if(advanceRTCCounter >= 180)
+        if(advanceRTCCounter >= 60)
         {
             IterateRTC();
             advanceRTCCounter = 0;
@@ -186,7 +186,7 @@ void AgbMainLoop(void)
 
 static void IterateRTC(void)
 {
-    AdvanceRealtimeClock(1, 0);
+    AdvanceRealtimeClock(0, 1);
 }
 
 static void UpdateLinkAndCallCallbacks(void)
