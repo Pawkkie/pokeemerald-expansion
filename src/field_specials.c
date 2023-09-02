@@ -4576,7 +4576,7 @@ void GetDayOrNight(void)
 {
 	u8 nightorday;
 	RtcCalcLocalTime();
-	if (gLocalTime.hours >= 8 && gLocalTime.hours <= 20) // 12 hour day window, 12 hour night window
+	if (gLocalTime.hours >= 8 && gLocalTime.hours < 20) // 8am to 8pm = day, 8pm to 8am = night
 	{
 		nightorday = 0; //Day
 	}
