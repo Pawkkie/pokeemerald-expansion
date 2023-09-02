@@ -5790,6 +5790,7 @@ static const struct TrainerMon sParty_Nancy[] = {
     .iv = 0,
     .lvl = 22,
     .species = SPECIES_PONYTA,
+    .moves = {MOVE_TOXIC_SPIKES, MOVE_STEALTH_ROCK}
     },
     {
     .iv = 0,
