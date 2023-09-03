@@ -595,7 +595,7 @@ static void InheritIVs(struct Pokemon *egg, struct DayCare *daycare)
     u8 howManyIVs = 3;
 
     if (motherItem == ITEM_DESTINY_KNOT || fatherItem == ITEM_DESTINY_KNOT)
-        howManyIVs = 5;
+        howManyIVs = 6;
 
     // Initialize a list of IV indices.
     for (i = 0; i < NUM_STATS; i++)
@@ -647,10 +647,26 @@ static void InheritIVs(struct Pokemon *egg, struct DayCare *daycare)
         #endif
     }
 
-    // Determine which parent each of the selected IVs should inherit from.
-    for (i = start; i < howManyIVs; i++)
+    // Inherit IVs only from parent holding Destiny Knot
+    if (motherItem == ITEM_DESTINY_KNOT && fatherItem != ITEM_DESTINY_KNOT)
     {
-        whichParents[i] = Random() % DAYCARE_MON_COUNT;
+        for (i = start; i < howManyIVs; i++)
+            whichParents[i] = 0;
+    }
+
+    else if (fatherItem == ITEM_DESTINY_KNOT && fatherItem != ITEM_DESTINY_KNOT)
+    {
+        for (i = start; i < howManyIVs; i++)
+            whichParents[i] = 1;
+    }
+
+    else
+    {
+        // Determine which parent each of the selected IVs should inherit from.
+        for (i = start; i < howManyIVs; i++)
+        {
+            whichParents[i] = Random() % DAYCARE_MON_COUNT;
+        }
     }
 
     // Set each of inherited IVs on the egg mon.
