@@ -42,7 +42,7 @@ SINGLE_BATTLE_TEST("Toxic Spikes inflicts bad poison on switch in")
         ANIMATION(ANIM_TYPE_MOVE, MOVE_TOXIC_SPIKES, player);
         MESSAGE("Poison Spikes were scattered all around the opposing team's feet!");
         MESSAGE("2 sent out Wynaut!");
-        ANIMATION(ANIM_TYPE_STATUS, B_ANIM_STATUS_PSN, opponent);
+        ANIMATION(ANIM_TYPE_STATUS, B_ANIM_STATUS_TOX, opponent);
         STATUS_ICON(opponent, badPoison: TRUE);
     }
 }
@@ -67,7 +67,7 @@ SINGLE_BATTLE_TEST("Toxic Spikes fails after 2 layers")
         MESSAGE("Wobbuffet used Toxic Spikes!");
         MESSAGE("But it failed!");
         MESSAGE("2 sent out Wynaut!");
-        ANIMATION(ANIM_TYPE_STATUS, B_ANIM_STATUS_PSN, opponent);
+        ANIMATION(ANIM_TYPE_STATUS, B_ANIM_STATUS_TOX, opponent);
         STATUS_ICON(opponent, badPoison: TRUE);
     }
 }

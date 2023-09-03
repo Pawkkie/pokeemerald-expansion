@@ -16,7 +16,7 @@ SINGLE_BATTLE_TEST("Toxic inflicts bad poison")
         TURN {}
     } SCENE {
         ANIMATION(ANIM_TYPE_MOVE, MOVE_TOXIC, player);
-        ANIMATION(ANIM_TYPE_STATUS, B_ANIM_STATUS_PSN, opponent);
+        ANIMATION(ANIM_TYPE_STATUS, B_ANIM_STATUS_TOX, opponent);
         STATUS_ICON(opponent, badPoison: TRUE);
     }
 }
@@ -37,11 +37,11 @@ SINGLE_BATTLE_TEST("Toxic cannot miss if used by a Poison-type")
     } SCENE {
         if (hit) {
             ANIMATION(ANIM_TYPE_MOVE, MOVE_TOXIC, player);
-            ANIMATION(ANIM_TYPE_STATUS, B_ANIM_STATUS_PSN, opponent);
+            ANIMATION(ANIM_TYPE_STATUS, B_ANIM_STATUS_TOX, opponent);
             STATUS_ICON(opponent, badPoison: TRUE);
         } else {
             NOT ANIMATION(ANIM_TYPE_MOVE, MOVE_TOXIC, player);
-            NOT ANIMATION(ANIM_TYPE_STATUS, B_ANIM_STATUS_PSN, opponent);
+            NOT ANIMATION(ANIM_TYPE_STATUS, B_ANIM_STATUS_TOX, opponent);
             NOT STATUS_ICON(opponent, badPoison: TRUE);
         }
     }
