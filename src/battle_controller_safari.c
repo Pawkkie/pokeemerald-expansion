@@ -187,9 +187,9 @@ static void HandleInputChooseAction(u32 battler)
     else if (JOY_NEW(B_BUTTON))
     {
         PlaySE(SE_SELECT);
-        ActionSelectionDestroyCursorAt(gActionSelectionCursor[gActiveBattler]);
-        gActionSelectionCursor[gActiveBattler] = 3;
-        ActionSelectionCreateCursorAt(gActionSelectionCursor[gActiveBattler], 0);
+        ActionSelectionDestroyCursorAt(gActionSelectionCursor[battler]);
+        gActionSelectionCursor[battler] = 3;
+        ActionSelectionCreateCursorAt(gActionSelectionCursor[battler], 0);
     }
 }
 

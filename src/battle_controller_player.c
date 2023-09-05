@@ -95,9 +95,9 @@ static void PrintLinkStandbyMsg(void);
 
 static void ReloadMoveNames(u32 battler);
 
-static void MoveSelectionDisplayMoveDescription(void);
-static void MoveSelectionDisplaySplitIcon(void);
-static void MoveSelectionDisplayTypeIcon(u8);
+static void MoveSelectionDisplayMoveDescription(u32 battler);
+static void MoveSelectionDisplaySplitIcon(u32 battler);
+static void MoveSelectionDisplayTypeIcon(u8 type);
 
 static void (*const sPlayerBufferCommands[CONTROLLER_CMDS_COUNT])(u32 battler) =
 {
@@ -400,9 +400,9 @@ static void HandleInputChooseAction(u32 battler)
             if(!(gBattleTypeFlags & BATTLE_TYPE_TRAINER)) //if wild, pressing B moves cursor to run
             {
                 PlaySE(SE_SELECT);
-                ActionSelectionDestroyCursorAt(gActionSelectionCursor[gActiveBattler]);
-                gActionSelectionCursor[gActiveBattler] = 3;
-                ActionSelectionCreateCursorAt(gActionSelectionCursor[gActiveBattler], 0);
+                ActionSelectionDestroyCursorAt(gActionSelectionCursor[battler]);
+                gActionSelectionCursor[battler] = 3;
+                ActionSelectionCreateCursorAt(gActionSelectionCursor[battler], 0);
             }
         }
     }
@@ -816,7 +816,7 @@ static void HandleInputChooseMove(u32 battler)
             MoveSelectionDisplayPpNumber(battler);
             MoveSelectionDisplayMoveType(battler);
             if (sDescriptionSubmenu)
-                MoveSelectionDisplayMoveDescription();
+                MoveSelectionDisplayMoveDescription(battler);
             TryChangeZIndicator(battler, gMoveSelectionCursor[battler]);
         }
     }
@@ -832,7 +832,7 @@ static void HandleInputChooseMove(u32 battler)
             MoveSelectionDisplayPpNumber(battler);
             MoveSelectionDisplayMoveType(battler);
             if (sDescriptionSubmenu)
-                MoveSelectionDisplayMoveDescription();
+                MoveSelectionDisplayMoveDescription(battler);
             TryChangeZIndicator(battler, gMoveSelectionCursor[battler]);
         }
     }
@@ -847,7 +847,7 @@ static void HandleInputChooseMove(u32 battler)
             MoveSelectionDisplayPpNumber(battler);
             MoveSelectionDisplayMoveType(battler);
             if (sDescriptionSubmenu)
-                MoveSelectionDisplayMoveDescription();
+                MoveSelectionDisplayMoveDescription(battler);
             TryChangeZIndicator(battler, gMoveSelectionCursor[battler]);
         }
     }
@@ -863,7 +863,7 @@ static void HandleInputChooseMove(u32 battler)
             MoveSelectionDisplayPpNumber(battler);
             MoveSelectionDisplayMoveType(battler);
             if (sDescriptionSubmenu)
-                MoveSelectionDisplayMoveDescription();
+                MoveSelectionDisplayMoveDescription(battler);
             TryChangeZIndicator(battler, gMoveSelectionCursor[battler]);
         }
     }
@@ -899,7 +899,7 @@ static void HandleInputChooseMove(u32 battler)
     else if (JOY_NEW(START_BUTTON) && !(CanMegaEvolve(battler))) //AdditionalBattleInfo only displays when mega evolving isn't possible, so they don't conflict
     {
         sDescriptionSubmenu = TRUE;
-        MoveSelectionDisplayMoveDescription();
+        MoveSelectionDisplayMoveDescription(battler);
     }
     else if (JOY_NEW(START_BUTTON))
     {
@@ -1719,15 +1719,15 @@ static void MoveSelectionDisplayMoveType(u32 battler)
 
     // StringCopy(txtPtr, gTypeNames[gBattleMoves[moveInfo->moves[gMoveSelectionCursor[battler]]].type]);
     // BattlePutTextOnWindow(gDisplayedStringBattle, B_WIN_MOVE_TYPE);
-    type = gBattleMoves[moveInfo->moves[gMoveSelectionCursor[gActiveBattler]]].type;
+    type = gBattleMoves[moveInfo->moves[gMoveSelectionCursor[battler]]].type;
     MoveSelectionDisplayTypeIcon(type);
-    MoveSelectionDisplaySplitIcon();
+    MoveSelectionDisplaySplitIcon(battler);
 }
 
-static void MoveSelectionDisplayMoveDescription(void)
+static void MoveSelectionDisplayMoveDescription(u32 battler)
 {
-    struct ChooseMoveStruct *moveInfo = (struct ChooseMoveStruct*)(&gBattleResources->bufferA[gActiveBattler][4]);
-    u16 move = moveInfo->moves[gMoveSelectionCursor[gActiveBattler]];
+    struct ChooseMoveStruct *moveInfo = (struct ChooseMoveStruct*)(&gBattleResources->bufferA[battler][4]);
+    u16 move = moveInfo->moves[gMoveSelectionCursor[battler]];
     u16 pwr = gBattleMoves[move].power;
     u16 acc = gBattleMoves[move].accuracy;
     u16 pri = gBattleMoves[move].priority;
@@ -2308,14 +2308,15 @@ static void PlayerHandleBattleDebug(u32 battler)
     gBattlerControllerFuncs[battler] = Controller_WaitForDebug;
 }
 
-static void MoveSelectionDisplaySplitIcon(void){
+static void MoveSelectionDisplaySplitIcon(u32 battler)
+{
 	static const u16 sSplitIcons_Pal[] = INCBIN_U16("graphics/interface/split_icons_battle.gbapal");
 	static const u8 sSplitIcons_Gfx[] = INCBIN_U8("graphics/interface/split_icons_battle.4bpp");
 	struct ChooseMoveStruct *moveInfo;
 	int icon;
 
-	moveInfo = (struct ChooseMoveStruct*)(&gBattleResources->bufferA[gActiveBattler][4]);
-	icon = GetBattleMoveSplit(moveInfo->moves[gMoveSelectionCursor[gActiveBattler]]);
+	moveInfo = (struct ChooseMoveStruct*)(&gBattleResources->bufferA[battler][4]);
+	icon = GetBattleMoveSplit(moveInfo->moves[gMoveSelectionCursor[battler]]);
 	LoadPalette(sSplitIcons_Pal, 10 * 0x10, 0x20);
 	BlitBitmapToWindow(B_WIN_SPLIT_ICON, sSplitIcons_Gfx + 0x80 * icon, 0, 0, 16, 16);
 	PutWindowTilemap(B_WIN_SPLIT_ICON);
