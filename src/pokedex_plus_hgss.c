@@ -5273,31 +5273,6 @@ static bool8 CalculateMoves(void)
         sStatsMoves[movesTotal] = statsMovesLevelUp[i];
         movesTotal++;
     }
-
-    #ifndef BATTLE_ENGINE
-    //TMHM moves
-    for (j = 0; j < NUM_TECHNICAL_MACHINES + NUM_HIDDEN_MACHINES; j++)
-    {
-        if (CanSpeciesLearnTMHM(species, j))
-        {
-            sStatsMoves[movesTotal] = ItemIdToBattleMoveId(ITEM_TM01_FOCUS_PUNCH + j);
-            movesTotal++;
-            sStatsMovesTMHM_ID[numTMHMMoves] = (ITEM_TM01_FOCUS_PUNCH + j);
-            numTMHMMoves++;
-        }
-    }
-
-    //Tutor moves
-    for (i=0; i < TUTOR_MOVE_COUNT; i++)
-    {
-        if (CanLearnTutorMove(species, i)) //if (sTutorLearnsets[species] & (1 << i))
-        {
-            sStatsMoves[movesTotal] = gTutorMoves[i];
-            numTutorMoves++;
-            movesTotal++;
-        }
-    }
-    #else
     for (i = 0; gTeachableLearnsets[species][i] != MOVE_UNAVAILABLE; i++)
     {
         move = gTeachableLearnsets[species][i];
@@ -5316,8 +5291,6 @@ static bool8 CalculateMoves(void)
         sStatsMoves[movesTotal] = move;
         movesTotal++;
     }
-
-    #endif
 
     sPokedexView->numEggMoves = numEggMoves;
     sPokedexView->numLevelUpMoves = numLevelUpMoves;
