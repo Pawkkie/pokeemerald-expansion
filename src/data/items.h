@@ -6205,7 +6205,7 @@ const struct Item gItems[] =
 
     [ITEM_CLEANSE_TAG] =
     {
-        .name = _("Cleanse Tag"),
+        .name = _("Repellent"),
         .itemId = ITEM_CLEANSE_TAG,
         .price = 0,
         .importance = 1,
