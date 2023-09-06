@@ -551,3 +551,5 @@ gSpecials::
 	def_special BufferChosenMonNature
 	def_special ChangePokemonNature
 	def_special GetDayOrNight
+	def_special EnterCheatCode
+	def_special GetCheatCodeFeedback

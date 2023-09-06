@@ -67,6 +67,7 @@
 #include "palette.h"
 #include "battle_util.h"
 #include "event_data.h"
+#include "naming_screen.h"
 
 #define TAG_ITEM_ICON 5500
 
@@ -4585,4 +4586,18 @@ void GetDayOrNight(void)
 		nightorday = 1; //Night
 	}
 	gSpecialVar_Result = nightorday;
+}
+
+void EnterCheatCode(void)
+{
+    DoNamingScreen(NAMING_SCREEN_CHEAT_CODE, gStringVar2, 0, 0, 0, CB2_ReturnToFieldContinueScript);
+}
+
+void GetCheatCodeFeedback(void)
+{
+    static const u8 sText_CheatCodeCandyJar[] = _("Nomnomnom");
+    if (!StringCompare(gStringVar2, sText_CheatCodeCandyJar))
+        gSpecialVar_Result = 1;
+    else
+        gSpecialVar_Result = 0;
 }
