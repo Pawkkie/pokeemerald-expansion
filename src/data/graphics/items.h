@@ -2006,6 +2006,9 @@ const u32 gItemIconPalette_PowerGlove[] = INCBIN_U32("graphics/items/icon_palett
 const u32 gItemIcon_ScubaGear[] = INCBIN_U32("graphics/items/icons/scuba_gear.4bpp.lz");
 const u32 gItemIconPalette_ScubaGear[] = INCBIN_U32("graphics/items/icon_palettes/scuba_gear.gbapal.lz");
 
+const u32 gItemIcon_PicnicBasket[] = INCBIN_U32("graphics/items/icons/picnic_basket.4bpp.lz");
+const u32 gItemIconPalette_PicnicBasket[] = INCBIN_U32("graphics/items/icon_palettes/picnic_basket.gbapal.lz");
+
 // Tera Shards here
 
 const u32 gItemIcon_AdamantCrystal[] = INCBIN_U32("graphics/items/icons/adamant_crystal.4bpp.lz");

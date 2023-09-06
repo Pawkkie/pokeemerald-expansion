@@ -9039,6 +9039,8 @@ extern const u32 gItemIcon_PowerGlove[];
 extern const u32 gItemIconPalette_PowerGlove[];
 extern const u32 gItemIcon_ScubaGear[];
 extern const u32 gItemIconPalette_ScubaGear[];
+extern const u32 gItemIcon_PicnicBasket[];
+extern const u32 gItemIconPalette_PicnicBasket[];
 
 
 // GEN IX ITEMS

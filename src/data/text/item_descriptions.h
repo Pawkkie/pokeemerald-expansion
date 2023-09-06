@@ -3920,9 +3920,9 @@ static const u8 sLanternDesc[] = _(
     "caves.");
 
 static const u8 sPokeVialDesc[] = _(
-    "Potent medicine\n"
-    "that fully restores\n"
-    "all Pokémon.");
+    "Full of snacks\n"
+    "that will fully heal\n"
+    "all your Pokémon.");
 
 static const u8 sCandyJarDesc[] = _(
     "A bottomless\n"
