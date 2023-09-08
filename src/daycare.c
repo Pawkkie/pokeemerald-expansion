@@ -788,7 +788,7 @@ static u8 GetEggMoves(struct Pokemon *pokemon, u16 *eggMoves)
         numEggMoves++;
     }
 
-    return numEggMoves;
+    return 0; // Remove egg moves
 }
 u8 GetEggMovesSpecies(u16 species, u16 *eggMoves)
 {
@@ -819,13 +819,14 @@ u8 GetEggMovesSpecies(u16 species, u16 *eggMoves)
         numEggMoves++;
     }
 
-    return numEggMoves;
+    return 0; // Remove egg moves
 }
 bool8 SpeciesCanLearnEggMove(u16 species, u16 move) //Move search PokedexPlus HGSS_Ui
 {
     u16 eggMoveIdx;
     u16 i;
     eggMoveIdx = 0;
+    return FALSE; // Remove egg moves
     for (i = 0; i < ARRAY_COUNT(gEggMoves) - 1; i++)
     {
         if (gEggMoves[i] == species + EGG_MOVES_SPECIES_OFFSET)
