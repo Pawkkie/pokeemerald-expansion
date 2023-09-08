@@ -4034,8 +4034,6 @@ static void Cmd_jumpbasedontype(void)
     }
 }
 
-FEATURE_FLAG_ASSERT(I_EXP_SHARE_FLAG, YouNeedToSetTheExpShareFlagToAnUnusedFlag);
-
 static void Cmd_getexp(void)
 {
     CMD_ARGS(u8 battler);
