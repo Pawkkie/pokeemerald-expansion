@@ -50,7 +50,7 @@
 #define FLAG_REMOTE_PC       0x25 // Allows player to use remote PC from Pokenav
 #define FLAG_MET_NATURE_CHANGER 0x26 // Checks if nature changer has been spoken to before
 #define FLAG_CAN_WATERFALL   0x27 // Checks if player has been taught how to ride up waterfalls
-#define FLAG_UNUSED_0x028    0x28 // Unused Flag
+#define FLAG_DISABLE_BAG     0x28 // Used to disable item use in battle
 #define FLAG_UNUSED_0x029    0x29 // Unused Flag
 #define FLAG_UNUSED_0x02A    0x2A // Unused Flag
 #define FLAG_UNUSED_0x02B    0x2B // Unused Flag
