@@ -379,3 +379,5 @@ const u16 gObjectEventPal_HoOh[] = INCBIN_U16("graphics/object_events/palettes/h
 // New OWs
 const u32 gObjectEventPic_GoldItemBall[] = INCBIN_U32("graphics/object_events/pics/misc/gold_item_ball.4bpp");
 const u32 gObjectEventPic_MegaStone[] = INCBIN_U32("graphics/object_events/pics/misc/mega_stone.4bpp");
+const u32 gObjectEventPic_Gamecube[] = INCBIN_U32("graphics/object_events/pics/misc/gamecube.4bpp");
+const u16 gObjectEventPal_Gamecube[] = INCBIN_U16("graphics/object_events/palettes/gamecube.gbapal");

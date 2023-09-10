@@ -1435,7 +1435,10 @@ static void NamingScreen_CreateWaldaDadIcon(void)
 
 static void NamingScreen_CreateCheatCodeIcon(void)
 {
-    // TODO
+    u8 spriteId;
+
+    spriteId = CreateObjectGraphicsSprite(OBJ_EVENT_GFX_GAMECUBE, SpriteCallbackDummy, 56, 48, 0);
+    gSprites[spriteId].oam.priority = 3;
 }
 
 //--------------------------------------------------
@@ -2142,7 +2145,7 @@ static const u8 sText_CheatCode[] = _("Enter cheat code:");
 static const struct NamingScreenTemplate sCheatCodeScreenTemplate = 
 {
     .copyExistingString = FALSE,
-    .maxChars = WALDA_PHRASE_LENGTH,
+    .maxChars = POKEMON_NAME_LENGTH,
     .iconFunction = 5,
     .addGenderIcon = FALSE,
     .initialPage = KBPAGE_LETTERS_UPPER,

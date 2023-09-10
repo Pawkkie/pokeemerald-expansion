@@ -243,6 +243,7 @@
 // New OWs
 #define OBJ_EVENT_GFX_GOLD_ITEM_BALL             239
 #define OBJ_EVENT_GFX_MEGA_STONE                 240
+#define OBJ_EVENT_GFX_GAMECUBE                   241
 
 // NOTE: By default, the max value for NUM_OBJ_EVENT_GFX is 239.
 //

@@ -2190,3 +2190,7 @@ const struct SpriteFrameImage sPicTable_MegaStone[] = {
     overworld_frame(gObjectEventPic_MegaStone, 2, 2, 0),
     overworld_frame(gObjectEventPic_MegaStone, 2, 2, 0),
 };
+
+const struct SpriteFrameImage sPicTable_GameCube[] = {
+    obj_frame_tiles(gObjectEventPic_Gamecube),
+};
