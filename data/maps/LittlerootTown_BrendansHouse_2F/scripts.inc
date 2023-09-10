@@ -30,6 +30,41 @@ LittlerootTown_BrendansHouse_2F_EventScript_TryUpdateBrendanPos::
 LittlerootTown_BrendansHouse_2F_EventScript_Ret::
 	return
 
+LittlerootTown_BrendansHouse_2F_GamecubeEnterCheatCode::
+	lockall
+	msgbox EnterCheatCode_EnterCheatCodeText, MSGBOX_YESNO
+	compare VAR_RESULT, 0
+	goto_if_eq CheatCodeExit
+	special EnterCheatCode
+	waitstate
+	special GetCheatCodeFeedback
+	goto_if_eq VAR_RESULT, 0, CheatCodeFailed
+	goto_if_eq VAR_RESULT, 1, CheatCodeCandyJar
+	end
+
+CheatCodeFailed::
+	msgbox EnterCheatCode_FailedText, MSGBOX_DEFAULT
+	releaseall
+	end
+
+CheatCodeCandyJar::
+	msgbox EnterCheatCode_SucceededText, MSGBOX_DEFAULT
+	giveitem ITEM_CANDY_JAR, 1
+	releaseall
+	end
+
+CheatCodeExit::
+	releaseall
+	end
+
+EnterCheatCode_EnterCheatCodeText:
+	.string "It's a Nintendo GameCube.\p"
+	.string "Enter a cheat code?$"
+EnterCheatCode_FailedText:
+	.string "...nothing happened.$"
+EnterCheatCode_SucceededText:
+	.string "The code worked!$"
+
 LittlerootTown_BrendansHouse_2F_EventScript_CheckSetReadyToMeetBrendan::
 	checkplayergender
 	goto_if_eq VAR_RESULT, FEMALE, LittlerootTown_BrendansHouse_2F_EventScript_SetReadyToMeetBrendan

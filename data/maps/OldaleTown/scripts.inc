@@ -31,19 +31,6 @@ OldaleTown_EventScript_MoveMartEmployee::
 
 OldaleTown_EventScript_TownSign::
 	msgbox OldaleTown_Text_TownSign, MSGBOX_SIGN
-	special EnterCheatCode
-	waitstate
-	special GetCheatCodeFeedback
-	goto_if_eq VAR_RESULT, 0, Test_CheatCodeFailed
-	goto_if_eq VAR_RESULT, 1, Test_CheatCodeCandyJar
-	end
-
-Test_CheatCodeFailed::
-	end
-
-Test_CheatCodeCandyJar::
-	giveitem ITEM_CANDY_JAR, 1
-	release
 	end
 
 OldaleTown_EventScript_Girl::
