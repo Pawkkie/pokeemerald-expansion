@@ -235,7 +235,6 @@ const struct Item gItems[] =
     [ITEM_FRIEND_BALL] =
     {
         .name = _("Friend Ball"),
-        .itemId = ITEM_FRIEND_BALL,
         .price = 1000,
         .description = sFriendBallDesc,
         .pocket = POCKET_POKE_BALLS,
@@ -284,7 +283,6 @@ const struct Item gItems[] =
     [ITEM_DREAM_BALL] =
     {
         .name = _("Dream Ball"),
-        .itemId = ITEM_DREAM_BALL,
         .price = 1000,
         .description = sDreamBallDesc,
         .pocket = POCKET_POKE_BALLS,
@@ -5666,7 +5664,6 @@ const struct Item gItems[] =
     [ITEM_EXP_SHARE] =
     {
         .name = _("Exp. Share"),
-        .itemId = ITEM_EXP_SHARE,
         .price = 0,
         .importance = 1,
         .description = sExpShareDesc,
@@ -5742,7 +5739,6 @@ const struct Item gItems[] =
     [ITEM_CLEANSE_TAG] =
     {
         .name = _("Repellent"),
-        .itemId = ITEM_CLEANSE_TAG,
         .price = 0,
         .importance = 1,
         .description = sCleanseTagDesc,
@@ -8674,7 +8670,6 @@ const struct Item gItems[] =
     [ITEM_ACRO_BIKE] =
     {
         .name = _("Bike"),
-        .itemId = ITEM_ACRO_BIKE,
         .price = 0,
         .description = sAcroBikeDesc,
         .importance = 1,
@@ -8844,7 +8839,6 @@ const struct Item gItems[] =
     [ITEM_SOOT_SACK] =
     {
         .name = _("SOOT SACK"),
-        .itemId = ITEM_SOOT_SACK,
         .price = 0,
         .description = sSootSackDesc,
         .importance = 1,
@@ -9673,7 +9667,6 @@ const struct Item gItems[] =
     [ITEM_TAXI_TICKET] =
     {
         .name = _("Taxi Ticket"),
-        .itemId = ITEM_TAXI_TICKET,
         .price = 0,
         .importance = 1,
         .description = sTaxiTicketDesc,
@@ -9686,7 +9679,6 @@ const struct Item gItems[] =
     [ITEM_LANTERN] =
     {
         .name = _("Lantern"),
-        .itemId = ITEM_LANTERN,
         .price = 0,
         .importance = 1,
         .description = sLanternDesc,
@@ -9699,7 +9691,6 @@ const struct Item gItems[] =
     [ITEM_POKEVIAL] =
     {
         .name = _("Picnic Basket"),
-        .itemId = ITEM_POKEVIAL,
         .price = 0,
         .importance = 1,
         .description = sPokeVialDesc,
@@ -9712,7 +9703,6 @@ const struct Item gItems[] =
     [ITEM_CANDY_JAR] =
     {
         .name = _("Candy Jar"),
-        .itemId = ITEM_CANDY_JAR,
         .price = 0,
         .importance = 1,
         .description = sCandyJarDesc,
@@ -9725,7 +9715,6 @@ const struct Item gItems[] =
     [ITEM_TRAINING_BAND] =
     {
         .name = _("Training Band"),
-        .itemId = ITEM_TRAINING_BAND,
         .price = 5000,
         .holdEffect = HOLD_EFFECT_TRAINING_BAND,
         .description = sTrainingBandDesc,
@@ -9737,7 +9726,6 @@ const struct Item gItems[] =
     [ITEM_TYPE_CHART] =
     {
         .name = _("Type Chart"),
-        .itemId = ITEM_TYPE_CHART,
         .price = 0,
         .description = sTypeChartDesc,
         .importance = 1,
@@ -9749,7 +9737,6 @@ const struct Item gItems[] =
     [ITEM_COND_CHECKER] =
     {
         .name = _("Cond. Checker"),
-        .itemId = ITEM_COND_CHECKER,
         .price = 0,
         .description = sCondCheckerDesc,
         .importance = 1,
@@ -9760,7 +9747,6 @@ const struct Item gItems[] =
     [ITEM_AXE] =
     {
         .name = _("Axe"),
-        .itemId = ITEM_AXE,
         .price = 0,
         .importance = 1,
         .description = sAxeDesc,
@@ -9771,7 +9757,6 @@ const struct Item gItems[] =
     [ITEM_PICKAXE] =
     {
         .name = _("Pickaxe"),
-        .itemId = ITEM_PICKAXE,
         .price = 0,
         .importance = 1,
         .description = sPickaxeDesc,
@@ -9782,7 +9767,6 @@ const struct Item gItems[] =
     [ITEM_POWER_GLOVES] =
     {
         .name = _("Power Gloves"),
-        .itemId = ITEM_POWER_GLOVES,
         .price = 0,
         .importance = 1,
         .description = sPowerGloveDesc,
@@ -9793,7 +9777,6 @@ const struct Item gItems[] =
     [ITEM_WAILMER_SNACK] =
     {
         .name = _("Wailmer Snack"),
-        .itemId = ITEM_WAILMER_SNACK,
         .price = 0,
         .importance = 1,
         .description = sWailmerSnacksDesc,
@@ -9804,7 +9787,6 @@ const struct Item gItems[] =
     [ITEM_SCUBA_GEAR] =
     {
         .name = _("Scuba Gear"),
-        .itemId = ITEM_SCUBA_GEAR,
         .price = 0,
         .importance = 1,
         .description = sScubaGearDesc,
