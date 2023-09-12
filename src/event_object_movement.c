@@ -439,6 +439,7 @@ const u8 gInitialMovementTypeFacingDirections[] = {
 // New OWs
 #define OBJ_EVENT_PAL_TAG_GAMECUBE                0x1124
 #define OBJ_EVENT_PAL_TAG_LASS_HGSS               0x1125
+#define OBJ_EVENT_PAL_TAG_BREEDER_F_HGSS          0x1126
 
 #define OBJ_EVENT_PAL_TAG_NONE                    0x11FF
 
@@ -488,6 +489,7 @@ static const struct SpritePalette sObjectEventSpritePalettes[] = {
     {gObjectEventPal_RubySapphireMay,       OBJ_EVENT_PAL_TAG_RS_MAY},
     {gObjectEventPal_Gamecube,              OBJ_EVENT_PAL_TAG_GAMECUBE}, // New OWs
     {gObjectEventPal_LassHGSS,              OBJ_EVENT_PAL_TAG_LASS_HGSS},
+    {gObjectEventPal_BreederFHGSS,          OBJ_EVENT_PAL_TAG_BREEDER_F_HGSS},
 #ifdef BUGFIX
     {NULL,                                  OBJ_EVENT_PAL_TAG_NONE},
 #else

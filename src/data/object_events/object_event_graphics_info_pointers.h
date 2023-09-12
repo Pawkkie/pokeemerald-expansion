@@ -250,6 +250,7 @@ extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_GoldItemBal
 extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_MegaStone;
 extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Gamecube;
 extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_LassHGSS;
+extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_BreederFHGSS;
 
 const struct ObjectEventGraphicsInfo *const gObjectEventGraphicsInfoPointers[NUM_OBJ_EVENT_GFX] = {
     [OBJ_EVENT_GFX_BRENDAN_NORMAL] =           &gObjectEventGraphicsInfo_BrendanNormal,
@@ -495,6 +496,7 @@ const struct ObjectEventGraphicsInfo *const gObjectEventGraphicsInfoPointers[NUM
     [OBJ_EVENT_GFX_MEGA_STONE] =               &gObjectEventGraphicsInfo_MegaStone,
     [OBJ_EVENT_GFX_GAMECUBE] =                 &gObjectEventGraphicsInfo_Gamecube,
     [OBJ_EVENT_GFX_LASS_HGSS] =                &gObjectEventGraphicsInfo_LassHGSS,
+    [OBJ_EVENT_GFX_BREEDER_F_HGSS] =           &gObjectEventGraphicsInfo_BreederFHGSS,
 };
 
 const struct ObjectEventGraphicsInfo *const gMauvilleOldManGraphicsInfoPointers[] = {
