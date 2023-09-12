@@ -114,6 +114,7 @@
 // New front sprites
 #define TRAINER_PIC_BREEDER_F_HGSS        93
 #define TRAINER_PIC_LASS_HGSS             94
+#define TRAINER_PIC_ROCKET_GRUNT_F_HGSS   95
 
 // The player back pics are assumed to alternate according to the gender values (MALE/FEMALE)
 #define TRAINER_BACK_PIC_BRENDAN                0

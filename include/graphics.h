@@ -7342,6 +7342,8 @@ extern const u32 gTrainerFrontPic_BreederFHGSS[];
 extern const u32 gTrainerPalette_BreederFHGSS[];
 extern const u32 gTrainerFrontPic_LassHGSS[];
 extern const u32 gTrainerPalette_LassHGSS[];
+extern const u32 gTrainerFrontPic_RocketGruntFHGSS[];
+extern const u32 gTrainerPalette_RocketGruntFHGSS[];
 
 extern const u32 gTrainerPalette_Hiker[];
 extern const u32 gTrainerPalette_AquaGruntM[];

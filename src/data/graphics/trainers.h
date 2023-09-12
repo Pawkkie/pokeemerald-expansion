@@ -295,3 +295,6 @@ const u32 gTrainerPalette_BreederFHGSS[] = INCBIN_U32("graphics/trainers/front_p
 
 const u32 gTrainerFrontPic_LassHGSS[] = INCBIN_U32("graphics/trainers/front_pics/lass_hgss.4bpp.lz");
 const u32 gTrainerPalette_LassHGSS[] = INCBIN_U32("graphics/trainers/front_pics/lass_hgss.gbapal.lz");
+
+const u32 gTrainerFrontPic_RocketGruntFHGSS[] = INCBIN_U32("graphics/trainers/front_pics/rocket_grunt_f_hgss.4bpp.lz");
+const u32 gTrainerPalette_RocketGruntFHGSS[] = INCBIN_U32("graphics/trainers/front_pics/rocket_grunt_f_hgss.gbapal.lz");

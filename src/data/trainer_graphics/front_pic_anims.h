@@ -379,6 +379,10 @@ static const union AnimCmd *const sAnims_LassHGSS[] ={
     sAnim_GeneralFrame0,
 };
 
+static const union AnimCmd *const sAnims_RocketGruntFHGSS[] ={
+    sAnim_GeneralFrame0,
+};
+
 const union AnimCmd *const *const gTrainerFrontAnimsPtrTable[] =
 {
     [TRAINER_PIC_HIKER] = sAnims_Hiker,
@@ -476,4 +480,5 @@ const union AnimCmd *const *const gTrainerFrontAnimsPtrTable[] =
     [TRAINER_PIC_RS_MAY] = sAnims_RubySapphireMay,
     [TRAINER_PIC_BREEDER_F_HGSS] = sAnims_BreederFHGSS, // New front sprites
     [TRAINER_PIC_LASS_HGSS] = sAnims_LassHGSS,
+    [TRAINER_PIC_ROCKET_GRUNT_F_HGSS] = sAnims_RocketGruntFHGSS,
 };
