@@ -1143,6 +1143,8 @@ static void ShowItemIconSprite(u16 item, bool8 firstTime, bool8 flash)
     u8 iconSpriteId;   
     u8 spriteId2 = MAX_SPRITES;
 
+    FlagSet(FLAG_ITEM_HEADER);
+
     if (flash)
     {
         SetGpuRegBits(REG_OFFSET_DISPCNT, DISPCNT_OBJWIN_ON);
@@ -1186,6 +1188,7 @@ static void ShowItemIconSprite(u16 item, bool8 firstTime, bool8 flash)
 
 static void DestroyItemIconSprite(void)
 {
+    FlagClear(FLAG_ITEM_HEADER);
     FreeSpriteTilesByTag(ITEM_TAG);
     FreeSpritePaletteByTag(ITEM_TAG);
     FreeSpriteOamMatrix(&gSprites[sItemIconSpriteId]);

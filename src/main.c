@@ -24,6 +24,7 @@
 #include "main.h"
 #include "trainer_hill.h"
 #include "constants/rgb.h"
+#include "event_data.h"
 
 static void VBlankIntr(void);
 static void HBlankIntr(void);
@@ -173,7 +174,7 @@ void AgbMainLoop(void)
         }
 
         PlayTimeCounter_Update();
-        if(advanceRTCCounter >= 60)
+        if(advanceRTCCounter >= 60 && !FlagGet(FLAG_ITEM_HEADER))
         {
             IterateRTC();
             advanceRTCCounter = 0;
