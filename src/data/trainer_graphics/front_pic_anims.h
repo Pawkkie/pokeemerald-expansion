@@ -383,6 +383,38 @@ static const union AnimCmd *const sAnims_RocketGruntFHGSS[] ={
     sAnim_GeneralFrame0,
 };
 
+static const union AnimCmd *const sAnims_BeautyPP[] ={
+    sAnim_GeneralFrame0,
+};
+
+static const union AnimCmd *const sAnims_BugCatcherFPP[] ={
+    sAnim_GeneralFrame0,
+};
+
+static const union AnimCmd *const sAnims_FirebreatherPP[] ={
+    sAnim_GeneralFrame0,
+};
+
+static const union AnimCmd *const sAnims_FishermanPP[] ={
+    sAnim_GeneralFrame0,
+};
+
+static const union AnimCmd *const sAnims_GuardFPP[] ={
+    sAnim_GeneralFrame0,
+};
+
+static const union AnimCmd *const sAnims_GuardMPP[] ={
+    sAnim_GeneralFrame0,
+};
+
+static const union AnimCmd *const sAnims_PsychicMPP[] ={
+    sAnim_GeneralFrame0,
+};
+
+static const union AnimCmd *const sAnims_RocketGruntFPP[] ={
+    sAnim_GeneralFrame0,
+};
+
 const union AnimCmd *const *const gTrainerFrontAnimsPtrTable[] =
 {
     [TRAINER_PIC_HIKER] = sAnims_Hiker,
@@ -481,4 +513,12 @@ const union AnimCmd *const *const gTrainerFrontAnimsPtrTable[] =
     [TRAINER_PIC_BREEDER_F_HGSS] = sAnims_BreederFHGSS, // New front sprites
     [TRAINER_PIC_LASS_HGSS] = sAnims_LassHGSS,
     [TRAINER_PIC_ROCKET_GRUNT_F_HGSS] = sAnims_RocketGruntFHGSS,
+    [TRAINER_PIC_BEAUTY_PP] = sAnims_BeautyPP,
+    [TRAINER_PIC_BUG_CATCHER_F_PP] = sAnims_BugCatcherFPP,
+    [TRAINER_PIC_FIREBREATHER_PP] = sAnims_FirebreatherPP,
+    [TRAINER_PIC_FISHERMAN_PP] = sAnims_FishermanPP,
+    [TRAINER_PIC_GUARD_F_PP] = sAnims_GuardFPP,
+    [TRAINER_PIC_GUARD_M_PP] = sAnims_GuardMPP,
+    [TRAINER_PIC_PSYCHIC_M_PP] = sAnims_PsychicMPP,
+    [TRAINER_PIC_ROCKET_GRUNT_F_PP] = sAnims_RocketGruntFPP,
 };

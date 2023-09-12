@@ -115,6 +115,14 @@
 #define TRAINER_PIC_BREEDER_F_HGSS        93
 #define TRAINER_PIC_LASS_HGSS             94
 #define TRAINER_PIC_ROCKET_GRUNT_F_HGSS   95
+#define TRAINER_PIC_BEAUTY_PP             96
+#define TRAINER_PIC_BUG_CATCHER_F_PP      97
+#define TRAINER_PIC_FIREBREATHER_PP       98
+#define TRAINER_PIC_FISHERMAN_PP          99
+#define TRAINER_PIC_GUARD_F_PP            100
+#define TRAINER_PIC_GUARD_M_PP            101
+#define TRAINER_PIC_PSYCHIC_M_PP          102
+#define TRAINER_PIC_ROCKET_GRUNT_F_PP     103
 
 // The player back pics are assumed to alternate according to the gender values (MALE/FEMALE)
 #define TRAINER_BACK_PIC_BRENDAN                0

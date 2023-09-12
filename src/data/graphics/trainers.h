@@ -298,3 +298,27 @@ const u32 gTrainerPalette_LassHGSS[] = INCBIN_U32("graphics/trainers/front_pics/
 
 const u32 gTrainerFrontPic_RocketGruntFHGSS[] = INCBIN_U32("graphics/trainers/front_pics/rocket_grunt_f_hgss.4bpp.lz");
 const u32 gTrainerPalette_RocketGruntFHGSS[] = INCBIN_U32("graphics/trainers/front_pics/rocket_grunt_f_hgss.gbapal.lz");
+
+const u32 gTrainerFrontPic_BeautyPP[] = INCBIN_U32("graphics/trainers/front_pics/beauty_pp.4bpp.lz");
+const u32 gTrainerPalette_BeautyPP[] = INCBIN_U32("graphics/trainers/front_pics/beauty_pp.gbapal.lz");
+
+const u32 gTrainerFrontPic_BugCatcherFPP[] = INCBIN_U32("graphics/trainers/front_pics/bug_catcher_f_pp.4bpp.lz");
+const u32 gTrainerPalette_BugCatcherFPP[] = INCBIN_U32("graphics/trainers/front_pics/bug_catcher_f_pp.gbapal.lz");
+
+const u32 gTrainerFrontPic_FirebreatherPP[] = INCBIN_U32("graphics/trainers/front_pics/firebreather_pp.4bpp.lz");
+const u32 gTrainerPalette_FirebreatherPP[] = INCBIN_U32("graphics/trainers/front_pics/firebreather_pp.gbapal.lz");
+
+const u32 gTrainerFrontPic_FishermanPP[] = INCBIN_U32("graphics/trainers/front_pics/fisherman_pp.4bpp.lz");
+const u32 gTrainerPalette_FishermanPP[] = INCBIN_U32("graphics/trainers/front_pics/fisherman_pp.gbapal.lz");
+
+const u32 gTrainerFrontPic_GuardFPP[] = INCBIN_U32("graphics/trainers/front_pics/guard_f_pp.4bpp.lz");
+const u32 gTrainerPalette_GuardFPP[] = INCBIN_U32("graphics/trainers/front_pics/guard_f_pp.gbapal.lz");
+
+const u32 gTrainerFrontPic_GuardMPP[] = INCBIN_U32("graphics/trainers/front_pics/guard_m_pp.4bpp.lz");
+const u32 gTrainerPalette_GuardMPP[] = INCBIN_U32("graphics/trainers/front_pics/guard_m_pp.gbapal.lz");
+
+const u32 gTrainerFrontPic_PsychicMPP[] = INCBIN_U32("graphics/trainers/front_pics/psychic_m_pp.4bpp.lz");
+const u32 gTrainerPalette_PsychicMPP[] = INCBIN_U32("graphics/trainers/front_pics/psychic_m_pp.gbapal.lz");
+
+const u32 gTrainerFrontPic_RocketGruntFPP[] = INCBIN_U32("graphics/trainers/front_pics/rocket_grunt_f_pp.4bpp.lz");
+const u32 gTrainerPalette_RocketGruntFPP[] = INCBIN_U32("graphics/trainers/front_pics/rocket_grunt_f_pp.gbapal.lz");
