@@ -7337,6 +7337,10 @@ extern const u32 gTrainerFrontPic_Leaf[];
 extern const u32 gTrainerFrontPic_RubySapphireBrendan[];
 extern const u32 gTrainerFrontPic_RubySapphireMay[];
 
+// New front sprites
+extern const u32 gTrainerFrontPic_BreederFHGSS[];
+extern const u32 gTrainerPalette_BreederFHGSS[];
+
 extern const u32 gTrainerPalette_Hiker[];
 extern const u32 gTrainerPalette_AquaGruntM[];
 extern const u32 gTrainerPalette_PokemonBreederF[];
