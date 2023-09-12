@@ -3392,48 +3392,16 @@ void FreeRestoreBattleMons(struct BattlePokemon *savedBattleMons)
     Free(savedBattleMons);
 }
 
-void SwitchinCandidateToBattleMon(struct SwitchinCandidate *switchinCandidate, struct BattlePokemon *dst)
-{
-    int i = 0;
-    dst->species = switchinCandidate->species;
-    dst->item = switchinCandidate->item;
-    dst->personality = switchinCandidate->personality;
-    dst->status1 = switchinCandidate->status1;
-    dst->friendship = switchinCandidate->friendship; // Return
-    dst->hpIV = switchinCandidate->hpIV; // Hidden Power
-    dst->attackIV = switchinCandidate->attackIV; // Hidden Power
-    dst->defenseIV = switchinCandidate->defenseIV; // Hidden Power
-    dst->speedIV = switchinCandidate->speedIV; // Hidden Power
-    dst->spAttackIV = switchinCandidate->spAttackIV; // Hidden Power
-    dst->spDefenseIV = switchinCandidate->spDefenseIV; // Hidden Power
-    dst->personality = switchinCandidate->personality; // Gender for Rivary
-    dst->status1 = switchinCandidate->status1; // Wake-Up Slap
-    dst->level = switchinCandidate->level;
-    dst->hp = switchinCandidate->hp;
-    dst->maxHP = switchinCandidate->maxHP;
-    dst->attack = switchinCandidate->attack;
-    dst->defense = switchinCandidate->defense;
-    dst->speed = switchinCandidate->speed; // Electro Ball
-    dst->spAttack = switchinCandidate->spAttack;
-    dst->spDefense = switchinCandidate->spDefense;
-    dst->type1 = switchinCandidate->type1;
-    dst->type2 = switchinCandidate->type2;
-    dst->type3 = switchinCandidate->type3;
-    dst->ability = switchinCandidate->ability;
-    for (i = 0; i < NUM_BATTLE_STATS; i++)
-        dst->statStages[i] = switchinCandidate->statStages[i];
-}
-
 // party logic
-s32 AI_CalcPartyMonDamage(u16 move, u8 battlerAtk, u8 battlerDef, struct SwitchinCandidate *switchinCandidate, bool8 isPartyMonAttacker)
+s32 AI_CalcPartyMonDamage(u16 move, u8 battlerAtk, u8 battlerDef, struct BattlePokemon switchinCandidate, bool8 isPartyMonAttacker)
 {
     s32 dmg, i;
     u8 effectiveness;
     struct BattlePokemon *savedBattleMons = AllocSaveBattleMons();
     if(isPartyMonAttacker)
-        SwitchinCandidateToBattleMon(switchinCandidate, &gBattleMons[battlerAtk]);
+        gBattleMons[battlerAtk] = switchinCandidate;
     else
-        SwitchinCandidateToBattleMon(switchinCandidate, &gBattleMons[battlerDef]);
+        gBattleMons[battlerDef] = switchinCandidate;
     dmg = AI_CalcDamage(move, battlerAtk, battlerDef, &effectiveness, FALSE);
     FreeRestoreBattleMons(savedBattleMons);
     return dmg;
