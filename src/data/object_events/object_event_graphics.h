@@ -381,3 +381,5 @@ const u32 gObjectEventPic_GoldItemBall[] = INCBIN_U32("graphics/object_events/pi
 const u32 gObjectEventPic_MegaStone[] = INCBIN_U32("graphics/object_events/pics/misc/mega_stone.4bpp");
 const u32 gObjectEventPic_Gamecube[] = INCBIN_U32("graphics/object_events/pics/misc/gamecube.4bpp");
 const u16 gObjectEventPal_Gamecube[] = INCBIN_U16("graphics/object_events/palettes/gamecube.gbapal");
+const u32 gObjectEventPic_LassHGSS[] = INCBIN_U32("graphics/object_events/pics/people/lass_hgss.4bpp");
+const u16 gObjectEventPal_LassHGSS[] = INCBIN_U16("graphics/object_events/palettes/lass_hgss.gbapal");
