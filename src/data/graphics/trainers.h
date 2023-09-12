@@ -292,3 +292,6 @@ const u32 gTrainerBackPicPalette_Leaf[] = INCBIN_U32("graphics/trainers/back_pic
 // New front sprites
 const u32 gTrainerFrontPic_BreederFHGSS[] = INCBIN_U32("graphics/trainers/front_pics/breeder_f_hgss.4bpp.lz");
 const u32 gTrainerPalette_BreederFHGSS[] = INCBIN_U32("graphics/trainers/front_pics/breeder_f_hgss.gbapal.lz");
+
+const u32 gTrainerFrontPic_LassHGSS[] = INCBIN_U32("graphics/trainers/front_pics/lass_hgss.4bpp.lz");
+const u32 gTrainerPalette_LassHGSS[] = INCBIN_U32("graphics/trainers/front_pics/lass_hgss.gbapal.lz");
