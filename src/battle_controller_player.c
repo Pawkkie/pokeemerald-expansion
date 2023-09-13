@@ -709,7 +709,7 @@ static void HandleInputChooseMove(u32 battler)
         if (moveTarget & MOVE_TARGET_USER)
             gMultiUsePlayerCursor = battler;
         else
-            gMultiUsePlayerCursor = GetBattlerAtPosition(BATTLE_OPPOSITE(GET_BATTLER_SIDE(battler)));
+            gMultiUsePlayerCursor = GetBattlerAtPosition(BATTLE_OPPOSITE(GetBattlerSide(battler)));
 
         if (!gBattleResources->bufferA[battler][1]) // not a double battle
         {
@@ -1977,6 +1977,19 @@ static void HandleChooseActionAfterDma3(u32 battler)
     {
         gBattle_BG0_X = 0;
         gBattle_BG0_Y = DISPLAY_HEIGHT;
+        if (gBattleStruct->aiDelayTimer != 0)
+        {
+            gBattleStruct->aiDelayFrames = gMain.vblankCounter1 - gBattleStruct->aiDelayTimer;
+            gBattleStruct->aiDelayTimer = 0;
+            #if DEBUG_AI_DELAY_TIMER
+            {
+                static const u8 sText_AIDelay[] = _("AI delay:\n{B_BUFF1} frames");
+                PREPARE_HWORD_NUMBER_BUFFER(gBattleTextBuff1, 3, gBattleStruct->aiDelayFrames);
+                BattleStringExpandPlaceholdersToDisplayedString(sText_AIDelay);
+                BattlePutTextOnWindow(gDisplayedStringBattle, B_WIN_ACTION_PROMPT);
+            }
+            #endif // DEBUG_AI_DELAY_TIMER
+        }
         gBattlerControllerFuncs[battler] = HandleInputChooseAction;
     }
 }
