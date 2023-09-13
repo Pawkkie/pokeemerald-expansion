@@ -123,6 +123,7 @@
 #define TRAINER_PIC_GUARD_M_PP            101
 #define TRAINER_PIC_PSYCHIC_M_PP          102
 #define TRAINER_PIC_ROCKET_GRUNT_F_PP     103
+#define TRAINER_PIC_HEX_MANIAC_ORAS       104
 
 // The player back pics are assumed to alternate according to the gender values (MALE/FEMALE)
 #define TRAINER_BACK_PIC_BRENDAN                0

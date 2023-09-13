@@ -415,6 +415,10 @@ static const union AnimCmd *const sAnims_RocketGruntFPP[] ={
     sAnim_GeneralFrame0,
 };
 
+static const union AnimCmd *const sAnims_HexManiacORAS[] ={
+    sAnim_GeneralFrame0,
+};
+
 const union AnimCmd *const *const gTrainerFrontAnimsPtrTable[] =
 {
     [TRAINER_PIC_HIKER] = sAnims_Hiker,
@@ -521,4 +525,5 @@ const union AnimCmd *const *const gTrainerFrontAnimsPtrTable[] =
     [TRAINER_PIC_GUARD_M_PP] = sAnims_GuardMPP,
     [TRAINER_PIC_PSYCHIC_M_PP] = sAnims_PsychicMPP,
     [TRAINER_PIC_ROCKET_GRUNT_F_PP] = sAnims_RocketGruntFPP,
+    [TRAINER_PIC_HEX_MANIAC_ORAS] = sAnims_HexManiacORAS,
 };

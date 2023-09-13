@@ -7360,6 +7360,9 @@ extern const u32 gTrainerFrontPic_PsychicMPP[];
 extern const u32 gTrainerPalette_PsychicMPP[];
 extern const u32 gTrainerFrontPic_RocketGruntFPP[];
 extern const u32 gTrainerPalette_RocketGruntFPP[];
+extern const u32 gTrainerFrontPic_HexManiacORAS[];
+extern const u32 gTrainerPalette_HexManiacORAS[];
+
 
 extern const u32 gTrainerPalette_Hiker[];
 extern const u32 gTrainerPalette_AquaGruntM[];

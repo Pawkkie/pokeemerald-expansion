@@ -322,3 +322,6 @@ const u32 gTrainerPalette_PsychicMPP[] = INCBIN_U32("graphics/trainers/front_pic
 
 const u32 gTrainerFrontPic_RocketGruntFPP[] = INCBIN_U32("graphics/trainers/front_pics/rocket_grunt_f_pp.4bpp.lz");
 const u32 gTrainerPalette_RocketGruntFPP[] = INCBIN_U32("graphics/trainers/front_pics/rocket_grunt_f_pp.gbapal.lz");
+
+const u32 gTrainerFrontPic_HexManiacORAS[] = INCBIN_U32("graphics/trainers/front_pics/hex_maniac_oras.4bpp.lz");
+const u32 gTrainerPalette_HexManiacORAS[] = INCBIN_U32("graphics/trainers/front_pics/hex_maniac_oras.gbapal.lz");

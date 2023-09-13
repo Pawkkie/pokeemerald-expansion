@@ -104,6 +104,7 @@ const struct MonCoords gTrainerFrontPicCoords[] =
     [TRAINER_PIC_GUARD_M_PP] = {.size = 8, .y_offset = 1},
     [TRAINER_PIC_PSYCHIC_M_PP] = {.size = 8, .y_offset = 1},
     [TRAINER_PIC_ROCKET_GRUNT_F_PP] = {.size = 8, .y_offset = 1},
+    [TRAINER_PIC_HEX_MANIAC_ORAS] = {.size = 8, .y_offset = 1},
 };
 
 #define TRAINER_SPRITE(trainerPic, sprite, size) [TRAINER_PIC_##trainerPic] = {sprite, size, TRAINER_PIC_##trainerPic}
@@ -214,6 +215,7 @@ const struct CompressedSpriteSheet gTrainerFrontPicTable[] =
     TRAINER_SPRITE(GUARD_M_PP, gTrainerFrontPic_GuardMPP, TRAINER_PIC_SIZE),
     TRAINER_SPRITE(PSYCHIC_M_PP, gTrainerFrontPic_PsychicMPP, TRAINER_PIC_SIZE),
     TRAINER_SPRITE(ROCKET_GRUNT_F_PP, gTrainerFrontPic_RocketGruntFPP, TRAINER_PIC_SIZE),
+    TRAINER_SPRITE(HEX_MANIAC_ORAS, gTrainerFrontPic_HexManiacORAS, TRAINER_PIC_SIZE),
 };
 
 #define TRAINER_PAL(trainerPic, pal) [TRAINER_PIC_##trainerPic] = {pal, TRAINER_PIC_##trainerPic}
@@ -324,4 +326,5 @@ const struct CompressedSpritePalette gTrainerFrontPicPaletteTable[] =
     TRAINER_PAL(GUARD_M_PP, gTrainerPalette_GuardMPP),
     TRAINER_PAL(PSYCHIC_M_PP, gTrainerPalette_PsychicMPP),
     TRAINER_PAL(ROCKET_GRUNT_F_PP, gTrainerPalette_RocketGruntFPP),
+    TRAINER_PAL(HEX_MANIAC_ORAS, gTrainerPalette_HexManiacORAS),
 };
