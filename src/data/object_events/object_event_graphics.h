@@ -385,3 +385,5 @@ const u32 gObjectEventPic_LassHGSS[] = INCBIN_U32("graphics/object_events/pics/p
 const u16 gObjectEventPal_LassHGSS[] = INCBIN_U16("graphics/object_events/palettes/lass_hgss.gbapal");
 const u32 gObjectEventPic_BreederFHGSS[] = INCBIN_U32("graphics/object_events/pics/people/breeder_f_hgss.4bpp");
 const u16 gObjectEventPal_BreederFHGSS[] = INCBIN_U16("graphics/object_events/palettes/breeder_f_hgss.gbapal");
+const u32 gObjectEventPic_HexManiacORAS[] = INCBIN_U32("graphics/object_events/pics/people/hex_maniac_oras.4bpp");
+const u16 gObjectEventPal_HexManiacORAS[] = INCBIN_U16("graphics/object_events/palettes/hex_maniac_oras.gbapal");
