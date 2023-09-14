@@ -4597,15 +4597,17 @@ void Task_AbilityCapsule(u8 taskId)
     static const u8 askText[] = _("Would you like to change {STR_VAR_1}'s\nability to {STR_VAR_2}?");
     static const u8 doneText[] = _("{STR_VAR_1}'s ability became\n{STR_VAR_2}!{PAUSE_UNTIL_PRESS}");
     s16 *data = gTasks[taskId].data;
+    static u8 newAbilityNum;
 
     switch (tState)
     {
     case 0:
-        // Can't use.
-        if (gSpeciesInfo[tSpecies].abilities[0] == gSpeciesInfo[tSpecies].abilities[1]
-            || gSpeciesInfo[tSpecies].abilities[1] == 0
-            || tAbilityNum > 1
-            || !tSpecies)
+        // Can't use if all abilities are the same or if no species (egg etc.)
+        if ((gSpeciesInfo[tSpecies].abilities[0] == gSpeciesInfo[tSpecies].abilities[1] // If all abilities are the same
+            && gSpeciesInfo[tSpecies].abilities[0] == gSpeciesInfo[tSpecies].abilities[2]
+            && gSpeciesInfo[tSpecies].abilities[1] == gSpeciesInfo[tSpecies].abilities[2])
+            || (gSpeciesInfo[tSpecies].abilities[1] == 0 && gSpeciesInfo[tSpecies].abilities[2] == 0) // Or the 2nd and 3rd ability slots are empty
+            || !tSpecies) // Or the mon is an Egg etc.
         {
             gPartyMenuUseExitCallback = FALSE;
             PlaySE(SE_SELECT);
@@ -4616,7 +4618,25 @@ void Task_AbilityCapsule(u8 taskId)
         }
         gPartyMenuUseExitCallback = TRUE;
         GetMonNickname(&gPlayerParty[tMonId], gStringVar1);
-        StringCopy(gStringVar2, gAbilityNames[GetAbilityBySpecies(tSpecies, tAbilityNum)]);
+        // If mon has 1st ability and 1st ability isn't the same as 2nd ability and 2nd ability isn't empty, offer 2nd ability
+        if (tAbilityNum == 0 && gSpeciesInfo[tSpecies].abilities[0] != gSpeciesInfo[tSpecies].abilities[1] && gSpeciesInfo[tSpecies].abilities[1] != 0)
+        {
+            newAbilityNum = 1;
+            StringCopy(gStringVar2, gAbilityNames[GetAbilityBySpecies(tSpecies, newAbilityNum)]);
+        }
+        // If mon has 2nd or 3rd ability and 1st ability isn't empty, offer 1st ability
+        else if ((tAbilityNum == 1 || tAbilityNum == 2) && gSpeciesInfo[tSpecies].abilities[0] != 0)
+        {
+            newAbilityNum = 0;
+            StringCopy(gStringVar2, gAbilityNames[GetAbilityBySpecies(tSpecies, newAbilityNum)]);
+        }
+        // If mon has 1st ability and 2nd ability was empty or if mon has 2nd abilities and 1st ability was empty, offer 3rd ability
+        else
+        {
+            newAbilityNum = 2;
+            StringCopy(gStringVar2, gAbilityNames[GetAbilityBySpecies(tSpecies, newAbilityNum)]);
+        }
+        // If mon only has 
         StringExpandPlaceholders(gStringVar4, askText);
         PlaySE(SE_SELECT);
         DisplayPartyMenuMessage(gStringVar4, 1);
@@ -4631,6 +4651,72 @@ void Task_AbilityCapsule(u8 taskId)
         }
         break;
     case 2:
+        switch (Menu_ProcessInputNoWrapClearOnChoose())
+        {
+        case 0:
+            tState = 6; // Skip 2nd ability if the player accepts the first option
+            break;
+        case 1:
+        case MENU_B_PRESSED:
+            // Mon only has two abilities and the player didn't choose the first option, don't offer them a second option
+            if (gSpeciesInfo[tSpecies].abilities[0] == 0 || gSpeciesInfo[tSpecies].abilities[1] == 0 || gSpeciesInfo[tSpecies].abilities[2] == 0)
+            {
+                gPartyMenuUseExitCallback = FALSE;
+                PlaySE(SE_SELECT);
+                ScheduleBgCopyTilemapToVram(2);
+                // Don't exit party selections screen, return to choosing a mon.
+                ClearStdWindowAndFrameToTransparent(6, 0);
+                ClearWindowTilemap(6);
+                DisplayPartyMenuStdMessage(5);
+                gTasks[taskId].func = (void *)GetWordTaskArg(taskId, tOldFunc);
+                return;
+            }
+            tState++; // Offer second ability
+            return;
+        }
+        break;
+    case 3:
+        // Can't use if all abilities are the same or if no species (egg etc.)
+        if ((gSpeciesInfo[tSpecies].abilities[0] == gSpeciesInfo[tSpecies].abilities[1]
+            && gSpeciesInfo[tSpecies].abilities[0] == gSpeciesInfo[tSpecies].abilities[2]
+            && gSpeciesInfo[tSpecies].abilities[1] == gSpeciesInfo[tSpecies].abilities[2])
+            || !tSpecies)
+        {
+            gPartyMenuUseExitCallback = FALSE;
+            PlaySE(SE_SELECT);
+            DisplayPartyMenuMessage(gText_WontHaveEffect, 1);
+            ScheduleBgCopyTilemapToVram(2);
+            gTasks[taskId].func = Task_ClosePartyMenuAfterText;
+            return;
+        }
+        gPartyMenuUseExitCallback = TRUE;
+        GetMonNickname(&gPlayerParty[tMonId], gStringVar1);
+        // If mon has 3rd ability, offer 2nd ability
+        if (tAbilityNum == 2)
+        {
+            newAbilityNum = 1;
+            StringCopy(gStringVar2, gAbilityNames[GetAbilityBySpecies(tSpecies, newAbilityNum)]);
+        }
+        // If mon has 1st or 2nd ability, offer 3rd ability
+        else
+        {
+            newAbilityNum = 2;
+            StringCopy(gStringVar2, gAbilityNames[GetAbilityBySpecies(tSpecies, newAbilityNum)]);
+        }
+        StringExpandPlaceholders(gStringVar4, askText);
+        PlaySE(SE_SELECT);
+        DisplayPartyMenuMessage(gStringVar4, 1);
+        ScheduleBgCopyTilemapToVram(2);
+        tState++;
+        break;
+    case 4:
+        if (!IsPartyMenuTextPrinterActive())
+        {
+            PartyMenuDisplayYesNoMenu();
+            tState++;
+        }
+        break;
+    case 5:
         switch (Menu_ProcessInputNoWrapClearOnChoose())
         {
         case 0:
@@ -4649,19 +4735,19 @@ void Task_AbilityCapsule(u8 taskId)
             return;
         }
         break;
-    case 3:
+    case 6:
         PlaySE(SE_USE_ITEM);
         StringExpandPlaceholders(gStringVar4, doneText);
         DisplayPartyMenuMessage(gStringVar4, 1);
         ScheduleBgCopyTilemapToVram(2);
         tState++;
         break;
-    case 4:
+    case 7:
         if (!IsPartyMenuTextPrinterActive())
             tState++;
         break;
-    case 5:
-        SetMonData(&gPlayerParty[tMonId], MON_DATA_ABILITY_NUM, &tAbilityNum);
+    case 8:
+        SetMonData(&gPlayerParty[tMonId], MON_DATA_ABILITY_NUM, &newAbilityNum);
         RemoveBagItem(gSpecialVar_ItemId, 1);
         gTasks[taskId].func = Task_ClosePartyMenu;
         break;
@@ -4675,7 +4761,7 @@ void ItemUseCB_AbilityCapsule(u8 taskId, TaskFunc task)
     tState = 0;
     tMonId = gPartyMenu.slotId;
     tSpecies = GetMonData(&gPlayerParty[tMonId], MON_DATA_SPECIES, NULL);
-    tAbilityNum = GetMonData(&gPlayerParty[tMonId], MON_DATA_ABILITY_NUM, NULL) ^ 1;
+    tAbilityNum = GetMonData(&gPlayerParty[tMonId], MON_DATA_ABILITY_NUM, NULL);
     SetWordTaskArg(taskId, tOldFunc, (uintptr_t)(gTasks[taskId].func));
     gTasks[taskId].func = Task_AbilityCapsule;
 }
