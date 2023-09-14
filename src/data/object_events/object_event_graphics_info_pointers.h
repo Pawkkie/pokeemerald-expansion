@@ -252,6 +252,7 @@ extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Gamecube;
 extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_LassHGSS;
 extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_BreederFHGSS;
 extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_HexManiacORAS;
+extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_RocketGruntFHGSS;
 
 const struct ObjectEventGraphicsInfo *const gObjectEventGraphicsInfoPointers[NUM_OBJ_EVENT_GFX] = {
     [OBJ_EVENT_GFX_BRENDAN_NORMAL] =           &gObjectEventGraphicsInfo_BrendanNormal,
@@ -499,6 +500,7 @@ const struct ObjectEventGraphicsInfo *const gObjectEventGraphicsInfoPointers[NUM
     [OBJ_EVENT_GFX_LASS_HGSS] =                &gObjectEventGraphicsInfo_LassHGSS,
     [OBJ_EVENT_GFX_BREEDER_F_HGSS] =           &gObjectEventGraphicsInfo_BreederFHGSS,
     [OBJ_EVENT_GFX_HEX_MANIAC_ORAS] =          &gObjectEventGraphicsInfo_HexManiacORAS,
+    [OBJ_EVENT_GFX_ROCKET_GRUNT_F_HGSS] =      &gObjectEventGraphicsInfo_RocketGruntFHGSS,
 };
 
 const struct ObjectEventGraphicsInfo *const gMauvilleOldManGraphicsInfoPointers[] = {

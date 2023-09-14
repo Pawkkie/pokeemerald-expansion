@@ -247,6 +247,7 @@
 #define OBJ_EVENT_GFX_LASS_HGSS                  242
 #define OBJ_EVENT_GFX_BREEDER_F_HGSS             243
 #define OBJ_EVENT_GFX_HEX_MANIAC_ORAS            244
+#define OBJ_EVENT_GFX_ROCKET_GRUNT_F_HGSS        245
 
 // NOTE: By default, the max value for NUM_OBJ_EVENT_GFX is 239.
 //

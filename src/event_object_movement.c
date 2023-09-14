@@ -441,6 +441,7 @@ const u8 gInitialMovementTypeFacingDirections[] = {
 #define OBJ_EVENT_PAL_TAG_LASS_HGSS               0x1125
 #define OBJ_EVENT_PAL_TAG_BREEDER_F_HGSS          0x1126
 #define OBJ_EVENT_PAL_TAG_HEX_MANIAC_ORAS         0x1127
+#define OBJ_EVENT_PAL_TAG_ROCKET_GRUNT_F_HGSS     0x1128
 
 #define OBJ_EVENT_PAL_TAG_NONE                    0x11FF
 
@@ -492,6 +493,7 @@ static const struct SpritePalette sObjectEventSpritePalettes[] = {
     {gObjectEventPal_LassHGSS,              OBJ_EVENT_PAL_TAG_LASS_HGSS},
     {gObjectEventPal_BreederFHGSS,          OBJ_EVENT_PAL_TAG_BREEDER_F_HGSS},
     {gObjectEventPal_HexManiacORAS,         OBJ_EVENT_PAL_TAG_HEX_MANIAC_ORAS},
+    {gObjectEventPal_RocketGruntFHGSS,      OBJ_EVENT_PAL_TAG_ROCKET_GRUNT_F_HGSS},
 #ifdef BUGFIX
     {NULL,                                  OBJ_EVENT_PAL_TAG_NONE},
 #else
