@@ -3973,3 +3973,8 @@ static const u8 sTaxiTicketDesc[] = _(
     "Calls a flying\n"
     "Pokémon from the\n"
     "taxi service.");
+
+static const u8 sAbilityChangerDesc[] = _(
+    "Miracle meds that\n"
+    "change a Pokémon's\n"
+    "ability.");

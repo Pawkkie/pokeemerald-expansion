@@ -99,6 +99,7 @@ void GetNumMovesSelectedMonHas(void);
 void MoveDeleterChooseMoveToForget(void);
 void CB2_ReturnToPartyMenuFromSummaryScreen(void);
 void ItemUseCB_PokeBall(u8 taskId, TaskFunc task);
+void ItemUseCB_AbilityChanger(u8 taskId, TaskFunc task);
 
 #ifndef BATTLE_ENGINE
 bool8 CanLearnTutorMove(u16, u8);

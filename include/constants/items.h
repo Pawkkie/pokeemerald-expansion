@@ -939,8 +939,9 @@
 #define ITEM_POWER_GLOVES 808
 #define ITEM_WAILMER_SNACK 809
 #define ITEM_SCUBA_GEAR 810
+#define ITEM_ABILITY_CHANGER 811
 
-#define ITEMS_COUNT 811
+#define ITEMS_COUNT 812
 #define ITEM_FIELD_ARROW ITEMS_COUNT
 
 // A special item id associated with "Cancel"/"Exit" etc. in a list of items or decorations

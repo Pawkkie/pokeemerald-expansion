@@ -9794,4 +9794,14 @@ const struct Item gItems[] =
         .type = ITEM_USE_FIELD,
         .fieldUseFunc = ItemUseOutOfBattle_ScubaGear,
     },
+    [ITEM_ABILITY_CHANGER] =
+    {
+        .name = _("Abili-Change"),
+        .price = 0,
+        .holdEffectParam = 0,
+        .description = sAbilityChangerDesc,
+        .pocket = POCKET_ITEMS,
+        .type = ITEM_USE_PARTY_MENU,
+        .fieldUseFunc = ItemUseOutOfBattle_AbilityChanger,
+    },
 };

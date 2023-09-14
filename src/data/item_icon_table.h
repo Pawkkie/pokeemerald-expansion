@@ -856,6 +856,7 @@ const u32 *const gItemIconTable[ITEMS_COUNT + 1][2] =
     [ITEM_POWER_GLOVES] = {gItemIcon_PowerGlove, gItemIconPalette_PowerGlove},
     [ITEM_WAILMER_SNACK] = {gItemIcon_BerryPouch, gItemIconPalette_BerryPouch},
     [ITEM_SCUBA_GEAR] = {gItemIcon_ScubaGear, gItemIconPalette_ScubaGear},
+    [ITEM_ABILITY_CHANGER] = {gItemIcon_AbilityCapsule, gItemIconPalette_AbilityCapsule},
     // Return to field arrow
     [ITEMS_COUNT] = {gItemIcon_ReturnToFieldArrow, gItemIconPalette_ReturnToFieldArrow},
 };

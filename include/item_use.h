@@ -52,6 +52,7 @@ void ItemUseOutOfBattle_Axe(u8);
 void ItemUseOutOfBattle_Pickaxe(u8);
 void ItemUseOutOfBattle_ScubaGear(u8);
 void ItemUseOutOfBattle_PowerGlove(u8);
+void ItemUseOutOfBattle_AbilityChanger(u8);
 u16 GetAshCount(void);
 
 enum {
