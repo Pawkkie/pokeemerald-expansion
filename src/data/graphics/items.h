@@ -2009,7 +2009,50 @@ const u32 gItemIconPalette_ScubaGear[] = INCBIN_U32("graphics/items/icon_palette
 const u32 gItemIcon_PicnicBasket[] = INCBIN_U32("graphics/items/icons/picnic_basket.4bpp.lz");
 const u32 gItemIconPalette_PicnicBasket[] = INCBIN_U32("graphics/items/icon_palettes/picnic_basket.gbapal.lz");
 
-// Tera Shards here
+const u32 gItemIcon_Lantern[] = INCBIN_U32("graphics/items/icons/lantern.4bpp.lz");
+const u32 gItemIconPalette_Lantern[] = INCBIN_U32("graphics/items/icon_palettes/lantern.gbapal.lz");
+
+const u32 gItemIcon_CandyJar[] = INCBIN_U32("graphics/items/icons/candy_jar.4bpp.lz");
+const u32 gItemIconPalette_CandyJar[] = INCBIN_U32("graphics/items/icon_palettes/candy_jar.gbapal.lz");
+
+const u32 gItemIcon_Axe[] = INCBIN_U32("graphics/items/icons/axe.4bpp.lz");
+const u32 gItemIconPalette_Axe[] = INCBIN_U32("graphics/items/icon_palettes/axe.gbapal.lz");
+
+const u32 gItemIcon_Pickaxe[] = INCBIN_U32("graphics/items/icons/pickaxe.4bpp.lz");
+const u32 gItemIconPalette_Pickaxe[] = INCBIN_U32("graphics/items/icon_palettes/pickaxe.gbapal.lz");
+
+const u32 gItemIcon_PowerGlove[] = INCBIN_U32("graphics/items/icons/power_glove.4bpp.lz");
+const u32 gItemIconPalette_PowerGlove[] = INCBIN_U32("graphics/items/icon_palettes/power_glove.gbapal.lz");
+
+const u32 gItemIcon_ScubaGear[] = INCBIN_U32("graphics/items/icons/scuba_gear.4bpp.lz");
+const u32 gItemIconPalette_ScubaGear[] = INCBIN_U32("graphics/items/icon_palettes/scuba_gear.gbapal.lz");
+
+const u32 gItemIcon_PicnicBasket[] = INCBIN_U32("graphics/items/icons/picnic_basket.4bpp.lz");
+const u32 gItemIconPalette_PicnicBasket[] = INCBIN_U32("graphics/items/icon_palettes/picnic_basket.gbapal.lz");
+
+// Tera Shards
+
+const u32 gItemIcon_TeraShard[] = INCBIN_U32("graphics/items/icons/tera_shard.4bpp.lz");
+const u32 gItemIconPalette_NormalTeraShard[] = INCBIN_U32("graphics/items/icon_palettes/normal_tera_shard.gbapal.lz");
+const u32 gItemIconPalette_FireTeraShard[] = INCBIN_U32("graphics/items/icon_palettes/fire_tera_shard.gbapal.lz");
+const u32 gItemIconPalette_WaterTeraShard[] = INCBIN_U32("graphics/items/icon_palettes/water_tera_shard.gbapal.lz");
+const u32 gItemIconPalette_GrassTeraShard[] = INCBIN_U32("graphics/items/icon_palettes/grass_tera_shard.gbapal.lz");
+const u32 gItemIconPalette_ElectricTeraShard[] = INCBIN_U32("graphics/items/icon_palettes/electric_tera_shard.gbapal.lz");
+const u32 gItemIconPalette_IceTeraShard[] = INCBIN_U32("graphics/items/icon_palettes/ice_tera_shard.gbapal.lz");
+const u32 gItemIconPalette_FightingTeraShard[] = INCBIN_U32("graphics/items/icon_palettes/fighting_tera_shard.gbapal.lz");
+const u32 gItemIconPalette_PoisonTeraShard[] = INCBIN_U32("graphics/items/icon_palettes/poison_tera_shard.gbapal.lz");
+const u32 gItemIconPalette_GroundTeraShard[] = INCBIN_U32("graphics/items/icon_palettes/ground_tera_shard.gbapal.lz");
+const u32 gItemIconPalette_FlyingTeraShard[] = INCBIN_U32("graphics/items/icon_palettes/flying_tera_shard.gbapal.lz");
+const u32 gItemIconPalette_PsychicTeraShard[] = INCBIN_U32("graphics/items/icon_palettes/psychic_tera_shard.gbapal.lz");
+const u32 gItemIconPalette_BugTeraShard[] = INCBIN_U32("graphics/items/icon_palettes/bug_tera_shard.gbapal.lz");
+const u32 gItemIconPalette_RockTeraShard[] = INCBIN_U32("graphics/items/icon_palettes/rock_tera_shard.gbapal.lz");
+const u32 gItemIconPalette_GhostTeraShard[] = INCBIN_U32("graphics/items/icon_palettes/ghost_tera_shard.gbapal.lz");
+const u32 gItemIconPalette_DarkTeraShard[] = INCBIN_U32("graphics/items/icon_palettes/dark_tera_shard.gbapal.lz");
+const u32 gItemIconPalette_DragonTeraShard[] = INCBIN_U32("graphics/items/icon_palettes/dragon_tera_shard.gbapal.lz");
+const u32 gItemIconPalette_SteelTeraShard[] = INCBIN_U32("graphics/items/icon_palettes/steel_tera_shard.gbapal.lz");
+const u32 gItemIconPalette_FairyTeraShard[] = INCBIN_U32("graphics/items/icon_palettes/fairy_tera_shard.gbapal.lz");
+
+// Misc. Items
 
 const u32 gItemIcon_AdamantCrystal[] = INCBIN_U32("graphics/items/icons/adamant_crystal.4bpp.lz");
 const u32 gItemIconPalette_AdamantCrystal[] = INCBIN_U32("graphics/items/icon_palettes/adamant_crystal.gbapal.lz");
