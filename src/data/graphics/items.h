@@ -2009,27 +2009,6 @@ const u32 gItemIconPalette_ScubaGear[] = INCBIN_U32("graphics/items/icon_palette
 const u32 gItemIcon_PicnicBasket[] = INCBIN_U32("graphics/items/icons/picnic_basket.4bpp.lz");
 const u32 gItemIconPalette_PicnicBasket[] = INCBIN_U32("graphics/items/icon_palettes/picnic_basket.gbapal.lz");
 
-const u32 gItemIcon_Lantern[] = INCBIN_U32("graphics/items/icons/lantern.4bpp.lz");
-const u32 gItemIconPalette_Lantern[] = INCBIN_U32("graphics/items/icon_palettes/lantern.gbapal.lz");
-
-const u32 gItemIcon_CandyJar[] = INCBIN_U32("graphics/items/icons/candy_jar.4bpp.lz");
-const u32 gItemIconPalette_CandyJar[] = INCBIN_U32("graphics/items/icon_palettes/candy_jar.gbapal.lz");
-
-const u32 gItemIcon_Axe[] = INCBIN_U32("graphics/items/icons/axe.4bpp.lz");
-const u32 gItemIconPalette_Axe[] = INCBIN_U32("graphics/items/icon_palettes/axe.gbapal.lz");
-
-const u32 gItemIcon_Pickaxe[] = INCBIN_U32("graphics/items/icons/pickaxe.4bpp.lz");
-const u32 gItemIconPalette_Pickaxe[] = INCBIN_U32("graphics/items/icon_palettes/pickaxe.gbapal.lz");
-
-const u32 gItemIcon_PowerGlove[] = INCBIN_U32("graphics/items/icons/power_glove.4bpp.lz");
-const u32 gItemIconPalette_PowerGlove[] = INCBIN_U32("graphics/items/icon_palettes/power_glove.gbapal.lz");
-
-const u32 gItemIcon_ScubaGear[] = INCBIN_U32("graphics/items/icons/scuba_gear.4bpp.lz");
-const u32 gItemIconPalette_ScubaGear[] = INCBIN_U32("graphics/items/icon_palettes/scuba_gear.gbapal.lz");
-
-const u32 gItemIcon_PicnicBasket[] = INCBIN_U32("graphics/items/icons/picnic_basket.4bpp.lz");
-const u32 gItemIconPalette_PicnicBasket[] = INCBIN_U32("graphics/items/icon_palettes/picnic_basket.gbapal.lz");
-
 // Tera Shards
 
 const u32 gItemIcon_TeraShard[] = INCBIN_U32("graphics/items/icons/tera_shard.4bpp.lz");
