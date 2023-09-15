@@ -736,26 +736,11 @@ static void InheritAbility(struct Pokemon *egg, struct BoxPokemon *father, struc
     u8 motherSpecies = GetBoxMonData(mother, MON_DATA_SPECIES);
     u8 inheritAbility = motherAbility;
 
+    // Always inherit parent ability
     if (motherSpecies == SPECIES_DITTO)
-    #if P_ABILITY_INHERITANCE < GEN_6
-        return;
-    #else
         inheritAbility = fatherAbility;
-    #endif
 
-    if (inheritAbility < 2 && (Random() % 10 < 8))
-    {
-        SetMonData(egg, MON_DATA_ABILITY_NUM, &inheritAbility);
-    }
-#if P_ABILITY_INHERITANCE < GEN_6
-    else if (Random() % 10 < 8)
-#else
-    else if (Random() % 10 < 6)
-#endif
-    {
-        // Hidden Abilities have a different chance of being passed down
-        SetMonData(egg, MON_DATA_ABILITY_NUM, &inheritAbility);
-    }
+    SetMonData(egg, MON_DATA_ABILITY_NUM, &inheritAbility);
 }
 
 // Counts the number of egg moves a pokemon learns and stores the moves in
