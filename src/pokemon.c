@@ -3622,9 +3622,25 @@ void CreateBoxMon(struct BoxPokemon *boxMon, u16 species, u8 level, u8 fixedIV, 
     nature = personality % 25;
     SetBoxMonData(boxMon, MON_DATA_NATURE, &nature);
 
-    if (gSpeciesInfo[species].abilities[1])
+    // Making all abilities equally likely to appear in the wild
+    // If species has 3 abilities
+    if (gSpeciesInfo[species].abilities[1] != ABILITY_NONE && gSpeciesInfo[species].abilities[2] != ABILITY_NONE)
     {
-        value = personality & 1;
+        value = personality % 3; // was & 1 to be 0 or 1, % 3 will be 0, 1, or 2
+        SetBoxMonData(boxMon, MON_DATA_ABILITY_NUM, &value);
+    }
+    // If species has no hidden ability
+    else if (gSpeciesInfo[species].abilities[1] != ABILITY_NONE && gSpeciesInfo[species].abilities[2] == ABILITY_NONE)
+    {
+        value = personality % 2;
+        SetBoxMonData(boxMon, MON_DATA_ABILITY_NUM, &value);
+    }
+    // If species has normal ability and hidden ability
+    else if (gSpeciesInfo[species].abilities[2] != ABILITY_NONE)
+    {
+        value = personality % 2; // Only two options
+        if (value % 2 == 1)
+            value = 2;
         SetBoxMonData(boxMon, MON_DATA_ABILITY_NUM, &value);
     }
 
