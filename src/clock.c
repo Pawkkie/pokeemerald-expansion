@@ -25,7 +25,7 @@ static void InitTimeBasedEvents(void)
 
 void DoTimeBasedEvents(void)
 {
-    if (FlagGet(FLAG_SYS_CLOCK_SET) && !InPokemonCenter() && !FlagGet(FLAG_ITEM_HEADER))
+    if (FlagGet(FLAG_SYS_CLOCK_SET) && !InPokemonCenter() && !FlagGet(FLAG_STOP_TIME))
     {
         RtcCalcLocalTime();
         UpdatePerDay(&gLocalTime);

@@ -174,7 +174,7 @@ void AgbMainLoop(void)
         }
 
         PlayTimeCounter_Update();
-        if(advanceRTCCounter >= 60 && !FlagGet(FLAG_ITEM_HEADER))
+        if(advanceRTCCounter >= 60 && !FlagGet(FLAG_STOP_TIME))
         {
             IterateRTC();
             advanceRTCCounter = 0;

@@ -51,7 +51,7 @@
 #define FLAG_MET_NATURE_CHANGER 0x26 // Checks if nature changer has been spoken to before
 #define FLAG_CAN_WATERFALL   0x27 // Checks if player has been taught how to ride up waterfalls
 #define FLAG_DISABLE_BAG     0x28 // Used to disable item use in battle
-#define FLAG_ITEM_HEADER     0x29 // Used to  time when the item header pops up
+#define FLAG_STOP_TIME       0x29 // Used to stop time when the item header and key item menu pop up
 #define FLAG_UNUSED_0x02A    0x2A // Unused Flag
 #define FLAG_UNUSED_0x02B    0x2B // Unused Flag
 #define FLAG_UNUSED_0x02C    0x2C // Unused Flag

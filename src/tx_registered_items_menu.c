@@ -35,6 +35,7 @@
 #include "menu_specialized.h"
 #include "tx_registered_items_menu.h"
 #include "graphics.h"
+#include "event_data.h"
 
 #define SWAP_LINE_LENGTH 7
 struct TxRegItemsMenu_Struct
@@ -162,6 +163,8 @@ static void TxRegItemsMenu_ClearAndInitData(u8 taskId)
     u8 cursorStart = gSaveBlock1Ptr->registeredItemLastSelected;
     u8 count = TxRegItemsMenu_CountUsedRegisteredItemSlots();
 
+    FlagSet(FLAG_STOP_TIME);
+
     //calculate offset from list top
     if (cursorStart > 1 && count > 3)
     {
@@ -266,6 +269,8 @@ static void TxRegItemsMenu_DoItemAction(u8 taskId)
 static void TxRegItemsMenu_CloseMenu(u8 taskId)
 {
     s16 *data;
+
+    FlagClear(FLAG_STOP_TIME);
 
     data = gTasks[taskId].data;
     TxRegItemsMenu_RemoveItemIcon();
