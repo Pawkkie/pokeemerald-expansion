@@ -161,7 +161,6 @@ ROMTEST ?= $(shell { command -v mgba-rom-test || command -v tools/mgba/mgba-rom-
 ROMTESTHYDRA := tools/mgba-rom-test-hydra/mgba-rom-test-hydra$(EXE)
 SCRIPT := tools/poryscript/poryscript$(EXE)
 TILES := tools/porytiles/porytiles$(EXE)
-TILESETLIST=simple_primary_1
 
 PERL := perl
 
@@ -263,11 +262,6 @@ $(TOOLDIRS):
 
 $(CHECKTOOLDIRS):
 	@$(MAKE) -C $@
-
-
-#@$(foreach tilesetName, $(TILESETLIST), $(TILES) compile-primary -Wall -o $(PRIMARY_TILESET_SUBDIR)/$(tilesetName) $(PORYTILESETS)/$(tilesetName) $(PORYTILESETS)/$(tilesetName)/metatile_behaviors.h)
-
-#$(TILES) compile-primary -Wall -o $(PRIMARY_TILESET_SUBDIR)/simple_primary_1 $(PORYTILESETS)/simple_primary_1 $(PORYTILESETS)/simple_primary_1/metatile_behaviors.h
 
 
 rom: $(ROM)
