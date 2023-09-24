@@ -307,7 +307,7 @@ tidycheck:
 	rm -rf $(TEST_OBJ_DIR_NAME)
 
 porytiles:
-	$(foreach tilesetName, $(subst $(PORYTILESETS),,$(wildcard $(PORYTILESETS)/*/)), $(TILES) compile-primary -Wall -o $(PRIMARY_TILESET_SUBDIR)$(tilesetName) $(PORYTILESETS)$(tilesetName) $(PORYTILESETS)$(tilesetName)metatile_behaviors.h;)
+	$(foreach tilesetName, $(subst $(PORYTILESETS),,$(wildcard $(PORYTILESETS)/*/)), $(TILES) compile-primary -Wall -o $(PRIMARY_TILESET_SUBDIR)$(tilesetName) $(PORYTILESETS)$(tilesetName) include/constants/metatile_behaviors.h;)
 
 ifneq ($(MODERN),0)
 $(C_BUILDDIR)/berry_crush.o: override CFLAGS += -Wno-address-of-packed-member
