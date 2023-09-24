@@ -161,6 +161,7 @@ ROMTEST ?= $(shell { command -v mgba-rom-test || command -v tools/mgba/mgba-rom-
 ROMTESTHYDRA := tools/mgba-rom-test-hydra/mgba-rom-test-hydra$(EXE)
 SCRIPT := tools/poryscript/poryscript$(EXE)
 TILES := tools/porytiles/porytiles$(EXE)
+TILESETLIST=simple_primary_1
 
 PERL := perl
 
@@ -263,7 +264,11 @@ $(TOOLDIRS):
 $(CHECKTOOLDIRS):
 	@$(MAKE) -C $@
 
-# $(TILES) compile-primary -Wall -o $(PRIMARY_TILESET_SUBDIR)/simple_primary_1 $(PORYTILESETS)/simple_primary_1 $(PORYTILESETS)/simple_primary_1/metatile_behaviors.h
+
+#@$(foreach tilesetName, $(TILESETLIST), $(TILES) compile-primary -Wall -o $(PRIMARY_TILESET_SUBDIR)/$(tilesetName) $(PORYTILESETS)/$(tilesetName) $(PORYTILESETS)/$(tilesetName)/metatile_behaviors.h)
+
+#$(TILES) compile-primary -Wall -o $(PRIMARY_TILESET_SUBDIR)/simple_primary_1 $(PORYTILESETS)/simple_primary_1 $(PORYTILESETS)/simple_primary_1/metatile_behaviors.h
+
 
 rom: $(ROM)
 ifeq ($(COMPARE),1)
@@ -306,6 +311,9 @@ tidymodern:
 tidycheck:
 	rm -f $(TESTELF) $(HEADLESSELF)
 	rm -rf $(TEST_OBJ_DIR_NAME)
+
+porytiles:
+	$(foreach tilesetName, $(subst $(PORYTILESETS),,$(wildcard $(PORYTILESETS)/*/)), $(TILES) compile-primary -Wall -o $(PRIMARY_TILESET_SUBDIR)$(tilesetName) $(PORYTILESETS)$(tilesetName) $(PORYTILESETS)$(tilesetName)metatile_behaviors.h;)
 
 ifneq ($(MODERN),0)
 $(C_BUILDDIR)/berry_crush.o: override CFLAGS += -Wno-address-of-packed-member
