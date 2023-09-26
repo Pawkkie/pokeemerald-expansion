@@ -243,7 +243,7 @@ u32 FldEff_Shadow(void)
     const struct ObjectEventGraphicsInfo *graphicsInfo;
     u8 spriteId;
 
-    u8 i;
+    s32 i;
     for (i = 0; i < MAX_SPRITES; i++) {
       // Return early if a shadow sprite already exists
       if (gSprites[i].data[0] == gFieldEffectArguments[0] && gSprites[i].callback == UpdateShadowFieldEffect)
@@ -288,8 +288,10 @@ void UpdateShadowFieldEffect(struct Sprite *sprite)
         if (!objectEvent->active
          || objectEvent->noShadow
          || objectEvent->inHotSprings
+         || objectEvent->inSandPile
          || gWeatherPtr->noShadows
          || MetatileBehavior_IsPokeGrass(objectEvent->currentMetatileBehavior)
+         || MetatileBehavior_IsPuddle(objectEvent->currentMetatileBehavior)
          || MetatileBehavior_IsSurfableWaterOrUnderwater(objectEvent->currentMetatileBehavior)
          || MetatileBehavior_IsSurfableWaterOrUnderwater(objectEvent->previousMetatileBehavior))
         {
