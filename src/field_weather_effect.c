@@ -1385,7 +1385,7 @@ static void DestroyFogHorizontalSprites(void);
 #define SHADOW_COLOR_INDEX 9
 
 // Updates just the color of shadows to match special weather blending
-static u8 UpdateShadowColor(u16 color) {
+u8 UpdateShadowColor(u16 color) {
   u8 paletteNum = IndexOfSpritePaletteTag(TAG_WEATHER_START);
   if (paletteNum != 0xFF) {
     u16 index = (paletteNum+16)*16+SHADOW_COLOR_INDEX;
