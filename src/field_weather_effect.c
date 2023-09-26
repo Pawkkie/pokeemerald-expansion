@@ -8,11 +8,13 @@
 #include "script.h"
 #include "constants/weather.h"
 #include "constants/songs.h"
+#include "constants/rgb.h"
 #include "sound.h"
 #include "sprite.h"
 #include "task.h"
 #include "trig.h"
 #include "gpu_regs.h"
+#include "palette.h"
 
 EWRAM_DATA static u8 sCurrentAbnormalWeather = 0;
 EWRAM_DATA static u16 sUnusedWeatherRelated = 0;
@@ -1379,6 +1381,9 @@ void FogHorizontal_Main(void);
 static void CreateFogHorizontalSprites(void);
 static void DestroyFogHorizontalSprites(void);
 
+// Within the weather palette, shadow sprites' color index
+#define SHADOW_COLOR_INDEX 9
+
 void FogHorizontal_InitVars(void)
 {
     gWeatherPtr->initStep = 0;
@@ -1392,7 +1397,7 @@ void FogHorizontal_InitVars(void)
         gWeatherPtr->fogHScrollPosX = 0;
         Weather_SetBlendCoeffs(0, 16);
     }
-    gWeatherPtr->noShadows = TRUE; // TODO: Can fog be made compatible with shadows?
+    gWeatherPtr->noShadows = FALSE;
 }
 
 void FogHorizontal_InitAll(void)
@@ -1414,9 +1419,14 @@ void FogHorizontal_Main(void)
     {
     case 0:
         CreateFogHorizontalSprites();
-        if (gWeatherPtr->currWeather == WEATHER_FOG_HORIZONTAL)
-            Weather_SetTargetBlendCoeffs(12, 8, 3);
-        else
+        if (gWeatherPtr->currWeather == WEATHER_FOG_HORIZONTAL) {
+          u8 paletteNum = IndexOfSpritePaletteTag(TAG_WEATHER_START);
+          Weather_SetTargetBlendCoeffs(12, 8, 3);
+          if (paletteNum != 0xFF) { // Lighten shadow color to match
+            u16 index = (paletteNum+16)*16+SHADOW_COLOR_INDEX; // Shadow color index
+            gPlttBufferUnfaded[index] = gPlttBufferFaded[index] = 0x3DEF; // Gray
+          }
+        } else
             Weather_SetTargetBlendCoeffs(4, 16, 0);
         gWeatherPtr->initStep++;
         break;
@@ -1432,6 +1442,7 @@ void FogHorizontal_Main(void)
 
 bool8 FogHorizontal_Finish(void)
 {
+    u8 paletteNum = IndexOfSpritePaletteTag(TAG_WEATHER_START);
     gWeatherPtr->fogHScrollPosX = (gSpriteCoordOffsetX - gWeatherPtr->fogHScrollOffset) & 0xFF;
     if (++gWeatherPtr->fogHScrollCounter > 3)
     {
@@ -1454,6 +1465,10 @@ bool8 FogHorizontal_Finish(void)
         gWeatherPtr->finishStep++;
         break;
     default:
+        if (paletteNum != 0xFF) { // Change shadow color back to black
+          u16 index = (paletteNum+16)*16+SHADOW_COLOR_INDEX;
+          gPlttBufferUnfaded[index] = gPlttBufferFaded[index] = RGB_BLACK;
+        }
         return FALSE;
     }
     return TRUE;
