@@ -4025,8 +4025,6 @@ static void Cmd_jumpbasedontype(void)
     }
 }
 
-FEATURE_FLAG_ASSERT(I_EXP_SHARE_FLAG, YouNeedToSetTheExpShareFlagToAnUnusedFlag);
-
 static bool32 BattleTypeAllowsExp(void)
 {
     if (RECORDED_WILD_BATTLE)
