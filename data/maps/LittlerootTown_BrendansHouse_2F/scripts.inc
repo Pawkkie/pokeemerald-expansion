@@ -40,7 +40,7 @@ LittlerootTown_BrendansHouse_2F_GamecubeEnterCheatCode::
 	special GetCheatCodeFeedback
 	goto_if_eq VAR_RESULT, 0, CheatCodeFailed
 	goto_if_eq VAR_RESULT, 1, CheatCodeCandyJar
-	goto_if_eq VAR_RESULT, 2, CheatCodeNeedForSpeed
+	goto_if_eq VAR_RESULT, 2, CheatCodeNeed4Speed
 	end
 
 CheatCodeFailed::
@@ -54,11 +54,31 @@ CheatCodeCandyJar::
 	releaseall
 	end
 
-CheatCodeNeedForSpeed::
+CheatCodeNeed4Speed::
 	msgbox EnterCheatCode_SucceededText, MSGBOX_DEFAULT
+	goto_if_unset FLAG_NEED4SPEED, CheatCodeNeed4SpeedOn
+	goto_if_set FLAG_NEED4SPEED, CheatCodeNeed4SpeedOff
+	end
+
+CheatCodeNeed4SpeedOn::
 	setflag FLAG_NEED4SPEED
+	msgbox CheatCodeNeed4SpeedOn_Text, MSGBOX_DEFAULT
 	releaseall
 	end
+
+CheatCodeNeed4SpeedOff::
+	clearflag FLAG_NEED4SPEED
+	msgbox CheatCodeNeed4SpeedOff_Text, MSGBOX_DEFAULT
+	releaseall
+	end
+
+CheatCodeNeed4SpeedOn_Text:
+	.string "You feel a strong wind at your back.\n"
+	.string "You can run at mach speed!$"
+
+CheatCodeNeed4SpeedOff_Text:
+	.string "The wind at your back peters out.\n"
+	.string "Your run speed returns to normal.$"
 
 CheatCodeExit::
 	releaseall
