@@ -4600,7 +4600,11 @@ void GetCheatCodeFeedback(void)
     if (!StringCompare(gStringVar2, sText_CheatCodeCandyJar))
         gSpecialVar_Result = 1;
     else if (!StringCompare(gStringVar2, sText_CheatCodeNeed4Speed))
+    {
         gSpecialVar_Result = 2;
+        if(FlagGet(FLAG_NEED4SPEED))
+            SetPlayerAvatarTransitionFlags(PLAYER_AVATAR_FLAG_ON_FOOT);
+    }
     else
         gSpecialVar_Result = 0;
 }
