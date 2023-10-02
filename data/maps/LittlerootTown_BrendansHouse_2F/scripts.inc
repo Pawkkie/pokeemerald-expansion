@@ -40,6 +40,7 @@ LittlerootTown_BrendansHouse_2F_GamecubeEnterCheatCode::
 	special GetCheatCodeFeedback
 	goto_if_eq VAR_RESULT, 0, CheatCodeFailed
 	goto_if_eq VAR_RESULT, 1, CheatCodeCandyJar
+	goto_if_eq VAR_RESULT, 2, CheatCodeNeedForSpeed
 	end
 
 CheatCodeFailed::
@@ -50,6 +51,12 @@ CheatCodeFailed::
 CheatCodeCandyJar::
 	msgbox EnterCheatCode_SucceededText, MSGBOX_DEFAULT
 	giveitem ITEM_CANDY_JAR, 1
+	releaseall
+	end
+
+CheatCodeNeedForSpeed::
+	msgbox EnterCheatCode_SucceededText, MSGBOX_DEFAULT
+	setflag FLAG_NEED4SPEED
 	releaseall
 	end
 

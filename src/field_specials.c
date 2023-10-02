@@ -4596,8 +4596,11 @@ void EnterCheatCode(void)
 void GetCheatCodeFeedback(void)
 {
     static const u8 sText_CheatCodeCandyJar[] = _("Nomnomnom");
+    static const u8 sText_CheatCodeNeed4Speed[] = _("Need4Speed");
     if (!StringCompare(gStringVar2, sText_CheatCodeCandyJar))
         gSpecialVar_Result = 1;
+    else if (!StringCompare(gStringVar2, sText_CheatCodeNeed4Speed))
+        gSpecialVar_Result = 2;
     else
         gSpecialVar_Result = 0;
 }
