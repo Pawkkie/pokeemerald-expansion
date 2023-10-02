@@ -145,7 +145,10 @@ void FieldGetPlayerInput(struct FieldInput *input, u16 newKeys, u16 heldKeys)
     SetDirectionFromHeldKeys(heldKeys);
     input->dpadDirection = sCurrentDirection;
     // If B is pressed, field controls are allowed, and the player is either running or walking.
-    if ((newKeys & B_BUTTON) && (!ArePlayerFieldControlsLocked()) && (gPlayerAvatar.flags & (PLAYER_AVATAR_FLAG_DASH | PLAYER_AVATAR_FLAG_ON_FOOT)))
+    // OR we're in Need4Speed mode and are sprinting
+    if ((newKeys & B_BUTTON) && (!ArePlayerFieldControlsLocked()) && 
+    ((gPlayerAvatar.flags & (PLAYER_AVATAR_FLAG_DASH | PLAYER_AVATAR_FLAG_ON_FOOT))
+    || ((gPlayerAvatar.flags & (PLAYER_AVATAR_FLAG_MACH_BIKE)) && FlagGet(FLAG_NEED4SPEED))))
     {
         gRunToggleBtnSet = TRUE;
     }
@@ -180,6 +183,10 @@ int ProcessPlayerFieldInput(struct FieldInput *input)
 
     if (input->pressedBButton && TrySetupDiveEmergeScript() == TRUE)
         return TRUE;
+    if (input->pressedBButton && FlagGet(FLAG_NEED4SPEED) && TestPlayerAvatarFlags(PLAYER_AVATAR_FLAG_MACH_BIKE))
+    {
+        GetOnOffBike(PLAYER_AVATAR_FLAG_MACH_BIKE);
+    }
     if (input->tookStep)
     {
         IncrementGameStat(GAME_STAT_STEPS);
@@ -217,14 +224,14 @@ int ProcessPlayerFieldInput(struct FieldInput *input)
         return TRUE;
     if (input->pressedRButton && TestPlayerAvatarFlags(PLAYER_AVATAR_FLAG_MACH_BIKE | PLAYER_AVATAR_FLAG_ACRO_BIKE))
     {
-        if (gPlayerAvatar.flags & PLAYER_AVATAR_FLAG_MACH_BIKE)
+        if ((gPlayerAvatar.flags & PLAYER_AVATAR_FLAG_MACH_BIKE) && !FlagGet(FLAG_NEED4SPEED))
         {
             gPlayerAvatar.flags -= PLAYER_AVATAR_FLAG_MACH_BIKE;
             gPlayerAvatar.flags += PLAYER_AVATAR_FLAG_ACRO_BIKE;
             SetPlayerAvatarTransitionFlags(PLAYER_AVATAR_FLAG_ACRO_BIKE);
             PlaySE(SE_BIKE_HOP);
         }
-        else
+        else if ((gPlayerAvatar.flags & PLAYER_AVATAR_FLAG_ACRO_BIKE) && !FlagGet(FLAG_NEED4SPEED))
         {
             gPlayerAvatar.flags -= PLAYER_AVATAR_FLAG_ACRO_BIKE;
             gPlayerAvatar.flags += PLAYER_AVATAR_FLAG_MACH_BIKE;

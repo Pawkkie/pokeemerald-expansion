@@ -646,8 +646,15 @@ static void PlayerNotOnBikeMoving(u8 direction, u16 heldKeys)
             if (FlagGet(FLAG_RUNNING_SHOES_TOGGLE) == FALSE)
             {
                 FlagSet(FLAG_RUNNING_SHOES_TOGGLE);
-                PlayerRun(direction);
-                gPlayerAvatar.flags |= PLAYER_AVATAR_FLAG_DASH;
+                if (FlagGet(FLAG_NEED4SPEED) && TestPlayerAvatarFlags(PLAYER_AVATAR_FLAG_ON_FOOT))
+                {
+                    GetOnOffBike(PLAYER_AVATAR_FLAG_MACH_BIKE);
+                }
+                else
+                {
+                    PlayerRun(direction);
+                    gPlayerAvatar.flags |= PLAYER_AVATAR_FLAG_DASH;
+                }
                 return;
             }
             else
@@ -660,14 +667,28 @@ static void PlayerNotOnBikeMoving(u8 direction, u16 heldKeys)
                 }
                 else
                 {
-                    PlayerRun(direction);
-                    gPlayerAvatar.flags |= PLAYER_AVATAR_FLAG_DASH;
+                    if (FlagGet(FLAG_NEED4SPEED) && TestPlayerAvatarFlags(PLAYER_AVATAR_FLAG_ON_FOOT))
+                    {
+                        GetOnOffBike(PLAYER_AVATAR_FLAG_MACH_BIKE);
+                    }
+                    else
+                    {
+                        PlayerRun(direction);
+                        gPlayerAvatar.flags |= PLAYER_AVATAR_FLAG_DASH;
+                    }
                 }
                 return;
             } 
         }
-        PlayerRun(direction);
-        gPlayerAvatar.flags |= PLAYER_AVATAR_FLAG_DASH;
+        if (FlagGet(FLAG_NEED4SPEED) && TestPlayerAvatarFlags(PLAYER_AVATAR_FLAG_ON_FOOT))
+        {
+            GetOnOffBike(PLAYER_AVATAR_FLAG_MACH_BIKE);
+        }
+        else
+        {
+            PlayerRun(direction);
+            gPlayerAvatar.flags |= PLAYER_AVATAR_FLAG_DASH;
+        }
         return;
     }
     else
