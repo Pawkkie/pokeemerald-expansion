@@ -7704,6 +7704,7 @@ extern const u32 gPokedexSearchMenuHoenn_Tilemap[];
 extern const u32 gPokedexSearchMenuNational_Tilemap[];
 extern const u16 gPokedexSearchMenu_Pal[];
 // pokedex HGSS
+#if POKEDEX_PLUS_HGSS == TRUE
 extern const u16 gPokedexPlusHGSS_Default_Pal[];
 extern const u16 gPokedexPlusHGSS_National_Pal[];
 extern const u16 gPokedexPlusHGSS_MenuSearch_Pal[];
@@ -7736,7 +7737,7 @@ extern const u32 gPokedexPlusHGSS_ScreenCry_Tilemap[];
 extern const u32 gPokedexPlusHGSS_ScreenSize_Tilemap[];
 extern const u32 gPokedexPlusHGSS_ScreenSearchHoenn_Tilemap[];
 extern const u32 gPokedexPlusHGSS_ScreenSearchNational_Tilemap[];
-
+#endif
 
 // berry tag screen
 extern const u32 gBerryCheck_Gfx[];
