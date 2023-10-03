@@ -10,6 +10,7 @@
 #include "test/battle.h"
 #include "window.h"
 #include "constants/trainers.h"
+#include "event_data.h"
 
 #if defined(__INTELLISENSE__)
 #undef TestRunner_Battle_RecordAbilityPopUp
@@ -143,6 +144,7 @@ static void BattleTest_SetUp(void *data)
 {
     const struct BattleTest *test = data;
     STATE = AllocZeroed(sizeof(*STATE));
+    FlagSet(FLAG_IS_CHAMPION);
     if (!STATE)
         Test_ExitWithResult(TEST_RESULT_ERROR, "OOM: STATE = AllocZerod(%d)", sizeof(*STATE));
     InvokeTestFunction(test);
