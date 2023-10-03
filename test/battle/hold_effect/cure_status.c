@@ -43,7 +43,7 @@ SINGLE_BATTLE_TEST("Pecha and Lum Berries cure bad poison")
         TURN { MOVE(player, MOVE_TOXIC); }
     } SCENE {
         ANIMATION(ANIM_TYPE_MOVE, MOVE_TOXIC, player);
-        ANIMATION(ANIM_TYPE_STATUS, B_ANIM_STATUS_PSN, opponent);
+        ANIMATION(ANIM_TYPE_STATUS, B_ANIM_STATUS_TOX, opponent);
         STATUS_ICON(opponent, badPoison: TRUE);
         ANIMATION(ANIM_TYPE_GENERAL, B_ANIM_HELD_ITEM_EFFECT, opponent);
         STATUS_ICON(opponent, badPoison: FALSE);

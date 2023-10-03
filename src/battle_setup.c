@@ -1291,7 +1291,7 @@ static void SetBattledTrainersFlags(void)
     FlagSet(GetTrainerAFlag());
 }
 
-static void SetBattledTrainerFlag(void)
+static void UNUSED SetBattledTrainerFlag(void)
 {
     FlagSet(GetTrainerAFlag());
 }
@@ -1948,7 +1948,9 @@ bool8 levelCapped(u8 level)
     u8 levelCap = 0;
     u16 nextLeader, i;
     const struct TrainerMon *partyData;
-    if (!FlagGet(FLAG_BADGE01_GET))
+    if (FlagGet(FLAG_IS_CHAMPION))
+        return FALSE;
+    else if (!FlagGet(FLAG_BADGE01_GET))
         nextLeader = TRAINER_ROXANNE_1;
     else if (!FlagGet(FLAG_BADGE02_GET))
         nextLeader = TRAINER_BRAWLY_1;

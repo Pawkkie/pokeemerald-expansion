@@ -81,7 +81,9 @@ static EWRAM_DATA u16 sTrainerId = 0;
 static void UpdateLinkAndCallCallbacks(void);
 static void InitMainCallbacks(void);
 static void CallCallbacks(void);
+#ifdef BUGFIX
 static void SeedRngWithRtc(void);
+#endif
 static void ReadKeys(void);
 static void IterateRTC(void);
 void InitIntrHandlers(void);
