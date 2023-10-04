@@ -4378,6 +4378,11 @@ static void HandleTurnActionSelectionState(void)
                             else if (gBattleResources->bufferB[battler][2] & RET_ULTRA_BURST)
                                 gBattleStruct->burst.toBurst |= gBitTable[battler];
                             gBattleCommunication[battler]++;
+
+                            if (gTestRunnerEnabled)
+                            {
+                                TestRunner_Battle_CheckChosenMove(battler, gChosenMoveByBattler[battler], gBattleStruct->moveTarget[battler]);
+                            }
                         }
                         break;
                     }
