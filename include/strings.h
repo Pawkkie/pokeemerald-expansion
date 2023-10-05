@@ -623,6 +623,7 @@ extern const u8 gText_EVO_PreEvo_PE_Mega[];
 extern const u8 gText_EVO_FRIENDSHIP[];
 extern const u8 gText_EVO_FRIENDSHIP_DAY[];
 extern const u8 gText_EVO_FRIENDSHIP_NIGHT[];
+extern const u8 gText_EVO_FRIENDSHIP_MOVE_TYPE[];
 extern const u8 gText_EVO_LEVEL[];
 extern const u8 gText_EVO_TRADE[];
 extern const u8 gText_EVO_TRADE_ITEM[];
