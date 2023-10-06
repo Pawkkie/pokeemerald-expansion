@@ -2145,7 +2145,7 @@ static const u8 sText_CheatCode[] = _("Enter cheat code:");
 static const struct NamingScreenTemplate sCheatCodeScreenTemplate = 
 {
     .copyExistingString = FALSE,
-    .maxChars = POKEMON_NAME_LENGTH,
+    .maxChars = CHEAT_CODE_NAME_LENGTH,
     .iconFunction = 5,
     .addGenderIcon = FALSE,
     .initialPage = KBPAGE_LETTERS_UPPER,

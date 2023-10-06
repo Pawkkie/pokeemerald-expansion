@@ -1608,20 +1608,50 @@ static void CloseSummaryScreen(u8 taskId)
 }
 
 // Cycle summary page between stats, IVs and EVs
-static void ChangeSummaryState (s16 *taskData, u8 taskId)
+static void ChangeSummaryState(s16 *taskData, u8 taskId)
 {
-    switch (taskData[3])
+    if (FlagGet(FLAG_IVS_DISABLED) && FlagGet(FLAG_EVS_DISABLED)) // Both disabled
+        taskData[3] = 0;
+
+    else if (FlagGet(FLAG_IVS_DISABLED) && !FlagGet(FLAG_EVS_DISABLED)) // IVs disabled
     {
-        case 0:
-            taskData[3] = 1;
-            break;
-        case 1:
-            taskData[3] = 2;
-            break;
-        case 2:
-            taskData[3] = 0;
-            break;
+        switch (taskData[3])
+        {
+            case 0:
+                taskData[3] = 2;
+                break;
+            case 2:
+                taskData[3] = 0;
+        }
     }
+
+    else if (!FlagGet(FLAG_IVS_DISABLED) && FlagGet(FLAG_EVS_DISABLED)) // EVs disabled
+    {
+        switch (taskData[3])
+        {
+            case 0:
+                taskData[3] = 1;
+                break;
+            case 1:
+                taskData[3] = 0;
+        }
+    }
+    else
+    {
+        switch (taskData[3])
+        {
+            case 0:
+                taskData[3] = 1;
+                break;
+            case 1:
+                taskData[3] = 2;
+                break;
+            case 2:
+                taskData[3] = 0;
+                break;
+        }
+    }
+
     gTasks[taskId].func = Task_HandleInput;
 }
 
@@ -1674,6 +1704,7 @@ static void Task_HandleInput(u8 taskId)
         }
         else if (JOY_NEW(B_BUTTON))
         {
+            data[3] = 0;
             StopPokemonAnimations();
             PlaySE(SE_SELECT);
             BeginCloseSummaryScreen(taskId);

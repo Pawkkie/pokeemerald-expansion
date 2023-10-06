@@ -4120,14 +4120,23 @@ static u16 CalculateBoxMonChecksum(struct BoxPokemon *boxMon)
 #define CALC_FRIENDSHIP_BOOST()
 #endif
 
-#define CALC_STAT(base, iv, ev, statIndex, field)               \
-{                                                               \
-    u8 baseStat = gSpeciesInfo[species].base;                   \
-    s32 n = (((2 * baseStat + iv + ev / 4) * level) / 100) + 5; \
-    u8 nature = GetMonData(mon, MON_DATA_NATURE);                                \
-    n = ModifyStatByNature(nature, n, statIndex);               \
-    CALC_FRIENDSHIP_BOOST()                                     \
-    SetMonData(mon, field, &n);                                 \
+#define CALC_STAT(base, iv, ev, statIndex, field)                       \
+{                                                                       \
+    u8 baseStat = gSpeciesInfo[species].base;                           \
+    s32 n;                                                              \
+    u8 nature;                                                          \
+    if (!FlagGet(FLAG_EVS_DISABLED) && !FlagGet(FLAG_IVS_DISABLED))     \
+        n = (((2 * baseStat + iv + ev / 4) * level) / 100) + 5;         \
+    else if (FlagGet(FLAG_EVS_DISABLED) && !FlagGet(FLAG_IVS_DISABLED)) \
+        n = (((2 * baseStat + iv) * level) / 100) + 5;                  \
+    else if (!FlagGet(FLAG_EVS_DISABLED) && FlagGet(FLAG_IVS_DISABLED)) \
+        n = (((2 * baseStat + ev / 4) * level) / 100) + 5;              \
+    else                                                                \
+        n = (((2 * baseStat) * level) / 100) + 5;                       \
+    nature = GetMonData(mon, MON_DATA_NATURE);                          \
+    n = ModifyStatByNature(nature, n, statIndex);                       \
+    CALC_FRIENDSHIP_BOOST()                                             \
+    SetMonData(mon, field, &n);                                         \
 }
 
 void CalculateMonStats(struct Pokemon *mon)

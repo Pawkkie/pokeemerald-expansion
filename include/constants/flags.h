@@ -52,10 +52,10 @@
 #define FLAG_CAN_WATERFALL   0x27 // Checks if player has been taught how to ride up waterfalls
 #define FLAG_DISABLE_BAG     0x28 // Used to disable item use in battle
 #define FLAG_STOP_TIME       0x29 // Used to stop time when the item header and key item menu pop up
-#define FLAG_NEED4SPEED      0x2A // Unused Flag
-#define FLAG_UNUSED_0x02B    0x2B // Unused Flag
-#define FLAG_UNUSED_0x02C    0x2C // Unused Flag
-#define FLAG_UNUSED_0x02D    0x2D // Unused Flag
+#define FLAG_NEED4SPEED      0x2A // Used to toggle mach bike run speed with grindrunning
+#define FLAG_EVS_DISABLED    0x2B // Disables EVs with cheat code
+#define FLAG_IVS_DISABLED    0x2C // Disables IVs with cheat code
+#define FLAG_BEST_BALL       0x2D // Forces every ball to have 100% catch rate
 #define FLAG_UNUSED_0x02E    0x2E // Unused Flag
 #define FLAG_UNUSED_0x02F    0x2F // Unused Flag
 #define FLAG_UNUSED_0x030    0x30 // Unused Flag

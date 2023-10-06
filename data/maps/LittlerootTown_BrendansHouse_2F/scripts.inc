@@ -41,6 +41,11 @@ LittlerootTown_BrendansHouse_2F_GamecubeEnterCheatCode::
 	goto_if_eq VAR_RESULT, 0, CheatCodeFailed
 	goto_if_eq VAR_RESULT, 1, CheatCodeCandyJar
 	goto_if_eq VAR_RESULT, 2, CheatCodeNeed4Speed
+	goto_if_eq VAR_RESULT, 3, CheatCodeSeenEmAll
+	goto_if_eq VAR_RESULT, 4, CheatCodeCaughtEmAll
+	goto_if_eq VAR_RESULT, 5, CheatCodeBestBall
+	goto_if_eq VAR_RESULT, 6, CheatCodeEviesDayOff
+	goto_if_eq VAR_RESULT, 7, CheatCodeIvysDayOff
 	end
 
 CheatCodeFailed::
@@ -72,13 +77,65 @@ CheatCodeNeed4SpeedOff::
 	releaseall
 	end
 
-CheatCodeNeed4SpeedOn_Text:
-	.string "You feel a strong wind at your back.\n"
-	.string "You can run at mach speed!$"
+CheatCodeSeenEmAll::
+	msgbox EnterCheatCode_SucceededText, MSGBOX_DEFAULT
+	msgbox CheatCodeSeenEmAll_Text, MSGBOX_DEFAULT
+	releaseall
+	end
 
-CheatCodeNeed4SpeedOff_Text:
-	.string "The wind at your back peters out.\n"
-	.string "Your run speed returns to normal.$"
+CheatCodeCaughtEmAll::
+	msgbox EnterCheatCode_SucceededText, MSGBOX_DEFAULT
+	msgbox CheatCodeCaughtEmAll_Text, MSGBOX_DEFAULT
+	releaseall
+	end
+
+CheatCodeBestBall::
+	msgbox EnterCheatCode_SucceededText, MSGBOX_DEFAULT
+	goto_if_unset FLAG_BEST_BALL, CheatCodeBestBallOff
+	goto_if_set FLAG_BEST_BALL, CheatCodeBestBallOn
+	end
+
+CheatCodeBestBallOn::
+	msgbox CheatCodeBestBallOn_Text, MSGBOX_DEFAULT
+	releaseall
+	end
+
+CheatCodeBestBallOff::
+	msgbox CheatCodeBestBallOff_Text, MSGBOX_DEFAULT
+	releaseall
+	end
+
+CheatCodeEviesDayOff::
+	msgbox EnterCheatCode_SucceededText, MSGBOX_DEFAULT
+	goto_if_unset FLAG_EVS_DISABLED, CheatCodeEviesDayOffOff
+	goto_if_set FLAG_EVS_DISABLED, CheatCodeEviesDayOffOn
+	end
+
+CheatCodeEviesDayOffOn::
+	msgbox CheatCodeEviesDayOffOn_Text, MSGBOX_DEFAULT
+	releaseall
+	end
+
+CheatCodeEviesDayOffOff::
+	msgbox CheatCodeEviesDayOffOff_Text, MSGBOX_DEFAULT
+	releaseall
+	end
+
+CheatCodeIvysDayOff::
+	msgbox EnterCheatCode_SucceededText, MSGBOX_DEFAULT
+	goto_if_unset FLAG_IVS_DISABLED, CheatCodeIvysDayOffOff
+	goto_if_set FLAG_IVS_DISABLED, CheatCodeIvysDayOffOn
+	end
+
+CheatCodeIvysDayOffOn::
+	msgbox CheatCodeIvysDayOffOn_Text, MSGBOX_DEFAULT
+	releaseall
+	end
+
+CheatCodeIvysDayOffOff::
+	msgbox CheatCodeIvysDayOffOff_Text, MSGBOX_DEFAULT
+	releaseall
+	end
 
 CheatCodeExit::
 	releaseall
@@ -91,6 +148,47 @@ EnterCheatCode_FailedText:
 	.string "...nothing happened.$"
 EnterCheatCode_SucceededText:
 	.string "The code worked!$"
+
+CheatCodeNeed4SpeedOn_Text:
+	.string "You feel a strong wind at your back.\n"
+	.string "You can run at mach speed!$"
+
+CheatCodeNeed4SpeedOff_Text:
+	.string "The wind at your back peters out.\n"
+	.string "Your run speed returns to normal.$"
+
+CheatCodeSeenEmAll_Text:
+	.string "Dozens of Pokémon rush through your\n"
+	.string "head. It's like you've seen 'em all!$"
+
+CheatCodeCaughtEmAll_Text:
+	.string "Encyclopedic knowledge fills your head.\n"
+	.string "It's like you've caught 'em all!$"
+
+CheatCodeBestBallOn_Text:
+	.string "Something clicks in your bag. Your\n"
+	.string "Poké Balls all seem enhanced!$"
+
+CheatCodeBestBallOff_Text:
+	.string "Something clicks in your bag. Your\n"
+	.string "Poké Balls return to normal.$"
+
+CheatCodeEviesDayOffOn_Text:
+	.string "You get the sense Evie is taking some\n"
+	.string "time off. Effect of EVs disabled.$"
+
+CheatCodeEviesDayOffOff_Text:
+	.string "You get the sense Evie has returned from\n"
+	.string "her time off. Effect of EVs enabled.$"
+
+CheatCodeIvysDayOffOn_Text:
+	.string "You get the sense Ivy is taking some\n"
+	.string "time off. Effect of EVs disabled.$"
+
+CheatCodeIvysDayOffOff_Text:
+	.string "You get the sense Ivy has returned from\n"
+	.string "her time off. Effect of EVs enabled.$"
+
 
 LittlerootTown_BrendansHouse_2F_EventScript_CheckSetReadyToMeetBrendan::
 	checkplayergender

@@ -68,6 +68,7 @@
 #include "battle_util.h"
 #include "event_data.h"
 #include "naming_screen.h"
+#include "pokedex.h"
 
 #define TAG_ITEM_ICON 5500
 
@@ -4595,16 +4596,107 @@ void EnterCheatCode(void)
 
 void GetCheatCodeFeedback(void)
 {
-    static const u8 sText_CheatCodeCandyJar[] = _("Nomnomnom");
-    static const u8 sText_CheatCodeNeed4Speed[] = _("Need4Speed");
+    static const u8 sText_CheatCodeCandyJar[] = _("Nomnomnom"); // Infinite rare candy item
+    static const u8 sText_CheatCodeNeed4Speed[] = _("Need4Speed"); // Mach bike run with grindrun
+    static const u8 sText_CheatCodeSeenEmAll[] = _("SeenEmAll"); // Mark entire Pokedex as seen
+    static const u8 sText_CheatCodeCaughtEmAll[] = _("CaughtEmAll"); // Mark entire Pokedex as caught
+    static const u8 sText_CheatCodeBestBall[] = _("BestBall"); // 100% catch rate with all balls
+    static const u8 sText_CheatCodeEviesDayOff[] = _("EviesDayOff"); // EVs are ignored from stat calculation
+    static const u8 sText_CheatCodeIvysDayOff[] = _("IvysDayOff"); // IVs are ignored from stat calculation
+    struct Pokemon *party = gPlayerParty;
+    u32 i;
+
+    // Infinite rare candy item
     if (!StringCompare(gStringVar2, sText_CheatCodeCandyJar))
         gSpecialVar_Result = 1;
+
+    // Mach bike run with grindrun
     else if (!StringCompare(gStringVar2, sText_CheatCodeNeed4Speed))
     {
-        gSpecialVar_Result = 2;
         if(FlagGet(FLAG_NEED4SPEED))
             SetPlayerAvatarTransitionFlags(PLAYER_AVATAR_FLAG_ON_FOOT);
+        gSpecialVar_Result = 2;
     }
+
+    // Mark entire Pokedex as seen
+    else if (!StringCompare(gStringVar2, sText_CheatCodeSeenEmAll))
+    {
+        u32 i;
+        for (i = 0; i < NATIONAL_DEX_COUNT; i++)
+        {
+            GetSetPokedexFlag(i + 1, FLAG_SET_SEEN);
+        }
+        gSpecialVar_Result = 3;
+    }
+
+    // Mark entire Pokedex as caught
+    else if (!StringCompare(gStringVar2, sText_CheatCodeCaughtEmAll))
+    {
+        u32 i;
+        for (i = 0; i < NATIONAL_DEX_COUNT; i++)
+        {
+            GetSetPokedexFlag(i + 1, FLAG_SET_CAUGHT);
+        }
+        gSpecialVar_Result = 4;
+    }
+
+    // 100% catch rate with all balls
+    else if (!StringCompare(gStringVar2, sText_CheatCodeBestBall))
+    {
+        if (FlagGet(FLAG_BEST_BALL))
+            FlagClear(FLAG_BEST_BALL);
+        else
+            FlagSet(FLAG_BEST_BALL);
+        gSpecialVar_Result = 5;
+    }
+
+    // EVs are ignored from stat calculation
+    else if (!StringCompare(gStringVar2, sText_CheatCodeEviesDayOff))
+    {
+        if (FlagGet(FLAG_EVS_DISABLED))
+        {
+            FlagClear(FLAG_EVS_DISABLED);
+            for (i = 0; i < PARTY_SIZE; i++)
+            {
+                CalculateMonStats(&party[i]);
+            }
+        }
+
+        else
+        {
+            FlagSet(FLAG_EVS_DISABLED);
+            for (i = 0; i < PARTY_SIZE; i++)
+            {
+                CalculateMonStats(&party[i]);
+            }
+        }
+        gSpecialVar_Result = 6;
+    }
+
+    // IVs are ignored from stat calculation
+    else if (!StringCompare(gStringVar2, sText_CheatCodeIvysDayOff))
+    {
+        if (FlagGet(FLAG_IVS_DISABLED))
+        {
+            FlagClear(FLAG_IVS_DISABLED);
+            for (i = 0; i < PARTY_SIZE; i++)
+            {
+                CalculateMonStats(&party[i]);
+            }
+        }
+
+        else
+        {
+            FlagSet(FLAG_IVS_DISABLED);
+            for (i = 0; i < PARTY_SIZE; i++)
+            {
+                CalculateMonStats(&party[i]);
+            }
+        }
+        gSpecialVar_Result = 7;
+    }
+
+    // Illegal cheat code
     else
         gSpecialVar_Result = 0;
 }
