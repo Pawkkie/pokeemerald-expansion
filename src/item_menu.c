@@ -345,8 +345,13 @@ static const u8 sContextMenuItems_RegisterKeyItem[] = {
     ACTION_DUMMY,           ACTION_CANCEL
 };
 
-static const u8 sContextMenuItems_BallsPocket[] = {
+static const u8 sContextMenuItems_BallsPocketUse[] = {
     ACTION_USE,         ACTION_GIVE,
+    ACTION_TOSS,        ACTION_CANCEL
+};
+
+static const u8 sContextMenuItems_BallsPocketNoUse[] = {
+    ACTION_GIVE,        ACTION_DUMMY,
     ACTION_TOSS,        ACTION_CANCEL
 };
 
@@ -1733,8 +1738,16 @@ static void OpenContextMenu(u8 taskId)
 
                 break;
             case BALLS_POCKET:
-                gBagMenu->contextMenuItemsPtr = sContextMenuItems_BallsPocket;
-                gBagMenu->contextMenuNumItems = ARRAY_COUNT(sContextMenuItems_BallsPocket);
+                if (FlagGet(FLAG_USABLE_BALLS))
+                {
+                    gBagMenu->contextMenuItemsPtr = sContextMenuItems_BallsPocketUse;
+                    gBagMenu->contextMenuNumItems = ARRAY_COUNT(sContextMenuItems_BallsPocketUse);
+                }
+                else
+                {
+                    gBagMenu->contextMenuItemsPtr = sContextMenuItems_BallsPocketNoUse;
+                    gBagMenu->contextMenuNumItems = ARRAY_COUNT(sContextMenuItems_BallsPocketNoUse);
+                }
                 break;
             case TMHM_POCKET:
                 gBagMenu->contextMenuItemsPtr = sContextMenuItems_TmHmPocket;

@@ -56,7 +56,7 @@
 #define FLAG_EVS_DISABLED    0x2B // Disables EVs with cheat code
 #define FLAG_IVS_DISABLED    0x2C // Disables IVs with cheat code
 #define FLAG_BEST_BALL       0x2D // Forces every ball to have 100% catch rate
-#define FLAG_UNUSED_0x02E    0x2E // Unused Flag
+#define FLAG_USABLE_BALLS    0x2E // Allows balls to be usable outside of battle
 #define FLAG_UNUSED_0x02F    0x2F // Unused Flag
 #define FLAG_UNUSED_0x030    0x30 // Unused Flag
 #define FLAG_UNUSED_0x031    0x31 // Unused Flag
