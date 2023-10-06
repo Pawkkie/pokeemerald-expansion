@@ -115,6 +115,7 @@ FallarborTown_Text_AnnoyingIntroPart8:
 FallarborTown_SuperTrainer::
 	lock
 	faceplayer
+	goto_if_set FLAG_EVS_DISABLED, SuperTrainer_DayOff
 	msgbox SuperTraining_Text_ChoosePokemon, MSGBOX_DEFAULT
 	special ChoosePartyMon
 	waitstate
@@ -126,6 +127,11 @@ FallarborTown_SuperTrainer::
 	bufferpartymonnick 0, VAR_0x8004
 	msgbox SuperTraining_Text_TakeALookatEVs, MSGBOX_DEFAULT
 	goto FallarborTown_SuperMainMenu
+
+SuperTrainer_DayOff::
+	msgbox SuperTrainer_DayOff_Text, MSGBOX_DEFAULT
+	releaseall
+	end
 
 FallarborTown_SuperMainMenu::
 	bufferpartymonnick 0, VAR_0x8004
@@ -440,11 +446,16 @@ SuperTraining_ShowPrice:
 FallarborTown_CantAfford_String:
 	.string "You don't have the money.$"
 
+SuperTrainer_DayOff_Text:
+	.string "Oh sorry, I'm taking the day off. Please\n"
+	.string "come back some other time instead!$"
+
 @@@@@@@@@@@@@@@@ Hyper Training Script @@@@@@@@@@@@@@@@
 
 FallarborTown_HyperTrainer::
 	lockall
 	faceplayer
+	goto_if_set FLAG_IVS_DISABLED, HyperTrainer_DayOff
 	msgbox HyperTraining_Text_ChoosePokemon, MSGBOX_DEFAULT
 	special ChoosePartyMon
 	waitstate
@@ -456,6 +467,11 @@ FallarborTown_HyperTrainer::
 	bufferpartymonnick 0, VAR_0x8004
 	msgbox HyperTraining_Text_LetsTakeALook, MSGBOX_DEFAULT
 	goto FallarborTown_HyperMainMenu
+
+HyperTrainer_DayOff::
+	msgbox HyperTrainer_DayOff_Text, MSGBOX_DEFAULT
+	releaseall
+	end
 
 FallarborTown_HyperMainMenu::
 	bufferpartymonnick 0, VAR_0x8004
@@ -806,3 +822,7 @@ HyperTraining_Text_PayThreeCaps:
 HyperTraining_Text_Free:
 	.string "I can do that for free! Just to check,\n"
 	.string "you're sure you want to set it that low?$"
+
+HyperTrainer_DayOff_Text:
+	.string "Oh sorry, I'm taking the day off. Please\n"
+	.string "come back some other time instead!$"
