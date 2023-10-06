@@ -462,6 +462,7 @@ void FieldCB_ReturnToFieldNoScript(void)
 
 void FieldCB_ReturnToFieldNoScriptCheckMusic(void)
 {
+    FlagClear(FLAG_STOP_TIME);
     LockPlayerFieldControls();
     Overworld_PlaySpecialMapMusic();
     FadeInFromBlack();
