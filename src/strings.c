@@ -1844,6 +1844,7 @@ const u8 gText_Berries[] = _("BERRIES");
 const u8 gText_Nickname[] = _("NICKNAME");
 const u8 gText_AshQty[] = _("ASH QTY:\n{STR_VAR_1}{PAUSE_UNTIL_PRESS}");
 const u8 gText_ThrowInPremierBalls[] = _("I'll throw in some Premier Balls, too.{PAUSE_UNTIL_PRESS}");
+const u8 gText_BasePointsResetToZero[] = _("{STR_VAR_1}'s base points\nwere all reset to zero!{PAUSE_UNTIL_PRESS}");
 
 //HGSS_Ui PokedexPlus
 #if POKEDEX_PLUS_HGSS == TRUE

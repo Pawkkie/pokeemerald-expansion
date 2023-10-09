@@ -6041,7 +6041,7 @@ bool8 PokemonUseItemEffects(struct Pokemon *mon, u16 item, u8 partyIndex, u8 mov
                             dataSigned += temp2;
                             SetMonData(mon, sGetMonDataIVConstants[temp1], &dataSigned);
                         }
-                        else // Decreasing EV (HP or Atk)
+                        else if (evChange < 0) // Decreasing EV (HP or Atk)
                         {
                             dataSigned = GetMonData(mon, sGetMonDataEVConstants[temp1], NULL);
                             if (dataSigned == 0)
@@ -6059,6 +6059,13 @@ bool8 PokemonUseItemEffects(struct Pokemon *mon, u16 item, u8 partyIndex, u8 mov
                             if (dataSigned < 0)
                                 dataSigned = 0;
                             SetMonData(mon, sGetMonDataEVConstants[temp1], &dataSigned);
+                        }
+                        else // Reset EV (HP or Atk)
+                        {
+                            if (dataSigned == 0)
+                                break;
+
+                            dataSigned = 0;
                         }
 
                         // Update EVs and stats
@@ -6212,7 +6219,7 @@ bool8 PokemonUseItemEffects(struct Pokemon *mon, u16 item, u8 partyIndex, u8 mov
                             dataSigned += temp2;
                             SetMonData(mon, sGetMonDataIVConstants[temp1 + 2], &dataSigned);
                         }
-                        else // Decreasing EV
+                        else if (evChange < 0) // Decreasing EV
                         {
                             dataSigned = GetMonData(mon, sGetMonDataEVConstants[temp1 + 2], NULL);
                             if (dataSigned == 0)
@@ -6230,6 +6237,13 @@ bool8 PokemonUseItemEffects(struct Pokemon *mon, u16 item, u8 partyIndex, u8 mov
                             if (dataSigned < 0)
                                 dataSigned = 0;
                             SetMonData(mon, sGetMonDataEVConstants[temp1 + 2], &dataSigned);
+                        }
+                        else // Reset EV
+                        {
+                            if (dataSigned == 0)
+                                break;
+
+                            dataSigned = 0;
                         }
 
                         // Update EVs and stats
