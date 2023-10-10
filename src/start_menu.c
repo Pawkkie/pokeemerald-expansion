@@ -161,7 +161,7 @@ static const struct WindowTemplate sWindowTemplate_StartClock = {
     .width = 9, 
     .height = 2, 
     .paletteNum = 15,
-    .baseBlock = 0x8
+    .baseBlock = 0x30
 };
 
 static const u8 *const sPyramidFloorNames[FRONTIER_STAGES_PER_CHALLENGE + 1] =
