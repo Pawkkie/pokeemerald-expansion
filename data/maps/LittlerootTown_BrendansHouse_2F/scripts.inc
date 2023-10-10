@@ -46,6 +46,7 @@ LittlerootTown_BrendansHouse_2F_GamecubeEnterCheatCode::
 	goto_if_eq VAR_RESULT, 5, CheatCodeBestBall
 	goto_if_eq VAR_RESULT, 6, CheatCodeEviesDayOff
 	goto_if_eq VAR_RESULT, 7, CheatCodeIvysDayOff
+	goto_if_eq VAR_RESULT, 8, CheatCodeUnHatted
 	end
 
 CheatCodeFailed::
@@ -137,6 +138,21 @@ CheatCodeIvysDayOffOff::
 	releaseall
 	end
 
+CheatCodeUnHatted::
+	msgbox EnterCheatCode_SucceededText, MSGBOX_DEFAULT
+	goto_if_unset FLAG_NO_LEVEL_CAP, CheatCodeUnhattedOff
+	goto_if_set FLAG_NO_LEVEL_CAP, CheatCodeUnhattedOn
+
+CheatCodeUnhattedOff::
+	msgbox CheatCodeUnhattedOff_Text, MSGBOX_DEFAULT
+	releaseall
+	end
+
+CheatCodeUnhattedOn::
+	msgbox CheatCodeUnhattedOn_Text, MSGBOX_DEFAULT
+	releaseall
+	end
+
 CheatCodeExit::
 	releaseall
 	end
@@ -188,6 +204,14 @@ CheatCodeIvysDayOffOn_Text:
 CheatCodeIvysDayOffOff_Text:
 	.string "You get the sense Ivy has returned from\n"
 	.string "her time off. Effect of EVs enabled.$"
+
+CheatCodeUnhattedOff_Text:
+	.string "The rush of energy subsides.\n"
+	.string "Gym leader level caps reinstated.$"
+
+CheatCodeUnhattedOn_Text:
+	.string "A rush of energy lets you surpass your\n"
+	.string "limits! Gym leader level caps removed.$"
 
 
 LittlerootTown_BrendansHouse_2F_EventScript_CheckSetReadyToMeetBrendan::

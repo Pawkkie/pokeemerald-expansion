@@ -1950,7 +1950,7 @@ bool8 levelCapped(u8 level)
     u8 levelCap = 0;
     u16 nextLeader, i;
     const struct TrainerMon *partyData;
-    if (FlagGet(FLAG_IS_CHAMPION))
+    if (FlagGet(FLAG_IS_CHAMPION) || FlagGet(FLAG_NO_LEVEL_CAP))
         return FALSE;
     else if (!FlagGet(FLAG_BADGE01_GET))
         nextLeader = TRAINER_ROXANNE_1;
