@@ -5789,6 +5789,27 @@ u32 AbilityBattleEffects(u32 caseID, u32 battler, u32 ability, u32 special, u32 
             break;
         }
         break;
+    case ABILITYEFFECT_OPPORTUNIST:
+        /* Similar to ABILITYEFFECT_IMMUNITY in that it loops through all battlers.
+         * Is called after ABILITYEFFECT_ON_SWITCHIN to copy any boosts
+         * from switch in abilities e.g. intrepid sword, as 
+         */
+        for (battler = 0; battler < gBattlersCount; battler++)
+        {
+            switch (GetBattlerAbility(battler))
+            {
+            case ABILITY_OPPORTUNIST:
+                if (gProtectStructs[battler].activateOpportunist == 2) {
+                    gBattleScripting.savedBattler = gBattlerAttacker;
+                    gBattleScripting.battler = gBattlerAttacker = gBattlerAbility = battler;
+                    gProtectStructs[battler].activateOpportunist--;
+                    BattleScriptPushCursorAndCallback(BattleScript_OpportunistCopyStatChange);
+                    effect = 1;
+                }
+                break;
+            }
+        }
+        break;
     case ABILITYEFFECT_IMMUNITY: // 5
         for (battler = 0; battler < gBattlersCount; battler++)
         {
@@ -5847,6 +5868,7 @@ u32 AbilityBattleEffects(u32 caseID, u32 battler, u32 ability, u32 special, u32 
                     effect = 4;
                 break;
             }
+            
             if (effect != 0)
             {
                 switch (effect)
@@ -8901,9 +8923,9 @@ static inline u32 CalcMoveBasePowerAfterModifiers(u32 move, u32 battlerAtk, u32 
            modifier = uq4_12_multiply(modifier, UQ_4_12(1.3));
         break;
     case ABILITY_RIVALRY:
-        if (AreBattlersOfOppositeGender(battlerAtk, battlerDef))
+        if (AreBattlersOfSameGender(battlerAtk, battlerDef))
             modifier = uq4_12_multiply(modifier, UQ_4_12(1.25));
-        else
+        else if (AreBattlersOfOppositeGender(battlerAtk, battlerDef))
             modifier = uq4_12_multiply(modifier, UQ_4_12(0.75));
         break;
     case ABILITY_ANALYTIC:
@@ -11139,6 +11161,14 @@ bool32 AreBattlersOfOppositeGender(u32 battler1, u32 battler2)
     u8 gender2 = GetBattlerGender(battler2);
 
     return (gender1 != MON_GENDERLESS && gender2 != MON_GENDERLESS && gender1 != gender2);
+}
+
+bool32 AreBattlersOfSameGender(u32 battler1, u32 battler2)
+{
+    u8 gender1 = GetBattlerGender(battler1);
+    u8 gender2 = GetBattlerGender(battler2);
+
+    return (gender1 != MON_GENDERLESS && gender2 != MON_GENDERLESS && gender1 == gender2);
 }
 
 u32 CalcSecondaryEffectChance(u32 battler, u8 secondaryEffectChance)
