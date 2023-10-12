@@ -154,4 +154,5 @@
 	.include "src/battle_controller_player.o"
 	.include "src/tx_registered_items_menu.o"
 	.include "src/battle_controller_player.o"
-	.include "src/mugshot.o"
+	.include "src/mugshot.o"	
+	.include "src/sound_check_menu.o"
