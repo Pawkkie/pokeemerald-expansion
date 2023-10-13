@@ -216,3 +216,9 @@ const u16 gMetatileAttributes_GeneralLeoB[] = INCBIN_U16("data/tilesets/primary/
 
 const u16 gMetatiles_PetalburgLeoB[] = INCBIN_U16("data/tilesets/secondary/petalburg_leo_b/metatiles.bin");
 const u16 gMetatileAttributes_PetalburgLeoB[] = INCBIN_U16("data/tilesets/secondary/petalburg_leo_b/metatile_attributes.bin");
+
+const u16 gMetatiles_GeneralLeoBSnow[] = INCBIN_U16("data/tilesets/primary/general_leo_bsnow/metatiles.bin");
+const u16 gMetatileAttributes_GeneralLeoBSnow[] = INCBIN_U16("data/tilesets/primary/general_leo_bsnow/metatile_attributes.bin");
+
+const u16 gMetatiles_PetalburgLeoBSnow[] = INCBIN_U16("data/tilesets/secondary/petalburg_leo_bsnow/metatiles.bin");
+const u16 gMetatileAttributes_PetalburgLeoBSnow[] = INCBIN_U16("data/tilesets/secondary/petalburg_leo_bsnow/metatile_attributes.bin");

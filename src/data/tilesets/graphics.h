@@ -1691,3 +1691,41 @@ const u16 gTilesetPalettes_PetalburgLeoB[][16] =
 };
 
 const u32 gTilesetTiles_PetalburgLeoB[] = INCBIN_U32("data/tilesets/secondary/petalburg_leo_b/tiles.4bpp.lz");
+
+const u16 gTilesetPalettes_GeneralLeoBSnow[][16] =
+{
+    INCBIN_U16("data/tilesets/primary/general_leo_bsnow/palettes/00.gbapal"),
+    INCBIN_U16("data/tilesets/primary/general_leo_bsnow/palettes/01.gbapal"),
+    INCBIN_U16("data/tilesets/primary/general_leo_bsnow/palettes/02.gbapal"),
+    INCBIN_U16("data/tilesets/primary/general_leo_bsnow/palettes/03.gbapal"),
+    INCBIN_U16("data/tilesets/primary/general_leo_bsnow/palettes/04.gbapal"),
+    INCBIN_U16("data/tilesets/primary/general_leo_bsnow/palettes/05.gbapal"),
+    INCBIN_U16("data/tilesets/primary/general_leo_bsnow/palettes/06.gbapal"),
+    INCBIN_U16("data/tilesets/primary/general_leo_bsnow/palettes/07.gbapal"),
+    INCBIN_U16("data/tilesets/primary/general_leo_bsnow/palettes/08.gbapal"),
+    INCBIN_U16("data/tilesets/primary/general_leo_bsnow/palettes/09.gbapal"),
+    INCBIN_U16("data/tilesets/primary/general_leo_bsnow/palettes/10.gbapal"),
+    INCBIN_U16("data/tilesets/primary/general_leo_bsnow/palettes/11.gbapal"),
+    INCBIN_U16("data/tilesets/primary/general_leo_bsnow/palettes/12.gbapal"),
+};
+
+const u32 gTilesetTiles_GeneralLeoBSnow[] = INCBIN_U32("data/tilesets/primary/general_leo_bsnow/tiles.4bpp.lz");
+
+const u16 gTilesetPalettes_PetalburgLeoBSnow[][16] =
+{
+    INCBIN_U16("data/tilesets/secondary/petalburg_leo_bsnow/palettes/00.gbapal"),
+    INCBIN_U16("data/tilesets/secondary/petalburg_leo_bsnow/palettes/01.gbapal"),
+    INCBIN_U16("data/tilesets/secondary/petalburg_leo_bsnow/palettes/02.gbapal"),
+    INCBIN_U16("data/tilesets/secondary/petalburg_leo_bsnow/palettes/03.gbapal"),
+    INCBIN_U16("data/tilesets/secondary/petalburg_leo_bsnow/palettes/04.gbapal"),
+    INCBIN_U16("data/tilesets/secondary/petalburg_leo_bsnow/palettes/05.gbapal"),
+    INCBIN_U16("data/tilesets/secondary/petalburg_leo_bsnow/palettes/06.gbapal"),
+    INCBIN_U16("data/tilesets/secondary/petalburg_leo_bsnow/palettes/07.gbapal"),
+    INCBIN_U16("data/tilesets/secondary/petalburg_leo_bsnow/palettes/08.gbapal"),
+    INCBIN_U16("data/tilesets/secondary/petalburg_leo_bsnow/palettes/09.gbapal"),
+    INCBIN_U16("data/tilesets/secondary/petalburg_leo_bsnow/palettes/10.gbapal"),
+    INCBIN_U16("data/tilesets/secondary/petalburg_leo_bsnow/palettes/11.gbapal"),
+    INCBIN_U16("data/tilesets/secondary/petalburg_leo_bsnow/palettes/12.gbapal"),
+};
+
+const u32 gTilesetTiles_PetalburgLeoBSnow[] = INCBIN_U32("data/tilesets/secondary/petalburg_leo_bsnow/tiles.4bpp.lz");

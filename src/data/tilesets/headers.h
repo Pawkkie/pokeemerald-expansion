@@ -860,3 +860,25 @@ const struct Tileset gTileset_PetalburgLeoB =
     .metatileAttributes = gMetatileAttributes_PetalburgLeoB,
     .callback = NULL,
 };
+
+const struct Tileset gTileset_GeneralLeoBSnow =
+{
+    .isCompressed = TRUE,
+    .isSecondary = FALSE,
+    .tiles = gTilesetTiles_GeneralLeoBSnow,
+    .palettes = gTilesetPalettes_GeneralLeoBSnow,
+    .metatiles = gMetatiles_GeneralLeoBSnow,
+    .metatileAttributes = gMetatileAttributes_GeneralLeoBSnow,
+    .callback = NULL,
+};
+
+const struct Tileset gTileset_PetalburgLeoBSnow =
+{
+    .isCompressed = TRUE,
+    .isSecondary = TRUE,
+    .tiles = gTilesetTiles_PetalburgLeoBSnow,
+    .palettes = gTilesetPalettes_PetalburgLeoBSnow,
+    .metatiles = gMetatiles_PetalburgLeoBSnow,
+    .metatileAttributes = gMetatileAttributes_PetalburgLeoBSnow,
+    .callback = NULL,
+};
