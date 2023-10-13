@@ -117,15 +117,12 @@ static void HandleCreateYesNoMenu(u8 taskId, const struct YesNoFuncTable * ptrs)
 static u8 AddTMContextMenu(u8 * a0, u8 a1);
 static void RemoveTMContextMenu(u8 * a0);
 static u8 CreateTMSprite(u16 itemId);
-static void SetTMSpriteAnim(struct Sprite * sprite, u8 var);
-static void TintTMSpriteByType(u8 type);
-static void UpdateTMSpritePosition(struct Sprite * sprite, u8 var);
-static void InitSelectedTMSpriteData(u8 a0, u16 itemId);
-static void SpriteCB_MoveTMSpriteInCase(struct Sprite * sprite);
 static void LoadTMTypePalettes(void);
 static void DrawPartyMonIcons(void);
-static void TintPartyMonIcons(u8 tm);
+static void TintPartyMonIcons(u16 tm);
 static void DestroyPartyMonIcons(void);
+
+extern const struct SpritePalette gMonIconPaletteTable[6];
 
 static const struct BgTemplate sBGTemplates[] = {
     {
@@ -567,7 +564,7 @@ static void TMCase_ItemPrintFunc(u8 windowId, u32 itemId, u8 y)
         }
         else
         {
-            PlaceHMTileInWindow(windowId, 8, y);
+            // PlaceHMTileInWindow(windowId, 8, y);
         }
     }
 }
@@ -588,7 +585,7 @@ static void TMCase_MoveCursor_UpdatePrintedDescription(s32 itemIndex)
     AddTextPrinterParameterized_ColorByIndex(1, 2, str, 2, 3, 1, 0, 0, 0);
 
     // update icons
-    TintPartyMonIcons(itemId - ITEM_TM01);
+    TintPartyMonIcons(itemId);
 }
 
 static void FillBG2RowWithPalette_2timesNplus1(s32 a0)
@@ -1146,7 +1143,7 @@ static void DrawPartyMonIcons(void)
             icon_y = i < 3 ? MON_ICON_START_Y : MON_ICON_START_Y + MON_ICON_PADDING;
         }
         //get species
-        species = GetMonData(&gPlayerParty[i], MON_DATA_SPECIES);
+        species = GetMonData(&gPlayerParty[i], MON_DATA_SPECIES_OR_EGG);
 
         //create icon sprite
         #ifndef POKEMON_EXPANSION
@@ -1162,21 +1159,23 @@ static void DrawPartyMonIcons(void)
     }
 }
 
-static void TintPartyMonIcons(u8 tm)
+static void TintPartyMonIcons(u16 tm)
 {
     u8 i;
     u16 species;
 
     for (i = 0; i < gPlayerPartyCount; i++)
     {
-        species = GetMonData(&gPlayerParty[i], MON_DATA_SPECIES);
-        if (!CanSpeciesLearnTMHM(species, tm))
+        species = GetMonData(&gPlayerParty[i], MON_DATA_SPECIES_OR_EGG);
+        SetGpuReg(REG_OFFSET_BLDCNT, BLDCNT_TGT2_ALL);
+        SetGpuReg(REG_OFFSET_BLDALPHA, BLDALPHA_BLEND(7, 11));
+        if (!CanLearnTeachableMove(species, ItemIdToBattleMoveId(tm))) 
         {
-            gSprites[spriteIdData[i]].oam.paletteNum = 7 + spriteIdPalette[i];
+            gSprites[spriteIdData[i]].oam.objMode = ST_OAM_OBJ_BLEND;
         }
         else
         {
-            gSprites[spriteIdData[i]].oam.paletteNum = spriteIdPalette[i];//gMonIconPaletteIndices[species];
+            gSprites[spriteIdData[i]].oam.objMode = ST_OAM_OBJ_NORMAL;//gMonIconPaletteIndices[species];
         }
     }
     

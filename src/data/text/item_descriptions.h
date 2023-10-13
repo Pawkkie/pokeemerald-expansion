@@ -3597,8 +3597,8 @@ static const u8 sVsSeekerDesc[] = _(
 
 static const u8 sTMCaseDesc[] = _(
     "A convenient case \n"
-    "that holds TMs and\n"
-    "HMs.");
+    "that holds all of\n"
+    "your TMs.");
 
 static const u8 sBerryPouchDesc[] = _(
     "A convenient\n"
