@@ -477,9 +477,6 @@ static void ShowPyramidFloorWindow(void)
 static void ShowTimeWindow(void)
 {
     const u8 *suffix;
-    const u8 *timeofday;
-    u8 alignedSuffix[16];
-    u8 str[0x20];
     u8* ptr;
     u8 convertedHours;
 
@@ -1177,7 +1174,7 @@ static u8 SaveConfirmOverwriteDefaultNoCallback(void)
     return SAVE_IN_PROGRESS;
 }
 
-static u8 SaveConfirmOverwriteCallback(void)
+static UNUSED u8 SaveConfirmOverwriteCallback(void)
 {
     DisplayYesNoMenuDefaultYes(); // Show Yes/No menu
     sSaveDialogCallback = SaveOverwriteInputCallback;
@@ -1460,8 +1457,6 @@ static void ShowSaveInfoWindow(void)
     u8 color;
     u32 xOffset;
     u32 yOffset;
-    const u8 *suffix;
-    u8 *alignedSuffix = gStringVar3;
 
     if (!FlagGet(FLAG_SYS_POKEDEX_GET))
     {

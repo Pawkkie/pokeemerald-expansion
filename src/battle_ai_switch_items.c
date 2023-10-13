@@ -73,9 +73,8 @@ static bool8 HasBadOdds(u32 battler)
     //Variable initialization
 	u8 opposingPosition, atkType1, atkType2, defType1, defType2, effectiveness;
     s32 i, damageDealt = 0, maxDamageDealt = 0, damageTaken = 0, maxDamageTaken = 0;
-    u32 aiMove, playerMove, aiBestMove, aiAbility = GetBattlerAbility(battler), opposingBattler;
+    u32 aiMove, playerMove, aiBestMove = MOVE_NONE, aiAbility = GetBattlerAbility(battler), opposingBattler;
     bool8 getsOneShot = FALSE, hasStatusMove = FALSE, hasSuperEffectiveMove = FALSE;
-	struct Pokemon *party = NULL;
 	u16 typeEffectiveness = UQ_4_12(1.0), aiMoveEffect; //baseline typing damage
 
     // Only use this if AI_FLAG_SMART_SWITCHING is set for the trainer
@@ -123,7 +122,10 @@ static bool8 HasBadOdds(u32 battler)
                 // Get maximum damage mon can deal
                 damageDealt = AI_DATA->simulatedDmg[battler][opposingBattler][i];
                 if(damageDealt > maxDamageDealt)
+                {
                     maxDamageDealt = damageDealt;
+                    aiBestMove = aiMove;
+                }
             }
         }
     }
@@ -1220,16 +1222,6 @@ static u32 GetBestMonBatonPass(struct Pokemon *party, int firstId, int lastId, u
 static u32 GetBestMonTypeMatchup(struct Pokemon *party, int firstId, int lastId, u8 invalidMons, u32 battler, u32 opposingBattler)
 {
     int i, bits = 0;
-    bool8 checkedAllMonsForSEMoves = FALSE;
-    u16 bestResist;
-    int bestMonId;
-    u16 species;
-    u16 typeEffectiveness;
-    u8 atkType1;
-    u8 atkType2;
-    u8 defType1;
-    u8 defType2;
-    u32 aiMove;
 
     while (bits != 0x3F) // All mons were checked.
     {
@@ -1243,12 +1235,12 @@ static u32 GetBestMonTypeMatchup(struct Pokemon *party, int firstId, int lastId,
                 u16 species = GetMonData(&party[i], MON_DATA_SPECIES);
                 uq4_12_t typeEffectiveness = UQ_4_12(1.0);
 
-                atkType1 = gBattleMons[opposingBattler].type1;
-                atkType2 = gBattleMons[opposingBattler].type2;
-                defType1 = gSpeciesInfo[species].types[0];
-                defType2 = gSpeciesInfo[species].types[1];
+                u8 atkType1 = gBattleMons[opposingBattler].type1;
+                u8 atkType2 = gBattleMons[opposingBattler].type2;
+                u8 defType1 = gSpeciesInfo[species].types[0];
+                u8 defType2 = gSpeciesInfo[species].types[1];
 
-                typeEffectiveness = uq4_12_multiply(typeEffectiveness, (GetTypeModifier(atkType1, defType1))); // Multiply type effectiveness by a factor depending on type matchup
+                typeEffectiveness = uq4_12_multiply(typeEffectiveness, (GetTypeModifier(atkType1, defType1)));
                 if (atkType2 != atkType1)
                     typeEffectiveness = uq4_12_multiply(typeEffectiveness, (GetTypeModifier(atkType2, defType1)));
                 if (defType2 != defType1)
@@ -1264,35 +1256,28 @@ static u32 GetBestMonTypeMatchup(struct Pokemon *party, int firstId, int lastId,
                 }
             }
         }
-        // Have type matchup mon
+
+        // Ok, we know the mon has the right typing but does it have at least one super effective move?
         if (bestMonId != PARTY_SIZE)
         {
-            // Check if it has a super effective move
             for (i = 0; i < MAX_MON_MOVES; i++)
             {
-                aiMove = GetMonData(&party[bestMonId], MON_DATA_MOVE1 + i);
-                if (aiMove != MOVE_NONE && AI_GetTypeEffectiveness(aiMove, battler, opposingBattler) >= UQ_4_12(2.0))
+                u32 move = GetMonData(&party[bestMonId], MON_DATA_MOVE1 + i);
+                if (move != MOVE_NONE && AI_GetTypeEffectiveness(move, battler, opposingBattler) >= UQ_4_12(2.0))
                     break;
             }
-            // If it has a super effective move or we've already checked other options, it's the best mon
-            if (i != MAX_MON_MOVES || checkedAllMonsForSEMoves)
-                return bestMonId; 
-            // If it doesn't, keep looking
-            bits |= gBitTable[bestMonId];
-            
-            if (bits == 0x3F && !checkedAllMonsForSEMoves)
-            {
-                bits = 0;
-                checkedAllMonsForSEMoves = TRUE;
-            }
-        // Do not have a defensive mon
+
+            if (i != MAX_MON_MOVES)
+                return bestMonId; // Has both the typing and at least one super effective move.
+
+            bits |= gBitTable[bestMonId]; // Sorry buddy, we want something better.
         }
         else
         {
-            return PARTY_SIZE;
             bits = 0x3F; // No viable mon to switch.
         }
     }
+
     return PARTY_SIZE;
 }
 
@@ -1312,6 +1297,7 @@ static u32 GetBestMonDmg(struct Pokemon *party, int firstId, int lastId, u8 inva
         InitializeSwitchinCandidate(&party[i]);
         for (j = 0; j < MAX_MON_MOVES; j++)
         {
+            aiMove = AI_DATA->switchinCandidate.battleMon.moves[j];
             if (aiMove != MOVE_NONE && gBattleMoves[aiMove].power != 0)
             {
                 aiMove = GetMonData(&party[i], MON_DATA_MOVE1 + j);
@@ -1961,7 +1947,7 @@ u8 GetMostSuitableMonToSwitchInto(u32 battler, bool32 switchAfterMonKOd)
     // This all handled by the GetBestMonIntegrated function if the AI_FLAG_SMART_MON_CHOICES flag is set
     else
     {
-        s32 i, j, aliveCount = 0;
+        s32 i, aliveCount = 0;
         u32 invalidMons = 0, aceMonId = PARTY_SIZE;
         // Get invalid slots ids.
         for (i = firstId; i < lastId; i++)

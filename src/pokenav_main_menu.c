@@ -584,7 +584,7 @@ static void DrawHelpBar(u32 windowId)
 static void InitPokenavMainMenuResources(void)
 {
     s32 i;
-    u8 spriteId;
+    // u8 spriteId;
     struct Pokenav_MainMenu *menu = GetSubstructPtr(POKENAV_SUBSTRUCT_MAIN_MENU);
 
     for (i = 0; i < ARRAY_COUNT(sSpinningPokenavSpriteSheet); i++)

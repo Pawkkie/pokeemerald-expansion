@@ -721,7 +721,7 @@ static u32 LoopedTask_ReturnToConditionMenu(s32 state)
     return LT_FINISH;
 }
 
-static u32 LoopedTask_CannotAccesPC(s32 state)
+static UNUSED u32 LoopedTask_CannotAccesPC(s32 state)
 {
     switch (state)
     {

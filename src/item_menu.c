@@ -226,9 +226,6 @@ static void CancelSell(u8);
 static void ItemMenu_RegisterSelect(u8 taskId);
 static void ItemMenu_RegisterList(u8 taskId);
 static void ItemMenu_Deselect(u8 taskId);
-static u8 Register_GetItemListPosition(u16 itemId);
-static bool8 Register_IsItemInList(u16 itemId);
-static void Task_ScrollingMultichoiceInput(u8 taskId);
 
 //bag sort
 static void Task_LoadBagSortOptions(u8 taskId);
@@ -612,7 +609,6 @@ static EWRAM_DATA struct TempWallyBag *sTempWallyBag = 0;
 
 //tx_registered_items_menu
 static EWRAM_DATA bool8 sRegisterSubMenu = FALSE;
-static EWRAM_DATA u8 sRegisteredItemsMenuIcon = 0xFF;
 extern const u8 EventScript_SelectWithoutRegisteredItem[];
 
 void ResetBagScrollPositions(void)
@@ -2101,8 +2097,6 @@ static const u8 gText_TooManyRegistered[] = _("You already have too\nmany items 
 static void ItemMenu_Cancel2(u8 taskId)
 {
     s16* data = gTasks[taskId].data;
-    u16* scrollPos = &gBagPosition.scrollPosition[gBagPosition.pocket];
-    u16* cursorPos = &gBagPosition.cursorPosition[gBagPosition.pocket];
 
     sRegisterSubMenu = FALSE;
 
@@ -2787,7 +2781,6 @@ static void PrintTMHMMoveData(u16 itemId)
 // tx_registered_items_menu, based on code from ghoulslash
 static void ResetRegisteredItem(u16 itemId)
 {
-    u8 i;
     if (gSaveBlock1Ptr->registeredItemSelect == itemId)
         gSaveBlock1Ptr->registeredItemSelect = ITEM_NONE;
     else
@@ -2866,9 +2859,6 @@ static void ItemMenu_RegisterSelect(u8 taskId)
 
 static void ItemMenu_RegisterList(u8 taskId)
 {
-    u8 i;
-    u8 slot = 0xFF;
-
     if (TxRegItemsMenu_AddRegisteredItem(gSpecialVar_ItemId))
         gTasks[taskId].func = ItemMenu_FinishRegister;
     else
@@ -2878,8 +2868,6 @@ static void ItemMenu_RegisterList(u8 taskId)
 static void ItemMenu_Deselect(u8 taskId)
 {
     s16* data = gTasks[taskId].data;
-    u16* scrollPos = &gBagPosition.scrollPosition[gBagPosition.pocket];
-    u16* cursorPos = &gBagPosition.cursorPosition[gBagPosition.pocket];
     int listPosition = ListMenu_ProcessInput(tListTaskId);
     u16 itemId = BagGetItemIdByPocketPosition(gBagPosition.pocket + 1, listPosition);
 
@@ -3485,8 +3473,6 @@ static void SortBagItems(u8 taskId)
 
 static void Task_SortFinish(u8 taskId)
 {
-    s16* data = gTasks[taskId].data;
-
     if (gMain.newKeys & (A_BUTTON | B_BUTTON))
     {
         RemoveItemMessageWindow(4);
@@ -3498,7 +3484,6 @@ static void SortItemsInBag(u8 pocket, u8 type)
 {
     struct ItemSlot* itemMem;
     u16 itemAmount;
-    s8 (*func)(struct ItemSlot*, struct ItemSlot*);
 
     switch (pocket)
     {

@@ -4128,7 +4128,7 @@ static u16 CalculateBoxMonChecksum(struct BoxPokemon *boxMon)
         n = (((2 * baseStat + ev / 4) * level) / 100) + 5;              \
     else                                                                \
         n = (((2 * baseStat) * level) / 100) + 5;                       \
-    nature = GetMonData(mon, MON_DATA_NATURE);                          \
+    nature = GetMonData(mon, MON_DATA_NATURE, NULL);                    \
     n = ModifyStatByNature(nature, n, statIndex);                       \
     SetMonData(mon, field, &n);                                         \
 }
@@ -4150,7 +4150,7 @@ void CalculateMonStats(struct Pokemon *mon)
     s32 spDefenseIV = GetMonData(mon, MON_DATA_SPDEF_IV, NULL);
     s32 spDefenseEV = GetMonData(mon, MON_DATA_SPDEF_EV, NULL);
     u16 species = GetMonData(mon, MON_DATA_SPECIES, NULL);
-    u8 friendship = GetMonData(mon, MON_DATA_FRIENDSHIP, NULL);
+    // u8 friendship = GetMonData(mon, MON_DATA_FRIENDSHIP, NULL);
     s32 level = GetLevelFromMonExp(mon);
     s32 newMaxHP;
 
@@ -5875,7 +5875,7 @@ bool8 PokemonUseItemEffects(struct Pokemon *mon, u16 item, u8 partyIndex, u8 mov
     u16 heldItem;
     u8 effectFlags;
     s8 evChange;
-    u16 evCount;
+    // u16 evCount;
 
     // Get item hold effect
     heldItem = GetMonData(mon, MON_DATA_HELD_ITEM, NULL);
@@ -7209,8 +7209,8 @@ void MonGainEVs(struct Pokemon *mon, u16 defeatedSpecies)
     u16 totalEVs = 0;
     u16 heldItem;
     u8 holdEffect;
-    u8 powerItemBonus;
-    u8 powerItemStat;
+    // u8 powerItemBonus;
+    // u8 powerItemStat;
     int i, multiplier;
     u8 stat;
     u8 bonus;

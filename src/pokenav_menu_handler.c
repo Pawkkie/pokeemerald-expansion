@@ -348,7 +348,7 @@ static u32 HandleCantOpenRibbonsInput(struct Pokenav_Menu *menu)
     return POKENAV_MENU_FUNC_NONE;
 }
 
-static u32 HandleCantAccessPCInput(struct Pokenav_Menu *menu)
+static UNUSED u32 HandleCantAccessPCInput(struct Pokenav_Menu *menu)
 {
     if (UpdateMenuCursorPos(menu))
     {
@@ -366,7 +366,7 @@ static u32 HandleCantAccessPCInput(struct Pokenav_Menu *menu)
 }
 
 
-static void Task_WaitFadeAccessPC(u8 taskId)
+static UNUSED void Task_WaitFadeAccessPC(u8 taskId)
 {
     if (WaitForPokenavShutdownFade())
     {
@@ -476,7 +476,7 @@ static u32 HandleConditionSearchMenuInput(struct Pokenav_Menu *menu)
     return POKENAV_MENU_FUNC_NONE;
 }
 
-static u32 CB2_ReturnToMainMenu(struct Pokenav_Menu *menu)
+static UNUSED u32 CB2_ReturnToMainMenu(struct Pokenav_Menu *menu)
 {
     ReturnToMainMenu(menu);
     return POKENAV_MENU_FUNC_RETURN_TO_MAIN;

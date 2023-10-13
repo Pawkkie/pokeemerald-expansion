@@ -1289,6 +1289,7 @@ static u8 CheckForCollision(s16 x, s16 y, u8 direction)
         //case COLLISION_SIDEWAYS_STAIRS_TO_LEFT:
         //    return FALSE;
     }
+    return TRUE; // If we have no idea what we're dealing with, consider it a wall
 }
 
 bool32 IsRunningDisallowed(u8 metatile)

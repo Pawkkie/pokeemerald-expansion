@@ -65,7 +65,7 @@ static void Sound_DrawChoices(u8 selection);
 static u8 FrameType_ProcessInput(u8 selection);
 static void FrameType_DrawChoices(u8 selection);
 static u8 ButtonMode_ProcessInput(u8 selection);
-static void ButtonMode_DrawChoices(u8 selection);
+// static void ButtonMode_DrawChoices(u8 selection);
 static void DrawHeaderText(void);
 static void DrawOptionMenuTexts(void);
 static void DrawBgWindowFrames(void);
@@ -569,7 +569,7 @@ static void FrameType_DrawChoices(u8 selection)
     DrawOptionMenuChoice(text, 128, YPOS_FRAMETYPE, 1);
 }
 
-static u8 ButtonMode_ProcessInput(u8 selection)
+static UNUSED u8 ButtonMode_ProcessInput(u8 selection)
 {
     if (JOY_NEW(DPAD_RIGHT))
     {
@@ -592,28 +592,27 @@ static u8 ButtonMode_ProcessInput(u8 selection)
     return selection;
 }
 
-static void ButtonMode_DrawChoices(u8 selection)
-{
-    s32 widthNormal, widthLR, widthLA, xLR;
-    u8 styles[3];
+// static UNUSED void ButtonMode_DrawChoices(u8 selection)
+// {
+//     s32 widthNormal, widthLR, widthLA, xLR;
 
-    styles[0] = 0;
-    styles[1] = 0;
-    styles[2] = 0;
-    styles[selection] = 1;
+//     styles[0] = 0;
+//     styles[1] = 0;
+//     styles[2] = 0;
+//     styles[selection] = 1;
 
-    // DrawOptionMenuChoice(gText_ButtonTypeNormal, 104, YPOS_BUTTONMODE, styles[0]);
+//     // DrawOptionMenuChoice(gText_ButtonTypeNormal, 104, YPOS_BUTTONMODE, styles[0]);
 
-    widthNormal = GetStringWidth(FONT_NORMAL, gText_ButtonTypeNormal, 0);
-    widthLR = GetStringWidth(FONT_NORMAL, gText_ButtonTypeLR, 0);
-    widthLA = GetStringWidth(FONT_NORMAL, gText_ButtonTypeLEqualsA, 0);
+//     widthNormal = GetStringWidth(FONT_NORMAL, gText_ButtonTypeNormal, 0);
+//     widthLR = GetStringWidth(FONT_NORMAL, gText_ButtonTypeLR, 0);
+//     widthLA = GetStringWidth(FONT_NORMAL, gText_ButtonTypeLEqualsA, 0);
 
-    widthLR -= 94;
-    xLR = (widthNormal - widthLR - widthLA) / 2 + 104;
-    // DrawOptionMenuChoice(gText_ButtonTypeLR, xLR, YPOS_BUTTONMODE, styles[1]);
+//     widthLR -= 94;
+//     xLR = (widthNormal - widthLR - widthLA) / 2 + 104;
+//     // DrawOptionMenuChoice(gText_ButtonTypeLR, xLR, YPOS_BUTTONMODE, styles[1]);
 
-    // DrawOptionMenuChoice(gText_ButtonTypeLEqualsA, GetStringRightAlignXOffset(FONT_NORMAL, gText_ButtonTypeLEqualsA, 198), YPOS_BUTTONMODE, styles[2]);
-}
+//     // DrawOptionMenuChoice(gText_ButtonTypeLEqualsA, GetStringRightAlignXOffset(FONT_NORMAL, gText_ButtonTypeLEqualsA, 198), YPOS_BUTTONMODE, styles[2]);
+// }
 
 static void DrawHeaderText(void)
 {

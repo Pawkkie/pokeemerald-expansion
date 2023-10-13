@@ -1948,7 +1948,7 @@ u16 CountBattledRematchTeams(u16 trainerId)
 bool8 levelCapped(u8 level)
 {
     u8 levelCap = 0;
-    u16 nextLeader, i;
+    u16 nextLeader = TRAINER_ROXANNE_1, i;
     const struct TrainerMon *partyData;
     if (FlagGet(FLAG_IS_CHAMPION) || FlagGet(FLAG_NO_LEVEL_CAP))
         return FALSE;

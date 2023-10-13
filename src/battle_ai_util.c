@@ -3462,7 +3462,7 @@ void FreeRestoreBattleMons(struct BattlePokemon *savedBattleMons)
 // party logic
 s32 AI_CalcPartyMonDamage(u32 move, u32 battlerAtk, u32 battlerDef, struct BattlePokemon switchinCandidate, bool8 isPartyMonAttacker)
 {
-    s32 dmg, i;
+    s32 dmg;
     u8 effectiveness;
     struct BattlePokemon *savedBattleMons = AllocSaveBattleMons();
     if(isPartyMonAttacker)

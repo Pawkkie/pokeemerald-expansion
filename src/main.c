@@ -140,7 +140,7 @@ void AgbMain()
 
 void AgbMainLoop(void)
 {
-    int advanceRTCCounter;
+    int advanceRTCCounter = 0;
     for (;;)
     {
         ReadKeys();

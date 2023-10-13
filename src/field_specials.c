@@ -4308,7 +4308,7 @@ void IncreaseChosenMonEVs (void)
 {
     u8 statToChange = gSpecialVar_0x8005;
     u8 increment = gSpecialVar_0x8006;
-    u8 oldEV;
+    u8 oldEV = MAX_PER_STAT_EVS; // Max out initially to prevent overflowing
     u8 newEV;
 
     // Get the number of EVs currently in the chosen stat
@@ -4329,9 +4329,9 @@ void IncreaseChosenMonEVs (void)
     }
 
     // Should replace 252 here with symbol for max EVs in a stat
-    if ((oldEV + increment) > 252)
+    if ((oldEV + increment) > MAX_PER_STAT_EVS)
     {
-        newEV = 252;
+        newEV = MAX_PER_STAT_EVS;
     }
     else
     {

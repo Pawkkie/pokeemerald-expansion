@@ -3959,7 +3959,7 @@ u8 DisplayCaughtMonDexPage(u16 dexNum, u32 otId, u32 personality)
     return taskId;
 }
 
-static void Task_DisplayCaughtMonDexPage(u8 taskId)
+static UNUSED void Task_DisplayCaughtMonDexPage(u8 taskId)
 {
     u8 spriteId;
     u16 dexNum = gTasks[taskId].tDexNum;

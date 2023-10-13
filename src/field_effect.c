@@ -3116,7 +3116,7 @@ static void Task_FlyOut(u8 taskId)
     sFlyOutFieldEffectFuncs[gTasks[taskId].tState](&gTasks[taskId]);
 }
 
-static void FlyOutFieldEffect_FieldMovePose(struct Task *task)
+static UNUSED void FlyOutFieldEffect_FieldMovePose(struct Task *task)
 {
     struct ObjectEvent *objectEvent = &gObjectEvents[gPlayerAvatar.objectEventId];
     if (!ObjectEventIsMovementOverridden(objectEvent) || ObjectEventClearHeldMovementIfFinished(objectEvent))
@@ -3130,7 +3130,7 @@ static void FlyOutFieldEffect_FieldMovePose(struct Task *task)
     }
 }
 
-static void FlyOutFieldEffect_ShowMon(struct Task *task)
+static UNUSED void FlyOutFieldEffect_ShowMon(struct Task *task)
 {
     struct ObjectEvent *objectEvent = &gObjectEvents[gPlayerAvatar.objectEventId];
     if (ObjectEventClearHeldMovementIfFinished(objectEvent))
@@ -3390,7 +3390,7 @@ static void SpriteCB_FlyBirdReturnToBall(struct Sprite *sprite)
     }
 }
 
-static void StartFlyBirdReturnToBall(u8 spriteId)
+static UNUSED void StartFlyBirdReturnToBall(u8 spriteId)
 {
     StartFlyBirdSwoopDown(spriteId); // Set up is the same, but overrwrites the callback below
     gSprites[spriteId].callback = SpriteCB_FlyBirdReturnToBall;

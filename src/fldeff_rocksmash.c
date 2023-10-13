@@ -68,7 +68,7 @@ static void Task_DoFieldMove_Init(u8 taskId)
     }
 }
 
-static void Task_DoFieldMove_ShowMonAfterPose(u8 taskId)
+static UNUSED void Task_DoFieldMove_ShowMonAfterPose(u8 taskId)
 {
     if (ObjectEventCheckHeldMovementStatus(&gObjectEvents[gPlayerAvatar.objectEventId]) == TRUE)
     {

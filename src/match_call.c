@@ -1038,7 +1038,7 @@ static u32 GetCurrentTotalMinutes(struct Time *time)
     return time->days * 24 * 60 + time->hours * 60 + time->minutes;
 }
 
-static bool32 UpdateMatchCallMinutesCounter(void)
+static UNUSED bool32 UpdateMatchCallMinutesCounter(void)
 {
     int curMinutes;
     RtcCalcLocalTime();
@@ -1052,7 +1052,7 @@ static bool32 UpdateMatchCallMinutesCounter(void)
     return FALSE;
 }
 
-static bool32 CheckMatchCallChance(void)
+static UNUSED bool32 CheckMatchCallChance(void)
 {
     int callChance = 1;
     if (!GetMonData(&gPlayerParty[0], MON_DATA_SANITY_IS_EGG) && GetMonAbility(&gPlayerParty[0]) == ABILITY_LIGHTNING_ROD)
@@ -1064,7 +1064,7 @@ static bool32 CheckMatchCallChance(void)
         return FALSE;
 }
 
-static bool32 MapAllowsMatchCall(void)
+static UNUSED bool32 MapAllowsMatchCall(void)
 {
     if (!Overworld_MapTypeAllowsTeleportAndFly(gMapHeader.mapType) || gMapHeader.regionMapSectionId == MAPSEC_SAFARI_ZONE)
         return FALSE;
@@ -1082,7 +1082,7 @@ static bool32 MapAllowsMatchCall(void)
     return TRUE;
 }
 
-static bool32 UpdateMatchCallStepCounter(void)
+static UNUSED bool32 UpdateMatchCallStepCounter(void)
 {
     if (++sMatchCallState.stepCounter >= 10)
     {
@@ -1095,7 +1095,7 @@ static bool32 UpdateMatchCallStepCounter(void)
     }
 }
 
-static bool32 SelectMatchCallTrainer(void)
+static UNUSED bool32 SelectMatchCallTrainer(void)
 {
     u32 matchCallId;
     u32 numRegistered = GetNumRegisteredNPCs();

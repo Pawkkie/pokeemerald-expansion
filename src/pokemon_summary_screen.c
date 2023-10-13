@@ -2377,7 +2377,7 @@ static void Task_HandleReplaceMoveInput(u8 taskId)
     }
 }
 
-static bool8 CanReplaceMove(void)
+static UNUSED bool8 CanReplaceMove(void)
 {
     if (sMonSummaryScreen->firstMoveIndex == MAX_MON_MOVES
         || sMonSummaryScreen->newMove == MOVE_NONE
@@ -2387,7 +2387,7 @@ static bool8 CanReplaceMove(void)
         return FALSE;
 }
 
-static void ShowCantForgetHMsWindow(u8 taskId)
+static UNUSED void ShowCantForgetHMsWindow(u8 taskId)
 {
     ClearWindowTilemap(PSS_LABEL_WINDOW_MOVES_POWER_ACC);
     ClearWindowTilemap(PSS_LABEL_WINDOW_MOVES_APPEAL_JAM);
@@ -4053,7 +4053,6 @@ static void SetMoveTypeIcons(void)
     u8 i;
     struct PokeSummary *summary = &sMonSummaryScreen->summary;
     struct Pokemon *mon = &sMonSummaryScreen->currentMon;
-    u16 species = GetMonData(mon, MON_DATA_SPECIES);
     for (i = 0; i < MAX_MON_MOVES; i++)
     {
         if (summary->moves[i] != MOVE_NONE) {
@@ -4095,7 +4094,6 @@ static void SetContestMoveTypeIcons(void)
 static void SetNewMoveTypeIcon(void)
 {
     struct Pokemon *mon = &sMonSummaryScreen->currentMon;
-    u16 species = GetMonData(mon, MON_DATA_SPECIES);
 
     if (sMonSummaryScreen->newMove == MOVE_NONE)
     {

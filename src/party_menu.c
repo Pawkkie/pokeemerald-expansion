@@ -3882,7 +3882,7 @@ static void Task_CancelAfterAorBPress(u8 taskId)
         CursorCb_Cancel1(taskId);
 }
 
-static void DisplayCantUseFlashMessage(void)
+static UNUSED void DisplayCantUseFlashMessage(void)
 {
     if (FlagGet(FLAG_SYS_USE_FLASH) == TRUE)
         DisplayPartyMenuStdMessage(PARTY_MSG_ALREADY_IN_USE);
@@ -3896,7 +3896,7 @@ static void FieldCallback_Surf(void)
     FieldEffectStart(FLDEFF_USE_SURF);
 }
 
-static bool8 SetUpFieldMove_Surf(void)
+static UNUSED bool8 SetUpFieldMove_Surf(void)
 {
     if (PartyHasMonWithSurf() == TRUE && IsPlayerFacingSurfableFishableWater() == TRUE)
     {
@@ -3907,7 +3907,7 @@ static bool8 SetUpFieldMove_Surf(void)
     return FALSE;
 }
 
-static void DisplayCantUseSurfMessage(void)
+static UNUSED void DisplayCantUseSurfMessage(void)
 {
     if (TestPlayerAvatarFlags(PLAYER_AVATAR_FLAG_SURFING))
         DisplayPartyMenuStdMessage(PARTY_MSG_ALREADY_SURFING);
@@ -3915,7 +3915,7 @@ static void DisplayCantUseSurfMessage(void)
         DisplayPartyMenuStdMessage(PARTY_MSG_CANT_SURF_HERE);
 }
 
-static bool8 SetUpFieldMove_Fly(void)
+static UNUSED bool8 SetUpFieldMove_Fly(void)
 {
     if (Overworld_MapTypeAllowsTeleportAndFly(gMapHeader.mapType) == TRUE)
         return TRUE;
@@ -3934,7 +3934,7 @@ static void FieldCallback_Waterfall(void)
     FieldEffectStart(FLDEFF_USE_WATERFALL);
 }
 
-static bool8 SetUpFieldMove_Waterfall(void)
+static UNUSED bool8 SetUpFieldMove_Waterfall(void)
 {
     s16 x, y;
 
@@ -3954,7 +3954,7 @@ static void FieldCallback_Dive(void)
     FieldEffectStart(FLDEFF_USE_DIVE);
 }
 
-static bool8 SetUpFieldMove_Dive(void)
+static UNUSED bool8 SetUpFieldMove_Dive(void)
 {
     gFieldEffectArguments[1] = TrySetDiveWarp();
     if (gFieldEffectArguments[1] != 0)
