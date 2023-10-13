@@ -103,6 +103,7 @@ struct DisableStruct
     u8 toxicSpikesDone:1;
     u8 stickyWebDone:1;
     u8 stealthRockDone:1;
+    u8 syrupBombTimer;
 };
 
 struct ProtectStruct
@@ -930,7 +931,7 @@ extern u16 gBattle_WIN0H;
 extern u16 gBattle_WIN0V;
 extern u16 gBattle_WIN1H;
 extern u16 gBattle_WIN1V;
-extern u8 gDisplayedStringBattle[400];
+extern u8 gDisplayedStringBattle[425];
 extern u8 gBattleTextBuff1[TEXT_BUFF_ARRAY_COUNT];
 extern u8 gBattleTextBuff2[TEXT_BUFF_ARRAY_COUNT];
 extern u8 gBattleTextBuff3[30]; //to handle stupidly large z move names

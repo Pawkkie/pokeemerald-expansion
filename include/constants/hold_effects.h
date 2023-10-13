@@ -160,10 +160,11 @@
 #define HOLD_EFFECT_COVERT_CLOAK        179
 #define HOLD_EFFECT_LOADED_DICE         180
 #define HOLD_EFFECT_BOOSTER_ENERGY      181 // Not implemented.
+#define HOLD_EFFECT_MASK                183
 
 // Gen2 hold effect
-#define HOLD_EFFECT_BERSERK_GENE        182
-#define HOLD_EFFECT_TRAINING_BAND       183
+#define HOLD_EFFECT_BERSERK_GENE        184
+#define HOLD_EFFECT_TRAINING_BAND       185
 // Custom hold effects
 
 

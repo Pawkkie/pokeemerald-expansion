@@ -718,7 +718,6 @@ static bool8 ShouldSwitchIfGameStatePrompt(u32 battler)
 
 static bool8 ShouldSwitchIfAbilityBenefit(u32 battler)
 {
-    s32 monToSwitchId;
     s32 moduloChance = 4; //25% Chance Default
     s32 chanceReducer = 1; //No Reduce default. Increase to reduce
 
@@ -1299,7 +1298,7 @@ static u32 GetBestMonTypeMatchup(struct Pokemon *party, int firstId, int lastId,
 
 static u32 GetBestMonDmg(struct Pokemon *party, int firstId, int lastId, u8 invalidMons, u32 battler, u32 opposingBattler)
 {
-    int i, j;
+    int i;
     int dmg, bestDmg = 0;
     int bestMonId = PARTY_SIZE;
     u32 aiMove;
@@ -2008,8 +2007,6 @@ u8 GetMostSuitableMonToSwitchInto(u32 battler, bool32 switchAfterMonKOd)
 
 static bool32 AiExpectsToFaintPlayer(u32 battler)
 {
-    bool32 canFaintPlayer;
-    u32 i;
     u8 target = gBattleStruct->aiChosenTarget[battler];
 
     if (gBattleStruct->aiMoveOrAction[battler] > 3)
@@ -2063,7 +2060,6 @@ static bool8 ShouldUseItem(u32 battler)
     {
         u16 item;
         const u8 *itemEffects;
-        u8 paramOffset;
         u8 battlerSide;
 
         item = gBattleResources->battleHistory->trainerItems[i];

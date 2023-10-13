@@ -3871,9 +3871,8 @@ static void PrintMoveDetails(u16 move)
         if (sMonSummaryScreen->currPageIndex == PSS_PAGE_BATTLE_MOVES)
         {
             moveEffect = gBattleMoves[move].effect;
-        #if B_SHOW_SPLIT_ICON == TRUE
-            ShowSplitIcon(GetBattleMoveSplit(move));
-        #endif
+            if (B_SHOW_SPLIT_ICON == TRUE)
+                ShowSplitIcon(GetBattleMoveSplit(move));
             PrintMovePowerAndAccuracy(move);
 
             if (moveEffect != EFFECT_PLACEHOLDER)
