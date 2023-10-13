@@ -4130,7 +4130,6 @@ static u16 CalculateBoxMonChecksum(struct BoxPokemon *boxMon)
         n = (((2 * baseStat) * level) / 100) + 5;                       \
     nature = GetMonData(mon, MON_DATA_NATURE);                          \
     n = ModifyStatByNature(nature, n, statIndex);                       \
-    CALC_FRIENDSHIP_BOOST()                                             \
     SetMonData(mon, field, &n);                                         \
 }
 

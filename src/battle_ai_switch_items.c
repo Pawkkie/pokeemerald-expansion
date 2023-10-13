@@ -1298,7 +1298,7 @@ static u32 GetBestMonTypeMatchup(struct Pokemon *party, int firstId, int lastId,
 
 static u32 GetBestMonDmg(struct Pokemon *party, int firstId, int lastId, u8 invalidMons, u32 battler, u32 opposingBattler)
 {
-    int i;
+    int i, j;
     int dmg, bestDmg = 0;
     int bestMonId = PARTY_SIZE;
     u32 aiMove;

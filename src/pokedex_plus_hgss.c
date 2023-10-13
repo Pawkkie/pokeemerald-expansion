@@ -4786,7 +4786,7 @@ static void SaveMonDataInStruct(void)
     //Count how many different EVs
     for (i = 0; i<6; i++)
     {
-        if (EVs[i] > 0) //HP//Speed//Attack//Special Attack//Defense//Special Defense
+        if (evs[i] > 0) //HP//Speed//Attack//Special Attack//Defense//Special Defense
             differentEVs++;
     }
 
@@ -4799,12 +4799,12 @@ static void SaveMonDataInStruct(void)
     sPokedexView->sPokemonStats.baseDefense         = gSpeciesInfo[species].baseDefense;
     sPokedexView->sPokemonStats.baseSpDefense       = gSpeciesInfo[species].baseSpDefense;
     sPokedexView->sPokemonStats.differentEVs        = differentEVs;
-    sPokedexView->sPokemonStats.evYield_HP          = EVs[0];
-    sPokedexView->sPokemonStats.evYield_Speed       = EVs[1];
-    sPokedexView->sPokemonStats.evYield_Attack      = EVs[2];
-    sPokedexView->sPokemonStats.evYield_SpAttack    = EVs[3];
-    sPokedexView->sPokemonStats.evYield_Defense     = EVs[4];
-    sPokedexView->sPokemonStats.evYield_SpDefense   = EVs[5];
+    sPokedexView->sPokemonStats.evYield_HP          = evs[0];
+    sPokedexView->sPokemonStats.evYield_Speed       = evs[1];
+    sPokedexView->sPokemonStats.evYield_Attack      = evs[2];
+    sPokedexView->sPokemonStats.evYield_SpAttack    = evs[3];
+    sPokedexView->sPokemonStats.evYield_Defense     = evs[4];
+    sPokedexView->sPokemonStats.evYield_SpDefense   = evs[5];
     sPokedexView->sPokemonStats.catchRate           = gSpeciesInfo[species].catchRate;
     sPokedexView->sPokemonStats.growthRate          = gSpeciesInfo[species].growthRate;
     sPokedexView->sPokemonStats.eggGroup1           = gSpeciesInfo[species].eggGroups[0];

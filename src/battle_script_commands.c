@@ -4075,26 +4075,26 @@ static void Cmd_getexp(void)
             if (B_TRAINER_EXP_MULTIPLIER <= GEN_7 && gBattleTypeFlags & BATTLE_TYPE_TRAINER)
                 calculatedExp = (calculatedExp * 150) / 100;
 
-            if (B_SPLIT_EXP < GEN_6)
-            {
-                if (viaExpShare) // at least one mon is getting exp via exp share
-                {
-                    *exp = SAFE_DIV(calculatedExp / 2, viaSentIn);
-                    if (*exp == 0)
-                        *exp = 1;
+            // if (B_SPLIT_EXP < GEN_6)
+            // {
+            //     if (viaExpShare) // at least one mon is getting exp via exp share
+            //     {
+            //         *exp = SAFE_DIV(calculatedExp / 2, viaSentIn);
+            //         if (*exp == 0)
+            //             *exp = 1;
 
-                    gExpShareExp = calculatedExp / 2 / viaExpShare;
-                    if (gExpShareExp == 0)
-                        gExpShareExp = 1;
-                }
-                else
-                {
-                    *exp = SAFE_DIV(calculatedExp, viaSentIn);
-                    if (*exp == 0)
-                        *exp = 1;
-                    gExpShareExp = 0;
-                }
-            }
+            //         gExpShareExp = calculatedExp / 2 / viaExpShare;
+            //         if (gExpShareExp == 0)
+            //             gExpShareExp = 1;
+            //     }
+            //     else
+            //     {
+            //         *exp = SAFE_DIV(calculatedExp, viaSentIn);
+            //         if (*exp == 0)
+            //             *exp = 1;
+            //         gExpShareExp = 0;
+            //     }
+            // }
             else
             {
                 *exp = calculatedExp;
@@ -4129,7 +4129,7 @@ static void Cmd_getexp(void)
                 gBattleScripting.getexpState = 5;
                 gBattleMoveDamage = 0; // used for exp
                 if (B_MAX_LEVEL_EV_GAINS >= GEN_5)
-                    MonGainEVs(&gPlayerParty[*expMonId], gBattleMons[gBattlerFainted].species);
+                    MonGainEVs(&gPlayerParty[gBattleStruct->expGetterMonId], gBattleMons[gBattlerFainted].species);
             }
 
             else if (GetMonData(&gPlayerParty[gBattleStruct->expGetterMonId], MON_DATA_SPECIES) == SPECIES_NONE 
@@ -4180,7 +4180,7 @@ static void Cmd_getexp(void)
                             gBattleMoveDamage = (gBattleMoveDamage * 150) / 100;
                     }
 
-                if (B_SCALED_EXP >= GEN_5) && (B_SCALED_EXP != GEN_6)
+                if (B_SCALED_EXP >= GEN_5 && B_SCALED_EXP != GEN_6)
                     {
                         // Note: There is an edge case where if a pokemon receives a large amount of exp, it wouldn't be properly calculated
                         //       because of multiplying by scaling factor(the value would simply be larger than an u32 can hold). Hence u64 is needed.
