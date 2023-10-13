@@ -348,6 +348,7 @@ SECTIONS {
         src/tx_registered_items_menu.o(.text);
 	src/mugshot.o(.text);
         src/sound_check_menu.o(.text);
+        src/tm_case.o(.text);
     } =0
 
     script_data :
@@ -719,6 +720,7 @@ SECTIONS {
         src/tx_registered_items_menu.o(.rodata);
 	src/mugshot.o(.rodata);
         src/sound_check_menu.o(.rodata);
+        src/tm_case.o(.rodata);
     } =0
 
     song_data :
