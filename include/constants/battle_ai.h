@@ -53,7 +53,7 @@
 #define AI_FLAG_OMNISCIENT            (1 << 17)  // AI has full knowledge of player moves, abilities, hold items
 #define AI_FLAG_SMART_MON_CHOICES     (1 << 18)  // AI will make smarter decisions when choosing which mon to send out mid-battle and after a KO, which are separate decisions. Pairs very well with AI_FLAG_SMART_SWITCHING.
 
-#define AI_FLAG_COUNT                       20
+#define AI_FLAG_COUNT                       19
 
 // 'other' ai logic flags
 #define AI_FLAG_ROAMING               (1 << 29)

@@ -163,7 +163,7 @@
 
 // Gen2 hold effect
 #define HOLD_EFFECT_BERSERK_GENE        182
-#define HOLD_EFFECT_TRAINING_BAND       175
+#define HOLD_EFFECT_TRAINING_BAND       183
 // Custom hold effects
 
 

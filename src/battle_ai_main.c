@@ -761,18 +761,15 @@ static s32 AI_CheckBadMove(u32 battlerAtk, u32 battlerDef, u32 move, s32 score)
         if (IsSemiInvulnerable(battlerDef, move) && moveEffect != EFFECT_SEMI_INVULNERABLE && AI_WhoStrikesFirst(battlerAtk, battlerDef, move) == AI_IS_FASTER)
             RETURN_SCORE_MINUS(20);    // if target off screen and we go first, don't use move
 
-        // Improving Switching AI
         // check if negates type
         switch (effectiveness)
         {
         case AI_EFFECTIVENESS_x0:
-            RETURN_SCORE_MINUS(30);
+            RETURN_SCORE_MINUS(20);
             break;
-        case AI_EFFECTIVENESS_x0_5:
-            RETURN_SCORE_MINUS(5)
         case AI_EFFECTIVENESS_x0_125:
         case AI_EFFECTIVENESS_x0_25:
-            RETURN_SCORE_MINUS(30);
+            RETURN_SCORE_MINUS(10);
             break;
         }
 
