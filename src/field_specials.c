@@ -945,7 +945,7 @@ u16 GetWeekCount(void)
 {
     u16 weekCount = gLocalTime.days / 7;
     if (weekCount > 9999)
-        weekCount = 9999;
+        weekCount = 0; // Reset week count if capped
 
     return weekCount;
 }
