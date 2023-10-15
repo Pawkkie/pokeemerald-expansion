@@ -769,13 +769,13 @@ void (*const gFadeSnowTracksFuncs[])(struct Sprite *) = {
 
 void UpdateSnowTracksFieldEffect(struct Sprite *sprite)
 {
-    gFadeFootprintsTireTracksFuncs[sprite->data[0]](sprite);
+    gFadeSnowTracksFuncs[sprite->data[0]](sprite);
 }
 
 static void FadeSnowTracks_Step0(struct Sprite *sprite)
 {
-    // Wait 40 frames before the flickering starts.
-    if (++sprite->data[1] > 40)
+    // Wait 300 frames before the flickering starts.
+    if (++sprite->data[1] > 260)
         sprite->data[0] = 1;
 
     UpdateObjectEventSpriteInvisibility(sprite, FALSE);
@@ -786,7 +786,7 @@ static void FadeSnowTracks_Step1(struct Sprite *sprite)
     sprite->invisible ^= 1;
     sprite->data[1]++;
     UpdateObjectEventSpriteInvisibility(sprite, sprite->invisible);
-    if (sprite->data[1] > 56)
+    if (sprite->data[1] > 276)
     {
         FieldEffectStop(sprite, sprite->data[7]);
     }
