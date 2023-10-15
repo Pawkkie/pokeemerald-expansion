@@ -626,6 +626,9 @@ $(FLDEFFGFXDIR)/arrow.4bpp: %.4bpp: %.png
 $(FLDEFFGFXDIR)/ash.4bpp: %.4bpp: %.png
 	$(GFX) $< $@ -mwidth 2 -mheight 2
 
+$(FLDEFFGFXDIR)/snow.4bpp: %.4bpp: %.png
+	$(GFX) $< $@ -mwidth 2 -mheight 2
+
 $(FLDEFFGFXDIR)/sparkle.4bpp: %.4bpp: %.png
 	$(GFX) $< $@ -mwidth 2 -mheight 2
 

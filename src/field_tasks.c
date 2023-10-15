@@ -813,9 +813,9 @@ static void SnowGrassPerStepCallback(u8 taskId)
     {
         // Remove snow from grass
         if (MapGridGetMetatileIdAt(x, y) == METATILE_GeneralLeoBSnow_SnowGrass)
-            StartAshFieldEffect(x, y, METATILE_PetalburgLeoBSnow_NormalGrass, 4);
+            StartSnowFieldEffect(x, y, METATILE_PetalburgLeoBSnow_NormalGrass, 4);
         else
-            StartAshFieldEffect(x, y, METATILE_PetalburgLeoBSnow_NormalGrass, 4);
+            StartSnowFieldEffect(x, y, METATILE_PetalburgLeoBSnow_NormalGrass, 4);
     }
 }
 

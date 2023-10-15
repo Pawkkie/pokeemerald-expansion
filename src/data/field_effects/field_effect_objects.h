@@ -1,5 +1,6 @@
 const struct SpritePalette gSpritePalette_GeneralFieldEffect0 = {gFieldEffectObjectPalette0, FLDEFF_PAL_TAG_GENERAL_0};
 const struct SpritePalette gSpritePalette_GeneralFieldEffect1 = {gFieldEffectObjectPalette1, FLDEFF_PAL_TAG_GENERAL_1};
+const struct SpritePalette gSpritePalette_SnowFieldEffect = {gFieldEffectObjectPaletteSnow, FLDEFF_PAL_TAG_SNOW};
 
 static const union AnimCmd sAnim_Shadow[] =
 {
@@ -168,6 +169,39 @@ const struct SpriteTemplate gFieldEffectObjectTemplate_Ash = {
     .images = sPicTable_Ash,
     .affineAnims = gDummySpriteAffineAnimTable,
     .callback = UpdateAshFieldEffect,
+};
+
+static const struct SpriteFrameImage sPicTable_Snow[] = {
+    overworld_frame(gFieldEffectObjectPic_Snow, 2, 2, 0),
+    overworld_frame(gFieldEffectObjectPic_Snow, 2, 2, 1),
+    overworld_frame(gFieldEffectObjectPic_Snow, 2, 2, 2),
+    overworld_frame(gFieldEffectObjectPic_Snow, 2, 2, 3),
+    overworld_frame(gFieldEffectObjectPic_Snow, 2, 2, 4),
+};
+
+static const union AnimCmd sAnim_Snow[] =
+{
+    ANIMCMD_FRAME(0, 12),
+    ANIMCMD_FRAME(1, 12),
+    ANIMCMD_FRAME(2, 8),
+    ANIMCMD_FRAME(3, 12),
+    ANIMCMD_FRAME(4, 12),
+    ANIMCMD_END,
+};
+
+static const union AnimCmd *const sAnimTable_Snow[] =
+{
+    sAnim_Snow,
+};
+
+const struct SpriteTemplate gFieldEffectObjectTemplate_Snow = {
+    .tileTag = TAG_NONE,
+    .paletteTag = FLDEFF_PAL_TAG_SNOW,
+    .oam = &gObjectEventBaseOam_16x16,
+    .anims = sAnimTable_Snow,
+    .images = sPicTable_Snow,
+    .affineAnims = gDummySpriteAffineAnimTable,
+    .callback = UpdateSnowFieldEffect,
 };
 
 static const struct SpriteFrameImage sPicTable_SurfBlob[] = {

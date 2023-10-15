@@ -72,6 +72,7 @@ gFieldEffectScriptPointers::
 	.4byte gFieldEffectScript_RayquazaSpotlight         @ FLDEFF_RAYQUAZA_SPOTLIGHT
 	.4byte gFieldEffectScript_DestroyDeoxysRock         @ FLDEFF_DESTROY_DEOXYS_ROCK
 	.4byte gFieldEffectScript_MoveDeoxysRock            @ FLDEFF_MOVE_DEOXYS_ROCK
+	.4byte gFieldEffectScript_Snow                      @ FLDEFF_SNOW
 
 gFieldEffectScript_ExclamationMarkIcon1::
 	field_eff_loadfadedpaldaynight_callnative gSpritePalette_ArrowEmotionsFieldEffect, FldEff_ExclamationMarkIcon
@@ -103,6 +104,10 @@ gFieldEffectScript_FieldMoveShowMon::
 
 gFieldEffectScript_Ash::
 	field_eff_loadfadedpaldaynight_callnative gSpritePalette_GeneralFieldEffect1, FldEff_Ash
+	field_eff_end
+
+gFieldEffectScript_Snow::
+	field_eff_loadfadedpaldaynight_callnative gSpritePalette_SnowFieldEffect, FldEff_Snow
 	field_eff_end
 
 gFieldEffectScript_SurfBlob::

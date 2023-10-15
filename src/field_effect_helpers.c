@@ -26,6 +26,9 @@ static void UpdateFeetInFlowingWaterFieldEffect(struct Sprite *);
 static void UpdateAshFieldEffect_Wait(struct Sprite *);
 static void UpdateAshFieldEffect_Show(struct Sprite *);
 static void UpdateAshFieldEffect_End(struct Sprite *);
+static void UpdateSnowFieldEffect_Wait(struct Sprite *);
+static void UpdateSnowFieldEffect_Show(struct Sprite *);
+static void UpdateSnowFieldEffect_End(struct Sprite *);
 static void SynchroniseSurfAnim(struct ObjectEvent *, struct Sprite *);
 static void SynchroniseSurfPosition(struct ObjectEvent *, struct Sprite *);
 static void UpdateBobbingEffect(struct ObjectEvent *, struct Sprite *, struct Sprite *);
@@ -930,7 +933,7 @@ u32 FldEff_WaterSurfacing(void)
     return 0;
 }
 
-// Sprite data for FLDEFF_ASH
+// Sprite data for FLDEFF_ASH and FLDEFF_SNOW
 #define sState      data[0]
 #define sX          data[1]
 #define sY          data[2]
@@ -1006,6 +1009,77 @@ static void UpdateAshFieldEffect_End(struct Sprite *sprite)
     UpdateObjectEventSpriteInvisibility(sprite, FALSE);
     if (sprite->animEnded)
         FieldEffectStop(sprite, FLDEFF_ASH);
+}
+
+void StartSnowFieldEffect(s16 x, s16 y, u16 metatileId, s16 delay)
+{
+    gFieldEffectArguments[0] = x;
+    gFieldEffectArguments[1] = y;
+    gFieldEffectArguments[2] = 82; // subpriority
+    gFieldEffectArguments[3] = 1; // priority
+    gFieldEffectArguments[4] = metatileId;
+    gFieldEffectArguments[5] = delay;
+    FieldEffectStart(FLDEFF_SNOW);
+}
+
+u32 FldEff_Snow(void)
+{
+    s16 x;
+    s16 y;
+    u8 spriteId;
+    struct Sprite *sprite;
+
+    x = gFieldEffectArguments[0];
+    y = gFieldEffectArguments[1];
+    SetSpritePosToOffsetMapCoords(&x, &y, 8, 8);
+    spriteId = CreateSpriteAtEnd(gFieldEffectObjectTemplatePointers[FLDEFFOBJ_SNOW], x, y, gFieldEffectArguments[2]);
+    if (spriteId != MAX_SPRITES)
+    {
+        sprite = &gSprites[spriteId];
+        sprite->coordOffsetEnabled = TRUE;
+        sprite->oam.priority = gFieldEffectArguments[3];
+        sprite->sX = gFieldEffectArguments[0];
+        sprite->sY = gFieldEffectArguments[1];
+        sprite->sMetatileId = gFieldEffectArguments[4];
+        sprite->sDelay = gFieldEffectArguments[5];
+    }
+    return 0;
+}
+
+void (*const gSnowFieldEffectFuncs[])(struct Sprite *) = {
+    UpdateSnowFieldEffect_Wait,
+    UpdateSnowFieldEffect_Show,
+    UpdateSnowFieldEffect_End
+};
+
+void UpdateSnowFieldEffect(struct Sprite *sprite)
+{
+    gSnowFieldEffectFuncs[sprite->sState](sprite);
+}
+
+static void UpdateSnowFieldEffect_Wait(struct Sprite *sprite)
+{
+    sprite->invisible = TRUE;
+    sprite->animPaused = TRUE;
+    if (--sprite->sDelay == 0)
+        sprite->sState = 1;
+}
+
+static void UpdateSnowFieldEffect_Show(struct Sprite *sprite)
+{
+    sprite->invisible = FALSE;
+    sprite->animPaused = FALSE;
+    MapGridSetMetatileIdAt(sprite->sX, sprite->sY, sprite->sMetatileId);
+    CurrentMapDrawMetatileAt(sprite->sX, sprite->sY);
+    gObjectEvents[gPlayerAvatar.objectEventId].triggerGroundEffectsOnMove = TRUE;
+    sprite->sState = 2;
+}
+
+static void UpdateSnowFieldEffect_End(struct Sprite *sprite)
+{
+    UpdateObjectEventSpriteInvisibility(sprite, FALSE);
+    if (sprite->animEnded)
+        FieldEffectStop(sprite, FLDEFF_SNOW);
 }
 
 #undef sState
