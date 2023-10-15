@@ -22,6 +22,8 @@ static void LoadObjectReflectionPalette(struct ObjectEvent *objectEvent, struct 
 static void UpdateGrassFieldEffectSubpriority(struct Sprite *, u8, u8);
 static void FadeFootprintsTireTracks_Step0(struct Sprite *);
 static void FadeFootprintsTireTracks_Step1(struct Sprite *);
+static void FadeSnowTracks_Step0(struct Sprite *);
+static void FadeSnowTracks_Step1(struct Sprite *);
 static void UpdateFeetInFlowingWaterFieldEffect(struct Sprite *);
 static void UpdateAshFieldEffect_Wait(struct Sprite *);
 static void UpdateAshFieldEffect_Show(struct Sprite *);
@@ -676,6 +678,24 @@ u32 FldEff_SandFootprints(void)
     return 0;
 }
 
+u32 FldEff_SnowTracks(void)
+{
+    u8 spriteId;
+    struct Sprite *sprite;
+
+    SetSpritePosToOffsetMapCoords((s16 *)&gFieldEffectArguments[0], (s16 *)&gFieldEffectArguments[1], 8, 8);
+    spriteId = CreateSpriteAtEnd(gFieldEffectObjectTemplatePointers[FLDEFFOBJ_SNOW_TRACKS], gFieldEffectArguments[0], gFieldEffectArguments[1], gFieldEffectArguments[2]);
+    if (spriteId != MAX_SPRITES)
+    {
+        sprite = &gSprites[spriteId];
+        sprite->coordOffsetEnabled = TRUE;
+        sprite->oam.priority = gFieldEffectArguments[3];
+        sprite->data[7] = FLDEFF_SNOW_TRACKS;
+        StartSpriteAnim(sprite, gFieldEffectArguments[4]);
+    }
+    return 0;
+}
+
 u32 FldEff_DeepSandFootprints(void)
 {
     u8 spriteId;
@@ -732,6 +752,36 @@ static void FadeFootprintsTireTracks_Step0(struct Sprite *sprite)
 }
 
 static void FadeFootprintsTireTracks_Step1(struct Sprite *sprite)
+{
+    sprite->invisible ^= 1;
+    sprite->data[1]++;
+    UpdateObjectEventSpriteInvisibility(sprite, sprite->invisible);
+    if (sprite->data[1] > 56)
+    {
+        FieldEffectStop(sprite, sprite->data[7]);
+    }
+}
+
+void (*const gFadeSnowTracksFuncs[])(struct Sprite *) = {
+    FadeSnowTracks_Step0,
+    FadeSnowTracks_Step1
+};
+
+void UpdateSnowTracksFieldEffect(struct Sprite *sprite)
+{
+    gFadeFootprintsTireTracksFuncs[sprite->data[0]](sprite);
+}
+
+static void FadeSnowTracks_Step0(struct Sprite *sprite)
+{
+    // Wait 40 frames before the flickering starts.
+    if (++sprite->data[1] > 40)
+        sprite->data[0] = 1;
+
+    UpdateObjectEventSpriteInvisibility(sprite, FALSE);
+}
+
+static void FadeSnowTracks_Step1(struct Sprite *sprite)
 {
     sprite->invisible ^= 1;
     sprite->data[1]++;

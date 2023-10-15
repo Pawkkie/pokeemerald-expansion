@@ -34,6 +34,7 @@ void UpdateSnowFieldEffect(struct Sprite *);
 void UpdateSurfBlobFieldEffect(struct Sprite *);
 void UpdateJumpImpactEffect(struct Sprite *);
 void UpdateFootprintsTireTracksFieldEffect(struct Sprite *);
+void UpdateSnowTracksFieldEffect(struct Sprite *);
 void UpdateSplashFieldEffect(struct Sprite *);
 void UpdateLongGrassFieldEffect(struct Sprite *);
 void UpdateSandPileFieldEffect(struct Sprite *);

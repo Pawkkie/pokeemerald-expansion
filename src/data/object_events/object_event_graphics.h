@@ -330,6 +330,7 @@ const u32 gFieldEffectObjectPic_TallGrass[] = INCBIN_U32("graphics/field_effects
 const u32 gFieldEffectObjectPic_SnowTallGrass[] = INCBIN_U32("graphics/field_effects/pics/snow_tall_grass.4bpp");
 const u32 gFieldEffectObjectPic_ShortGrass[] = INCBIN_U32("graphics/field_effects/pics/short_grass.4bpp");
 const u32 gFieldEffectObjectPic_SandFootprints[] = INCBIN_U32("graphics/field_effects/pics/sand_footprints.4bpp");
+const u32 gFieldEffectObjectPic_SnowTracks[] = INCBIN_U32("graphics/field_effects/pics/snow_tracks.4bpp");
 const u32 gFieldEffectObjectPic_DeepSandFootprints[] = INCBIN_U32("graphics/field_effects/pics/deep_sand_footprints.4bpp");
 const u32 gFieldEffectObjectPic_BikeTireTracks[] = INCBIN_U32("graphics/field_effects/pics/bike_tire_tracks.4bpp");
 const u32 gFieldEffectObjectPic_UnusedSand[] = INCBIN_U32("graphics/field_effects/pics/unused_sand.4bpp");

@@ -450,6 +450,54 @@ const struct SpriteTemplate gFieldEffectObjectTemplate_SandFootprints = {
     .callback = UpdateFootprintsTireTracksFieldEffect,
 };
 
+static const struct SpriteFrameImage sPicTable_SnowTracks[] = {
+    overworld_frame(gFieldEffectObjectPic_SnowTracks, 2, 2, 0),
+    overworld_frame(gFieldEffectObjectPic_SnowTracks, 2, 2, 1),
+};
+
+static const union AnimCmd sSnowTracksAnim_South[] =
+{
+    ANIMCMD_FRAME(0, 1, .vFlip = TRUE),
+    ANIMCMD_END,
+};
+
+static const union AnimCmd sSnowTracksAnim_North[] =
+{
+    ANIMCMD_FRAME(0, 1),
+    ANIMCMD_END,
+};
+
+static const union AnimCmd sSnowTracksAnim_West[] =
+{
+    ANIMCMD_FRAME(1, 1),
+    ANIMCMD_END,
+};
+
+static const union AnimCmd sSnowTracksAnim_East[] =
+{
+    ANIMCMD_FRAME(1, 1, .hFlip = TRUE),
+    ANIMCMD_END,
+};
+
+static const union AnimCmd *const sAnimTable_SnowTracks[] =
+{
+    sSnowTracksAnim_South,
+    sSnowTracksAnim_South,
+    sSnowTracksAnim_North,
+    sSnowTracksAnim_West,
+    sSnowTracksAnim_East,
+};
+
+const struct SpriteTemplate gFieldEffectObjectTemplate_SnowTracks = {
+    .tileTag = TAG_NONE,
+    .paletteTag = FLDEFF_PAL_TAG_SNOW,
+    .oam = &gObjectEventBaseOam_16x16,
+    .anims = sAnimTable_SnowTracks,
+    .images = sPicTable_SnowTracks,
+    .affineAnims = gDummySpriteAffineAnimTable,
+    .callback = UpdateSnowTracksFieldEffect,
+};
+
 static const struct SpriteFrameImage sPicTable_DeepSandFootprints[] = {
     overworld_frame(gFieldEffectObjectPic_DeepSandFootprints, 2, 2, 0),
     overworld_frame(gFieldEffectObjectPic_DeepSandFootprints, 2, 2, 1),
