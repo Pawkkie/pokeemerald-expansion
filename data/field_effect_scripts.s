@@ -73,6 +73,7 @@ gFieldEffectScriptPointers::
 	.4byte gFieldEffectScript_DestroyDeoxysRock         @ FLDEFF_DESTROY_DEOXYS_ROCK
 	.4byte gFieldEffectScript_MoveDeoxysRock            @ FLDEFF_MOVE_DEOXYS_ROCK
 	.4byte gFieldEffectScript_Snow                      @ FLDEFF_SNOW
+	.4byte gFieldEffectScript_SnowTallGrass             @ FLDEFF_SNOW_TALL_GRASS
 
 gFieldEffectScript_ExclamationMarkIcon1::
 	field_eff_loadfadedpaldaynight_callnative gSpritePalette_ArrowEmotionsFieldEffect, FldEff_ExclamationMarkIcon
@@ -92,6 +93,10 @@ gFieldEffectScript_Shadow::
 
 gFieldEffectScript_TallGrass::
 	field_eff_loadfadedpaldaynight_callnative gSpritePalette_GeneralFieldEffect1, FldEff_TallGrass
+	field_eff_end
+
+gFieldEffectScript_SnowTallGrass::
+	field_eff_loadfadedpaldaynight_callnative gSpritePalette_SnowFieldEffect, FldEff_SnowTallGrass
 	field_eff_end
 
 gFieldEffectScript_Ripple::

@@ -295,7 +295,7 @@ void UpdateShadowFieldEffect(struct Sprite *sprite)
     }
 }
 
-// Sprite data for FLDEFF_TALL_GRASS and FLDEFF_LONG_GRASS
+// Sprite data for FLDEFF_TALL_GRASS and FLDEFF_LONG_GRASS and FLDEFF_SNOW_LONG_GRASS
 #define sElevation   data[0]
 #define sX           data[1]
 #define sY           data[2]
@@ -489,6 +489,83 @@ void UpdateLongGrassFieldEffect(struct Sprite *sprite)
 
         UpdateObjectEventSpriteInvisibility(sprite, FALSE);
         UpdateGrassFieldEffectSubpriority(sprite, sprite->sElevation, 0);
+    }
+}
+
+u32 FldEff_SnowTallGrass(void)
+{
+    s16 x;
+    s16 y;
+    u8 spriteId;
+    struct Sprite *sprite;
+
+    x = gFieldEffectArguments[0];
+    y = gFieldEffectArguments[1];
+    SetSpritePosToOffsetMapCoords(&x, &y, 8, 8);
+    spriteId = CreateSpriteAtEnd(gFieldEffectObjectTemplatePointers[FLDEFFOBJ_SNOW_TALL_GRASS], x, y, 0);
+    if (spriteId != MAX_SPRITES)
+    {
+        sprite = &gSprites[spriteId];
+        sprite->coordOffsetEnabled = TRUE;
+        sprite->oam.priority = gFieldEffectArguments[3];
+        sprite->sElevation = gFieldEffectArguments[2];
+        sprite->sX = gFieldEffectArguments[0];
+        sprite->sY = gFieldEffectArguments[1];
+        sprite->sMapNum = gFieldEffectArguments[4]; // Also sLocalId
+        sprite->sMapGroup = gFieldEffectArguments[5];
+        sprite->sCurrentMap = gFieldEffectArguments[6];
+
+        if (gFieldEffectArguments[7])
+            SeekSpriteAnim(sprite, 4); // Skip to end of anim
+    }
+    return 0;
+}
+
+void UpdateSnowTallGrassFieldEffect(struct Sprite *sprite)
+{
+    u8 mapNum;
+    u8 mapGroup;
+    u8 metatileBehavior;
+    u8 localId;
+    u8 objectEventId;
+    struct ObjectEvent *objectEvent;
+
+    mapNum = sprite->sCurrentMap >> 8;
+    mapGroup = sprite->sCurrentMap;
+    if (gCamera.active && (gSaveBlock1Ptr->location.mapNum != mapNum || gSaveBlock1Ptr->location.mapGroup != mapGroup))
+    {
+        sprite->sX -= gCamera.x;
+        sprite->sY -= gCamera.y;
+        sprite->sCurrentMap = ((u8)gSaveBlock1Ptr->location.mapNum << 8) | (u8)gSaveBlock1Ptr->location.mapGroup;
+    }
+    localId = sprite->sLocalId;
+    mapNum = sprite->sMapNum;
+    mapGroup = sprite->sMapGroup;
+    metatileBehavior = MapGridGetMetatileBehaviorAt(sprite->sX, sprite->sY);
+
+    if (TryGetObjectEventIdByLocalIdAndMap(localId, mapNum, mapGroup, &objectEventId)
+     || !MetatileBehavior_IsSnowTallGrass(metatileBehavior)
+     || (sprite->sObjectMoved && sprite->animEnded))
+    {
+        FieldEffectStop(sprite, FLDEFF_SNOW_TALL_GRASS);
+    }
+    else
+    {
+        // Check if the object that triggered the effect has moved away
+        objectEvent = &gObjectEvents[objectEventId];
+        if ((objectEvent->currentCoords.x != sprite->sX
+          || objectEvent->currentCoords.y != sprite->sY)
+        && (objectEvent->previousCoords.x != sprite->sX
+         || objectEvent->previousCoords.y != sprite->sY))
+            sprite->sObjectMoved = TRUE;
+
+        // Metatile behavior var re-used as subpriority
+        metatileBehavior = 0;
+        if (sprite->animCmdIndex == 0)
+            metatileBehavior = 4;
+
+        UpdateObjectEventSpriteInvisibility(sprite, FALSE);
+        UpdateGrassFieldEffectSubpriority(sprite, sprite->sElevation, metatileBehavior);
     }
 }
 
