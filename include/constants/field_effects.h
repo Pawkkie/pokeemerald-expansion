@@ -71,6 +71,8 @@
 #define FLDEFF_SNOW                      67
 #define FLDEFF_SNOW_TALL_GRASS           68
 #define FLDEFF_SNOW_TRACKS               69
+#define FLDEFF_JUMP_SNOW_TALL_GRASS       70
+#define FLDEFF_DUST_SNOW                 71
 
 #define FLDEFFOBJ_SHADOW_S              0
 #define FLDEFFOBJ_SHADOW_M              1
@@ -112,6 +114,8 @@
 #define FLDEFFOBJ_SNOW                  37
 #define FLDEFFOBJ_SNOW_TALL_GRASS       38
 #define FLDEFFOBJ_SNOW_TRACKS           39
+#define FLDEFFOBJ_JUMP_SNOW_TALL_GRASS  40
+#define FLDEFFOBJ_GROUND_IMPACT_DUST_SNOW 41
 
 #define FLDEFF_PAL_TAG_CUT_GRASS          0x1000
 #define FLDEFF_PAL_TAG_SECRET_POWER_TREE  0x1003

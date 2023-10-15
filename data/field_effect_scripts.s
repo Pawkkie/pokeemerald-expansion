@@ -75,6 +75,8 @@ gFieldEffectScriptPointers::
 	.4byte gFieldEffectScript_Snow                      @ FLDEFF_SNOW
 	.4byte gFieldEffectScript_SnowTallGrass             @ FLDEFF_SNOW_TALL_GRASS
 	.4byte gFieldEffectScript_SnowTracks	            @ FLDEFF_SNOW_TRACKS
+	.4byte gFieldEffectScript_JumpSnowTallGrass			@ FLDEFF_JUMP_SNOW_TALL_GRASS
+	.4byte gFieldEffectScript_GroundImpactDustSnow      @ FLDEFF_DUST_SNOW
 
 gFieldEffectScript_ExclamationMarkIcon1::
 	field_eff_loadfadedpaldaynight_callnative gSpritePalette_ArrowEmotionsFieldEffect, FldEff_ExclamationMarkIcon
@@ -128,12 +130,20 @@ gFieldEffectScript_GroundImpactDust::
 	field_eff_loadfadedpaldaynight_callnative gSpritePalette_GeneralFieldEffect0, FldEff_Dust
 	field_eff_end
 
+gFieldEffectScript_GroundImpactDustSnow::
+	field_eff_loadfadedpaldaynight_callnative gSpritePalette_SnowFieldEffect, FldEff_DustSnow
+	field_eff_end
+
 gFieldEffectScript_UseSecretPowerCave::
 	field_eff_callnative FldEff_UseSecretPowerCave
 	field_eff_end
 
 gFieldEffectScript_JumpTallGrass::
 	field_eff_loadfadedpaldaynight_callnative gSpritePalette_GeneralFieldEffect1, FldEff_JumpTallGrass
+	field_eff_end
+
+gFieldEffectScript_JumpSnowTallGrass::
+	field_eff_loadfadedpaldaynight_callnative gSpritePalette_SnowFieldEffect, FldEff_JumpSnowTallGrass
 	field_eff_end
 
 gFieldEffectScript_SandFootprints::

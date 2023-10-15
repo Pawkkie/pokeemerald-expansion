@@ -73,6 +73,8 @@ enum ReflectionTypes
 #define GROUND_EFFECT_FLAG_SNOW_TALL_GRASS_ON_SPAWN (1 << 20)
 #define GROUND_EFFECT_FLAG_SNOW_TALL_GRASS_ON_MOVE (1 << 21)
 #define GROUND_EFFECT_FLAG_SNOW                  (1 << 22)
+#define GROUND_EFFECT_FLAG_LAND_IN_SNOW_TALL_GRASS    (1 << 23)
+#define GROUND_EFFECT_FLAG_LAND_ON_SNOW_GROUND   (1 << 24)
 
 struct StepAnimTable
 {

@@ -571,6 +571,45 @@ void UpdateSnowTallGrassFieldEffect(struct Sprite *sprite)
     }
 }
 
+u32 FldEff_JumpSnowTallGrass(void)
+{
+    u8 spriteId;
+    struct Sprite *sprite;
+
+    SetSpritePosToOffsetMapCoords((s16 *)&gFieldEffectArguments[0], (s16 *)&gFieldEffectArguments[1], 8, 12);
+    spriteId = CreateSpriteAtEnd(gFieldEffectObjectTemplatePointers[FLDEFFOBJ_JUMP_SNOW_TALL_GRASS], gFieldEffectArguments[0], gFieldEffectArguments[1], 0);
+    if (spriteId != MAX_SPRITES)
+    {
+        sprite = &gSprites[spriteId];
+        sprite->coordOffsetEnabled = TRUE;
+        sprite->oam.priority = gFieldEffectArguments[3];
+        sprite->sElevation = gFieldEffectArguments[2];
+        sprite->sFldEff = FLDEFF_JUMP_SNOW_TALL_GRASS;
+    }
+    return 0;
+}
+
+u8 FindSnowTallGrassFieldEffectSpriteId(u8 localId, u8 mapNum, u8 mapGroup, s16 x, s16 y)
+{
+    struct Sprite *sprite;
+    u8 i;
+
+    for (i = 0; i < MAX_SPRITES; i ++)
+    {
+        if (gSprites[i].inUse)
+        {
+            sprite = &gSprites[i];
+            if (sprite->callback == UpdateSnowTallGrassFieldEffect
+                && (x == sprite->sX && y == sprite->sY)
+                && localId == (u8)(sprite->sLocalId)
+                && mapNum == (sprite->sMapNum & 0xFF)
+                && mapGroup == sprite->sMapGroup)
+                return i;
+        }
+    }
+    return MAX_SPRITES;
+}
+
 #undef sX
 #undef sY
 #undef sMapNum
@@ -1416,6 +1455,24 @@ u32 FldEff_Dust(void)
     return 0;
 }
 
+u32 FldEff_DustSnow(void)
+{
+    u8 spriteId;
+    struct Sprite *sprite;
+
+    SetSpritePosToOffsetMapCoords((s16 *)&gFieldEffectArguments[0], (s16 *)&gFieldEffectArguments[1], 8, 12);
+    spriteId = CreateSpriteAtEnd(gFieldEffectObjectTemplatePointers[FLDEFFOBJ_GROUND_IMPACT_DUST_SNOW], gFieldEffectArguments[0], gFieldEffectArguments[1], 0);
+    if (spriteId != MAX_SPRITES)
+    {
+        sprite = &gSprites[spriteId];
+        sprite->coordOffsetEnabled = TRUE;
+        sprite->oam.priority = gFieldEffectArguments[3];
+        sprite->data[0] = gFieldEffectArguments[2];
+        sprite->data[1] = FLDEFF_DUST_SNOW;
+    }
+    return 0;
+}
+
 u32 FldEff_SandPile(void)
 {
     u8 objectEventId;
@@ -1849,7 +1906,7 @@ void UpdateRayquazaSpotlightEffect(struct Sprite *sprite)
 #undef sAnimCounter
 #undef sAnimState
 
-// Used by FLDEFF_JUMP_TALL_GRASS and FLDEFF_JUMP_LONG_GRASS
+// Used by FLDEFF_JUMP_TALL_GRASS and FLDEFF_JUMP_LONG_GRASS and FLDEFF_JUMP_SNOW_TALL_GRASS
 void UpdateJumpImpactEffect(struct Sprite *sprite)
 {
     if (sprite->animEnded)

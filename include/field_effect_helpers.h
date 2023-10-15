@@ -24,6 +24,7 @@ void StartSnowFieldEffect(s16, s16, u16, s16);
 void SetUpReflection(struct ObjectEvent *, struct Sprite *, u8);
 u32 StartFieldEffectForObjectEvent(u8, struct ObjectEvent *);
 u8 FindTallGrassFieldEffectSpriteId(u8 localId, u8 mapNum, u8 mapGroup, s16 x, s16 y);
+u8 FindSnowTallGrassFieldEffectSpriteId(u8 localId, u8 mapNum, u8 mapGroup, s16 x, s16 y);
 void UpdateRayquazaSpotlightEffect(struct Sprite *);
 void UpdateShadowFieldEffect(struct Sprite *);
 void UpdateTallGrassFieldEffect(struct Sprite *);

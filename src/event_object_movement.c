@@ -7325,6 +7325,7 @@ static void GetGroundEffectFlags_JumpLanding(struct ObjectEvent *objEvent, u32 *
         MetatileBehavior_IsPuddle,
         MetatileBehavior_IsSurfableWaterOrUnderwater,
         MetatileBehavior_IsShallowFlowingWater,
+        MetatileBehavior_IsSnowTallGrass,
         MetatileBehavior_IsATile,
     };
 
@@ -7334,7 +7335,10 @@ static void GetGroundEffectFlags_JumpLanding(struct ObjectEvent *objEvent, u32 *
         GROUND_EFFECT_FLAG_LAND_IN_SHALLOW_WATER,
         GROUND_EFFECT_FLAG_LAND_IN_DEEP_WATER,
         GROUND_EFFECT_FLAG_LAND_IN_SHALLOW_WATER,
+        GROUND_EFFECT_FLAG_LAND_ON_SNOW_GROUND,
         GROUND_EFFECT_FLAG_LAND_ON_NORMAL_GROUND,
+        // GROUND_EFFECT_FLAG_LAND_IN_SNOW_TALL_GRASS,
+        // GROUND_EFFECT_FLAG_LAND_ON_SNOW_GROUND,
     };
 
     if (objEvent->landingJump && !objEvent->disableJumpLandingGroundEffect)
@@ -7745,6 +7749,27 @@ void GroundEffect_JumpOnTallGrass(struct ObjectEvent *objEvent, struct Sprite *s
         GroundEffect_SpawnOnTallGrass(objEvent, sprite);
 }
 
+void GroundEffect_JumpOnSnowTallGrass(struct ObjectEvent *objEvent, struct Sprite *sprite)
+{
+    u8 spriteId;
+
+    gFieldEffectArguments[0] = objEvent->currentCoords.x;
+    gFieldEffectArguments[1] = objEvent->currentCoords.y;
+    gFieldEffectArguments[2] = objEvent->previousElevation;
+    gFieldEffectArguments[3] = 2;
+    FieldEffectStart(FLDEFF_JUMP_SNOW_TALL_GRASS);
+
+    spriteId = FindSnowTallGrassFieldEffectSpriteId(
+        objEvent->localId,
+        objEvent->mapNum,
+        objEvent->mapGroup,
+        objEvent->currentCoords.x,
+        objEvent->currentCoords.y);
+
+    if (spriteId == MAX_SPRITES)
+        GroundEffect_SpawnOnSnowTallGrass(objEvent, sprite);
+}
+
 void GroundEffect_JumpOnLongGrass(struct ObjectEvent *objEvent, struct Sprite *sprite)
 {
     gFieldEffectArguments[0] = objEvent->currentCoords.x;
@@ -7779,6 +7804,15 @@ void GroundEffect_JumpLandingDust(struct ObjectEvent *objEvent, struct Sprite *s
     gFieldEffectArguments[2] = objEvent->previousElevation;
     gFieldEffectArguments[3] = sprite->oam.priority;
     FieldEffectStart(FLDEFF_DUST);
+}
+
+void GroundEffect_JumpLandingDustSnow(struct ObjectEvent *objEvent, struct Sprite *sprite)
+{
+    gFieldEffectArguments[0] = objEvent->currentCoords.x;
+    gFieldEffectArguments[1] = objEvent->currentCoords.y;
+    gFieldEffectArguments[2] = objEvent->previousElevation;
+    gFieldEffectArguments[3] = sprite->oam.priority;
+    FieldEffectStart(FLDEFF_DUST_SNOW);
 }
 
 void GroundEffect_ShortGrass(struct ObjectEvent *objEvent, struct Sprite *sprite)
@@ -7820,8 +7854,10 @@ static void (*const sGroundEffectFuncs[])(struct ObjectEvent *objEvent, struct S
     GroundEffect_HotSprings,            // GROUND_EFFECT_FLAG_HOT_SPRINGS
     GroundEffect_Seaweed,               // GROUND_EFFECT_FLAG_SEAWEED
     GroundEffect_SpawnOnSnowTallGrass,  // GROUND_EFFECT_FLAG_SNOW_TALL_GRASS_ON_SPAWN
-    GroundEffect_StepOnSnowTallGrass,    // GROUND_EFFECT_FLAG_SNOW_TALL_GRASS_ON_MOVE
+    GroundEffect_StepOnSnowTallGrass,   // GROUND_EFFECT_FLAG_SNOW_TALL_GRASS_ON_MOVE
     GroundEffect_SnowTracks,            // GROUND_EFFECT_FLAG_SNOW
+    GroundEffect_JumpOnSnowTallGrass,   // GROUND_EFFECT_FLAG_LAND_IN_SNOW_TALL_GRASS
+    GroundEffect_JumpLandingDustSnow,   // GROUND_EFFECT_FLAG_LAND_ON_SNOW_GROUND
 };
 
 static void DoFlaggedGroundEffects(struct ObjectEvent *objEvent, struct Sprite *sprite, u32 flags)
