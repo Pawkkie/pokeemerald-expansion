@@ -77,6 +77,7 @@ gFieldEffectScriptPointers::
 	.4byte gFieldEffectScript_SnowTracks	            @ FLDEFF_SNOW_TRACKS
 	.4byte gFieldEffectScript_JumpSnowTallGrass			@ FLDEFF_JUMP_SNOW_TALL_GRASS
 	.4byte gFieldEffectScript_GroundImpactDustSnow      @ FLDEFF_DUST_SNOW
+	.4byte gFieldEffectScript_SnowBikeTireTracks            @ FLDEFF_SNOW_BIKE_TIRE_TRACKS
 
 gFieldEffectScript_ExclamationMarkIcon1::
 	field_eff_loadfadedpaldaynight_callnative gSpritePalette_ArrowEmotionsFieldEffect, FldEff_ExclamationMarkIcon
@@ -241,6 +242,10 @@ gFieldEffectScript_FeetInFlowingWater::
 
 gFieldEffectScript_BikeTireTracks::
 	field_eff_loadfadedpaldaynight_callnative gSpritePalette_GeneralFieldEffect0, FldEff_BikeTireTracks
+	field_eff_end
+
+gFieldEffectScript_SnowBikeTireTracks::
+	field_eff_loadfadedpaldaynight_callnative gSpritePalette_SnowFieldEffect, FldEff_SnowBikeTireTracks
 	field_eff_end
 
 gFieldEffectScript_SandDisguisePlaceholder::

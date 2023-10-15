@@ -684,6 +684,84 @@ const struct SpriteTemplate gFieldEffectObjectTemplate_BikeTireTracks = {
     .callback = UpdateFootprintsTireTracksFieldEffect,
 };
 
+static const struct SpriteFrameImage sPicTable_SnowBikeTireTracks[] = {
+    overworld_frame(gFieldEffectObjectPic_SnowBikeTireTracks, 2, 2, 0),
+    overworld_frame(gFieldEffectObjectPic_SnowBikeTireTracks, 2, 2, 1),
+    overworld_frame(gFieldEffectObjectPic_SnowBikeTireTracks, 2, 2, 2),
+    overworld_frame(gFieldEffectObjectPic_SnowBikeTireTracks, 2, 2, 3),
+};
+
+static const union AnimCmd sSnowBikeTireTracksAnim_South[] =
+{
+    ANIMCMD_FRAME(2, 1),
+    ANIMCMD_END,
+};
+
+static const union AnimCmd sSnowBikeTireTracksAnim_North[] =
+{
+    ANIMCMD_FRAME(2, 1),
+    ANIMCMD_END,
+};
+
+static const union AnimCmd sSnowBikeTireTracksAnim_West[] =
+{
+    ANIMCMD_FRAME(1, 1),
+    ANIMCMD_END,
+};
+
+static const union AnimCmd sSnowBikeTireTracksAnim_East[] =
+{
+    ANIMCMD_FRAME(1, 1),
+    ANIMCMD_END,
+};
+
+static const union AnimCmd sSnowBikeTireTracksAnim_SECornerTurn[] =
+{
+    ANIMCMD_FRAME(0, 1),
+    ANIMCMD_END,
+};
+
+static const union AnimCmd sSnowBikeTireTracksAnim_SWCornerTurn[] =
+{
+    ANIMCMD_FRAME(0, 1, .hFlip = TRUE),
+    ANIMCMD_END,
+};
+
+static const union AnimCmd sSnowBikeTireTracksAnim_NWCornerTurn[] =
+{
+    ANIMCMD_FRAME(3, 1, .hFlip = TRUE),
+    ANIMCMD_END,
+};
+
+static const union AnimCmd sSnowBikeTireTracksAnim_NECornerTurn[] =
+{
+    ANIMCMD_FRAME(3, 1),
+    ANIMCMD_END,
+};
+
+static const union AnimCmd *const sAnimTable_SnowBikeTireTracks[] =
+{
+    sSnowBikeTireTracksAnim_South,
+    sSnowBikeTireTracksAnim_South,
+    sSnowBikeTireTracksAnim_North,
+    sSnowBikeTireTracksAnim_West,
+    sSnowBikeTireTracksAnim_East,
+    sSnowBikeTireTracksAnim_SECornerTurn,
+    sSnowBikeTireTracksAnim_SWCornerTurn,
+    sSnowBikeTireTracksAnim_NWCornerTurn,
+    sSnowBikeTireTracksAnim_NECornerTurn,
+};
+
+const struct SpriteTemplate gFieldEffectObjectTemplate_SnowBikeTireTracks = {
+    .tileTag = TAG_NONE,
+    .paletteTag = FLDEFF_PAL_TAG_SNOW,
+    .oam = &gObjectEventBaseOam_16x16,
+    .anims = sAnimTable_SnowBikeTireTracks,
+    .images = sPicTable_SnowBikeTireTracks,
+    .affineAnims = gDummySpriteAffineAnimTable,
+    .callback = UpdateSnowTracksFieldEffect,
+};
+
 static const struct SpriteFrameImage sPicTable_JumpBigSplash[] = {
     overworld_frame(gFieldEffectObjectPic_JumpBigSplash, 2, 2, 0),
     overworld_frame(gFieldEffectObjectPic_JumpBigSplash, 2, 2, 1),

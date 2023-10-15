@@ -644,6 +644,9 @@ $(FLDEFFGFXDIR)/jump_tall_grass.4bpp: %.4bpp: %.png
 $(FLDEFFGFXDIR)/bike_tire_tracks.4bpp: %.4bpp: %.png
 	$(GFX) $< $@ -mwidth 2 -mheight 2
 
+$(FLDEFFGFXDIR)/snow_bike_tire_tracks.4bpp: %.4bpp: %.png
+	$(GFX) $< $@ -mwidth 2 -mheight 2
+
 $(FLDEFFGFXDIR)/bubbles.4bpp: %.4bpp: %.png
 	$(GFX) $< $@ -mwidth 2 -mheight 4
 
