@@ -4410,6 +4410,16 @@
       "secondary_tileset": "gTileset_MysteryEventsHouse",
       "border_filepath": "data/layouts/SootopolisCity_MysteryEventsHouse_1F_StairsUnblocked/border.bin",
       "blockdata_filepath": "data/layouts/SootopolisCity_MysteryEventsHouse_1F_StairsUnblocked/map.bin"
+    },
+    {
+      "id": "LAYOUT_RESEARCH_OUTPOST",
+      "name": "ResearchOutpost_Layout",
+      "width": 20,
+      "height": 20,
+      "primary_tileset": "gTileset_GeneralLeoBSnow",
+      "secondary_tileset": "gTileset_PetalburgLeoBSnow",
+      "border_filepath": "data/layouts/ResearchOutpost/border.bin",
+      "blockdata_filepath": "data/layouts/ResearchOutpost/map.bin"
     }
   ]
 }

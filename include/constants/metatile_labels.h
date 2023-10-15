@@ -204,6 +204,9 @@
 #define METATILE_Fortree_WoodBridge1_Bottom                0x29F
 #define METATILE_Fortree_WoodBridge1_Top                   0x297
 
+// gTileset_GeneralLeoBSnow
+#define METATILE_GeneralLeoBSnow_SnowGrass  0x00D
+
 // gTileset_General
 #define METATILE_General_BlueCaveIndent        0x1B0
 #define METATILE_General_BlueCaveOpen          0x1B1
@@ -397,6 +400,9 @@
 #define METATILE_PetalburgGym_SlidingDoor_Frame2  0x21A
 #define METATILE_PetalburgGym_SlidingDoor_Frame3  0x21B
 #define METATILE_PetalburgGym_SlidingDoor_Frame4  0x21C
+
+// gTileset_PetalburgLeoBSnow
+#define METATILE_PetalburgLeoBSnow_NormalGrass  0x273
 
 // gTileset_Petalburg
 #define METATILE_Petalburg_Door_BirchsLab   0x249
