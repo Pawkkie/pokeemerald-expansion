@@ -167,8 +167,8 @@ bool8 IsStringLengthAtLeast(const u8 *str, s32 n)
 u8 *ConvertIntToDecimalStringN(u8 *dest, s32 value, enum StringConvertMode mode, u8 n)
 {
     enum { WAITING_FOR_NONZERO_DIGIT, WRITING_DIGITS, WRITING_SPACES } state;
-    s32 powerOfTen;
     s32 largestPowerOfTen = sPowersOfTen[n - 1];
+    s32 powerOfTen = largestPowerOfTen;
 
     state = WAITING_FOR_NONZERO_DIGIT;
 
@@ -178,7 +178,7 @@ u8 *ConvertIntToDecimalStringN(u8 *dest, s32 value, enum StringConvertMode mode,
     if (mode == STR_CONV_MODE_LEADING_ZEROS)
         state = WRITING_DIGITS;
 
-    for (powerOfTen = largestPowerOfTen; powerOfTen > 0; powerOfTen /= 10)
+    while (powerOfTen > 0)
     {
         u8 c;
         u16 digit = value / powerOfTen;
@@ -188,7 +188,13 @@ u8 *ConvertIntToDecimalStringN(u8 *dest, s32 value, enum StringConvertMode mode,
         {
             u8 *out = dest++;
 
-            if (digit <= 9)
+            if (value < 0)
+            {
+                value = abs(value);
+                *out = CHAR_HYPHEN;
+                continue;
+            }
+            else if (digit <= 9)
                 c = sDigits[digit];
             else
                 c = CHAR_QUESTION_MARK;
@@ -201,7 +207,13 @@ u8 *ConvertIntToDecimalStringN(u8 *dest, s32 value, enum StringConvertMode mode,
             state = WRITING_DIGITS;
             out = dest++;
 
-            if (digit <= 9)
+            if (value < 0)
+            {
+                value = abs(value);
+                *out = CHAR_HYPHEN;
+                continue;
+            }
+            else if (digit <= 9)
                 c = sDigits[digit];
             else
                 c = CHAR_QUESTION_MARK;
@@ -214,6 +226,7 @@ u8 *ConvertIntToDecimalStringN(u8 *dest, s32 value, enum StringConvertMode mode,
         }
 
         value = temp;
+        powerOfTen /= 10;
     }
 
     *dest = EOS;
