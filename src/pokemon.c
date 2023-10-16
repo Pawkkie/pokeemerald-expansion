@@ -5752,63 +5752,6 @@ void PokemonToBattleMon(struct Pokemon *src, struct BattlePokemon *dst)
     dst->status2 = 0;
 }
 
-// Custom version of PokemonToBattleMon that only gets the bare minimum information needed for the calculations. Keeps computation time down.
-// An example of a move using each parameter is listed in cases where it might not be obvious.
-void PokemonToBattleMonGetBestMonIntegrated(struct Pokemon *src, struct BattlePokemon *dst, bool8 isMonAttacker)
-{
-    if(isMonAttacker)
-    {
-        s32 i;
-        dst->species = GetMonData(src, MON_DATA_SPECIES, NULL);
-        dst->item = GetMonData(src, MON_DATA_HELD_ITEM, NULL);
-        dst->friendship = GetMonData(src, MON_DATA_FRIENDSHIP, NULL); // Return
-        dst->hpIV = GetMonData(src, MON_DATA_HP_IV, NULL); // Hidden Power
-        dst->attackIV = GetMonData(src, MON_DATA_ATK_IV, NULL); // Hidden Power
-        dst->defenseIV = GetMonData(src, MON_DATA_DEF_IV, NULL); // Hidden Power
-        dst->speedIV = GetMonData(src, MON_DATA_SPEED_IV, NULL); // Hidden Power
-        dst->spAttackIV = GetMonData(src, MON_DATA_SPATK_IV, NULL); // Hidden Power
-        dst->spDefenseIV = GetMonData(src, MON_DATA_SPDEF_IV, NULL); // Hidden Power
-        dst->personality = GetMonData(src, MON_DATA_PERSONALITY, NULL); // Gender for Rivalry
-        dst->status1 = GetMonData(src, MON_DATA_STATUS, NULL);
-        dst->level = GetMonData(src, MON_DATA_LEVEL, NULL);
-        dst->hp = GetMonData(src, MON_DATA_HP, NULL); // Water Spout
-        dst->maxHP = GetMonData(src, MON_DATA_MAX_HP, NULL); // Water Spout
-        dst->attack = GetMonData(src, MON_DATA_ATK, NULL);
-        dst->defense = GetMonData(src, MON_DATA_DEF, NULL); // Body Press
-        dst->speed = GetMonData(src, MON_DATA_SPEED, NULL); // Electro Ball
-        dst->spAttack = GetMonData(src, MON_DATA_SPATK, NULL);
-        dst->spDefense = GetMonData(src, MON_DATA_SPDEF, NULL); // NOTHING, but leaving it here as I'm sure some folks have implemented a special Body Press
-        dst->abilityNum = GetMonData(src, MON_DATA_ABILITY_NUM, NULL);
-        dst->type1 = gSpeciesInfo[dst->species].types[0];
-        dst->type2 = gSpeciesInfo[dst->species].types[1];
-        dst->type3 = TYPE_MYSTERY;
-        dst->ability = GetAbilityBySpecies(dst->species, dst->abilityNum);
-        for (i = 0; i < NUM_BATTLE_STATS; i++)
-            dst->statStages[i] = DEFAULT_STAT_STAGE;
-    }
-    else
-    {
-        s32 i;
-        dst->species = GetMonData(src, MON_DATA_SPECIES, NULL);
-        dst->item = GetMonData(src, MON_DATA_HELD_ITEM, NULL); // Knock Off
-        dst->personality = GetMonData(src, MON_DATA_PERSONALITY, NULL); // Gender for Rivalry
-        dst->status1 = GetMonData(src, MON_DATA_STATUS, NULL); // Wake Up Slap
-        dst->hp = GetMonData(src, MON_DATA_HP, NULL); 
-        dst->maxHP = GetMonData(src, MON_DATA_MAX_HP, NULL); // Wring Out
-        dst->attack = GetMonData(src, MON_DATA_ATK, NULL); // Foul Play
-        dst->defense = GetMonData(src, MON_DATA_DEF, NULL); 
-        dst->spAttack = GetMonData(src, MON_DATA_SPATK, NULL); // NOTHING, but leaving it here as I'm sure some folks have implemented a special Foul Play
-        dst->spDefense = GetMonData(src, MON_DATA_SPDEF, NULL); 
-        dst->speed = GetMonData(src, MON_DATA_SPEED, NULL); // Electro Ball
-        dst->abilityNum = GetMonData(src, MON_DATA_ABILITY_NUM, NULL); 
-        dst->type1 = gSpeciesInfo[dst->species].types[0];
-        dst->type2 = gSpeciesInfo[dst->species].types[1];
-        dst->ability = GetAbilityBySpecies(dst->species, dst->abilityNum);
-        for (i = 0; i < NUM_BATTLE_STATS; i++) // Punishment
-            dst->statStages[i] = DEFAULT_STAT_STAGE;
-    }
-}
-
 void CopyPlayerPartyMonToBattleData(u8 battlerId, u8 partyIndex)
 {
     PokemonToBattleMon(&gPlayerParty[partyIndex], &gBattleMons[battlerId]);
