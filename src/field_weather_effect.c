@@ -20,7 +20,6 @@ EWRAM_DATA static u16 sUnusedWeatherRelated = 0;
 
 const u16 gCloudsWeatherPalette[] = INCBIN_U16("graphics/weather/cloud.gbapal");
 const u16 gSandstormWeatherPalette[] = INCBIN_U16("graphics/weather/sandstorm.gbapal");
-const u16 gBlizzardWeatherPalette[] = INCBIN_U16("graphics/weather/blizzard.gbapal");
 const u8 gWeatherFogDiagonalTiles[] = INCBIN_U8("graphics/weather/fog_diagonal.4bpp");
 const u8 gWeatherFogHorizontalTiles[] = INCBIN_U8("graphics/weather/fog_horizontal.4bpp");
 const u8 gWeatherCloudTiles[] = INCBIN_U8("graphics/weather/cloud.4bpp");
@@ -35,7 +34,6 @@ const u8 gWeatherBlizzardTiles[] = INCBIN_U8("graphics/weather/blizzard.4bpp");
 const struct SpritePalette sFogSpritePalette = {gFogPalette, 0x1201};
 const struct SpritePalette sCloudsSpritePalette = {gCloudsWeatherPalette, 0x1207};
 const struct SpritePalette sSandstormSpritePalette = {gSandstormWeatherPalette, 0x1204};
-const struct SpritePalette sBlizzardSpritePalette = {gBlizzardWeatherPalette, GFXTAG_BLIZZARD};
 
 //------------------------------------------------------------------------------
 // WEATHER_SUNNY_CLOUDS
@@ -2337,7 +2335,7 @@ static const union AnimCmd *const sBlizzardSpriteAnimCmds[] =
 static const struct SpriteTemplate sBlizzardSpriteTemplate =
 {
     .tileTag = GFXTAG_BLIZZARD,
-    .paletteTag = GFXTAG_BLIZZARD,
+    .paletteTag = PALTAG_WEATHER,
     .oam = &sBlizzardSpriteOamData,
     .anims = sBlizzardSpriteAnimCmds,
     .images = NULL,
@@ -2360,7 +2358,6 @@ static void CreateBlizzardSprites(void)
     if (!gWeatherPtr->blizzardSpritesCreated)
     {
         LoadSpriteSheet(&sBlizzardSpriteSheet);
-        LoadCustomWeatherSpritePalette(&sBlizzardSpritePalette);
         for (i = 0; i < NUM_BLIZZARD_SPRITES; i++)
         {
             spriteId = CreateSpriteAtEnd(&sBlizzardSpriteTemplate, 0, (i / 5) * 64, 1);
@@ -2410,8 +2407,8 @@ static void DestroyBlizzardSprites(void)
 
 static void UpdateBlizzardMovement(void)
 {
-    gWeatherPtr->blizzardXOffset -= gSineTable[gWeatherPtr->blizzardWaveIndex] * 4;
-    gWeatherPtr->blizzardYOffset -= gSineTable[gWeatherPtr->blizzardWaveIndex];
+    gWeatherPtr->blizzardXOffset -= gSineTable[gWeatherPtr->blizzardWaveIndex] * 6;
+    gWeatherPtr->blizzardYOffset += gSineTable[gWeatherPtr->blizzardWaveIndex] * 12;
     gWeatherPtr->blizzardBaseSpritesX = (gSpriteCoordOffsetX + (gWeatherPtr->blizzardXOffset >> 8)) & 0xFF;
     gWeatherPtr->blizzardPosY = gSpriteCoordOffsetY + (gWeatherPtr->blizzardYOffset >> 8);
 }
