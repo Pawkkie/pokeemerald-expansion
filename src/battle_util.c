@@ -4245,6 +4245,7 @@ u32 AbilityBattleEffects(u32 caseID, u32 battler, u32 ability, u32 special, u32 
                 }
                 break;
             case WEATHER_SNOW:
+            case WEATHER_BLIZZARD:
                 if (!(gBattleWeather & (B_WEATHER_HAIL | B_WEATHER_SNOW)))
                 {
                     if (B_OVERWORLD_SNOW >= GEN_9)

@@ -1824,7 +1824,7 @@ static void DebugAction_Util_CheckSaveBlock(u8 taskId)
     ScriptContext_SetupScript(Debug_CheckSaveBlock);
 }
 
-static const u8 sWeatherNames[22][24] = {
+static const u8 sWeatherNames[23][25] = {
     [WEATHER_NONE]               = _("NONE"),
     [WEATHER_SUNNY_CLOUDS]       = _("SUNNY CLOUDS"),
     [WEATHER_SUNNY]              = _("SUNNY"),
@@ -1843,6 +1843,7 @@ static const u8 sWeatherNames[22][24] = {
     [WEATHER_ABNORMAL]           = _("ABNORMAL(NOT WORKING)"),
     [WEATHER_ROUTE119_CYCLE]     = _("ROUTE119 CYCLE"),
     [WEATHER_ROUTE123_CYCLE]     = _("ROUTE123 CYCLE"),
+    [WEATHER_BLIZZARD]           = _("BLIZZARD"),
 };
 static const u8 sText_WeatherNotDefined[] = _("NOT DEFINED!!!");
 static void DebugAction_Util_Weather(u8 taskId)
@@ -1880,8 +1881,8 @@ static void DebugAction_Util_Weather_SelectId(u8 taskId)
         if (JOY_NEW(DPAD_UP))
         {
             gTasks[taskId].data[3] += sPowersOfTen[gTasks[taskId].data[4]];
-            if (gTasks[taskId].data[3] > WEATHER_ROUTE123_CYCLE)
-                gTasks[taskId].data[3] = WEATHER_ROUTE123_CYCLE;
+            if (gTasks[taskId].data[3] > WEATHER_BLIZZARD)
+                gTasks[taskId].data[3] = WEATHER_BLIZZARD;
         }
         if (JOY_NEW(DPAD_DOWN))
         {

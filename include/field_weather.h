@@ -13,6 +13,7 @@ enum {
     GFXTAG_SANDSTORM,
     GFXTAG_BUBBLE,
     GFXTAG_RAIN,
+    GFXTAG_BLIZZARD,
 };
 enum {
     PALTAG_WEATHER = TAG_WEATHER_START,
@@ -39,6 +40,8 @@ struct Weather
             struct Sprite *fogDSprites[NUM_FOG_DIAGONAL_SPRITES];
             struct Sprite *sandstormSprites1[NUM_SANDSTORM_SPRITES];
             struct Sprite *sandstormSprites2[NUM_SWIRL_SANDSTORM_SPRITES];
+            struct Sprite *blizzardSprites1[NUM_BLIZZARD_SPRITES];
+            struct Sprite *blizzardSprites2[NUM_SWIRL_BLIZZARD_SPRITES];
         } s2;
     } sprites;
     u8 darkenedContrastColorMaps[NUM_WEATHER_COLOR_MAPS][32];
@@ -104,6 +107,16 @@ struct Weather
     u16 sandstormWaveCounter;
     u8 sandstormSpritesCreated;
     u8 sandstormSwirlSpritesCreated;
+    // Blizzard
+    u32 blizzardXOffset;
+    u32 blizzardYOffset;
+    u16 blizzardUnused;
+    u16 blizzardBaseSpritesX;
+    u16 blizzardPosY;
+    u16 blizzardWaveIndex;
+    u16 blizzardWaveCounter;
+    u8 blizzardSpritesCreated;
+    u8 blizzardSwirlSpritesCreated;
     // Diagonal fog
     u16 fogDBaseSpritesX;
     u16 fogDPosY;
@@ -213,6 +226,10 @@ void Sandstorm_InitVars(void);
 void Sandstorm_Main(void);
 void Sandstorm_InitAll(void);
 bool8 Sandstorm_Finish(void);
+void Blizzard_InitVars(void);
+void Blizzard_Main(void);
+void Blizzard_InitAll(void);
+bool8 Blizzard_Finish(void);
 void FogDiagonal_InitVars(void);
 void FogDiagonal_Main(void);
 void FogDiagonal_InitAll(void);
