@@ -103,6 +103,7 @@ static void GetGroundEffectFlags_SandHeap(struct ObjectEvent *, u32 *);
 static void GetGroundEffectFlags_ShallowFlowingWater(struct ObjectEvent *, u32 *);
 static void GetGroundEffectFlags_ShortGrass(struct ObjectEvent *, u32 *);
 static void GetGroundEffectFlags_HotSprings(struct ObjectEvent *, u32 *);
+static void GetGroundEffectFlags_SnowDrift(struct ObjectEvent *, u32 *);
 static void GetGroundEffectFlags_TallGrassOnBeginStep(struct ObjectEvent *, u32 *);
 static void GetGroundEffectFlags_LongGrassOnBeginStep(struct ObjectEvent *, u32 *);
 static void GetGroundEffectFlags_SnowTallGrassOnBeginStep(struct ObjectEvent *, u32 *);
@@ -1585,6 +1586,7 @@ static void ResetObjectEventFldEffData(struct ObjectEvent *objectEvent)
     objectEvent->inShallowFlowingWater = FALSE;
     objectEvent->inSandPile = FALSE;
     objectEvent->inHotSprings = FALSE;
+    objectEvent->inSnowDrift = FALSE;
     ObjectEventClearHeldMovement(objectEvent);
 }
 
@@ -7113,6 +7115,7 @@ static void GetAllGroundEffectFlags_OnSpawn(struct ObjectEvent *objEvent, u32 *f
     GetGroundEffectFlags_ShortGrass(objEvent, flags);
     GetGroundEffectFlags_HotSprings(objEvent, flags);
     GetGroundEffectFlags_SnowTallGrassOnSpawn(objEvent, flags);
+    GetGroundEffectFlags_SnowDrift(objEvent, flags);
 }
 
 static void GetAllGroundEffectFlags_OnBeginStep(struct ObjectEvent *objEvent, u32 *flags)
@@ -7129,6 +7132,7 @@ static void GetAllGroundEffectFlags_OnBeginStep(struct ObjectEvent *objEvent, u3
     GetGroundEffectFlags_HotSprings(objEvent, flags);
     GetGroundEffectFlags_SnowTallGrassOnBeginStep(objEvent, flags);
     GetGroundEffectFlags_SnowTracks(objEvent, flags);
+    GetGroundEffectFlags_SnowDrift(objEvent, flags);
 }
 
 static void GetAllGroundEffectFlags_OnFinishStep(struct ObjectEvent *objEvent, u32 *flags)
@@ -7142,6 +7146,7 @@ static void GetAllGroundEffectFlags_OnFinishStep(struct ObjectEvent *objEvent, u
     GetGroundEffectFlags_HotSprings(objEvent, flags);
     GetGroundEffectFlags_Seaweed(objEvent, flags);
     GetGroundEffectFlags_JumpLanding(objEvent, flags);
+    GetGroundEffectFlags_SnowDrift(objEvent, flags);
 }
 
 static void ObjectEventUpdateMetatileBehaviors(struct ObjectEvent *objEvent)
@@ -7307,6 +7312,24 @@ static void GetGroundEffectFlags_HotSprings(struct ObjectEvent *objEvent, u32 *f
     else
     {
         objEvent->inHotSprings = FALSE;
+    }
+}
+
+static void GetGroundEffectFlags_SnowDrift(struct ObjectEvent *objEvent, u32 *flags)
+{
+    if (MetatileBehavior_IsSnowDrift(objEvent->currentMetatileBehavior)
+        && MetatileBehavior_IsSnowDrift(objEvent->previousMetatileBehavior))
+    {
+        if (!objEvent->inSnowDrift)
+        {
+            objEvent->inSnowDrift = FALSE;
+            objEvent->inSnowDrift = TRUE;
+            *flags |= GROUND_EFFECT_FLAG_SNOW_DRIFT;
+        }
+    }
+    else
+    {
+        objEvent->inSnowDrift = FALSE;
     }
 }
 
@@ -7860,6 +7883,11 @@ void GroundEffect_HotSprings(struct ObjectEvent *objEvent, struct Sprite *sprite
     StartFieldEffectForObjectEvent(FLDEFF_HOT_SPRINGS_WATER, objEvent);
 }
 
+void GroundEffect_SnowDrift(struct ObjectEvent *objEvent, struct Sprite *sprite)
+{
+    StartFieldEffectForObjectEvent(FLDEFF_SNOW_DRIFT, objEvent);
+}
+
 void GroundEffect_Seaweed(struct ObjectEvent *objEvent, struct Sprite *sprite)
 {
     gFieldEffectArguments[0] = objEvent->currentCoords.x;
@@ -7893,6 +7921,7 @@ static void (*const sGroundEffectFuncs[])(struct ObjectEvent *objEvent, struct S
     GroundEffect_SnowTracks,            // GROUND_EFFECT_FLAG_SNOW
     GroundEffect_JumpOnSnowTallGrass,   // GROUND_EFFECT_FLAG_LAND_IN_SNOW_TALL_GRASS
     GroundEffect_JumpLandingDustSnow,   // GROUND_EFFECT_FLAG_LAND_ON_SNOW_GROUND
+    GroundEffect_SnowDrift,             // GROUND_EFFECT_FLAG_SNOW_DRIFT
 };
 
 static void DoFlaggedGroundEffects(struct ObjectEvent *objEvent, struct Sprite *sprite, u32 flags)
@@ -7915,12 +7944,14 @@ void filters_out_some_ground_effects(struct ObjectEvent *objEvent, u32 *flags)
         objEvent->inSandPile = 0;
         objEvent->inShallowFlowingWater = 0;
         objEvent->inHotSprings = 0;
+        objEvent->inSnowDrift = 0;
         *flags &= ~(GROUND_EFFECT_FLAG_HOT_SPRINGS
                   | GROUND_EFFECT_FLAG_SHORT_GRASS
                   | GROUND_EFFECT_FLAG_SAND_PILE
                   | GROUND_EFFECT_FLAG_SHALLOW_FLOWING_WATER
                   | GROUND_EFFECT_FLAG_TALL_GRASS_ON_MOVE
-                  | GROUND_EFFECT_FLAG_SNOW_TALL_GRASS_ON_MOVE);
+                  | GROUND_EFFECT_FLAG_SNOW_TALL_GRASS_ON_MOVE
+                  | GROUND_EFFECT_FLAG_SNOW_DRIFT);
     }
 }
 

@@ -66,7 +66,7 @@ static const u8 sTileBitAttributes[NUM_METATILE_BEHAVIORS] =
     [MB_SLIDE_NORTH]                     = TILE_FLAG_UNUSED,
     [MB_SLIDE_SOUTH]                     = TILE_FLAG_UNUSED,
     [MB_TRICK_HOUSE_PUZZLE_8_FLOOR]      = TILE_FLAG_UNUSED,
-    [MB_UNUSED_49]                       = TILE_FLAG_UNUSED,
+    [MB_SNOW_DRIFT]                      = TILE_FLAG_UNUSED | TILE_FLAG_HAS_ENCOUNTERS,
     [MB_UNUSED_4A]                       = TILE_FLAG_UNUSED,
     [MB_EASTWARD_CURRENT]                = TILE_FLAG_UNUSED | TILE_FLAG_SURFABLE,
     [MB_WESTWARD_CURRENT]                = TILE_FLAG_UNUSED | TILE_FLAG_SURFABLE,
@@ -1009,6 +1009,14 @@ bool8 MetatileBehavior_IsHotSprings(u8 metatileBehavior)
         return FALSE;
 }
 
+bool8 MetatileBehavior_IsSnowDrift(u8 metatileBehavior)
+{
+    if (metatileBehavior == MB_SNOW_DRIFT)
+        return TRUE;
+    else
+        return FALSE;
+}
+
 bool8 MetatileBehavior_IsWaterfall(u8 metatileBehavior)
 {
     if (metatileBehavior == MB_WATERFALL)
@@ -1277,6 +1285,7 @@ bool8 MetatileBehavior_IsRunningDisallowed(u8 metatileBehavior)
     if (metatileBehavior == MB_NO_RUNNING
      || metatileBehavior == MB_LONG_GRASS
      || metatileBehavior == MB_HOT_SPRINGS
+     || metatileBehavior == MB_SNOW_DRIFT
      || MetatileBehavior_IsPacifidlogLog(metatileBehavior) != FALSE)
         return TRUE;
     else

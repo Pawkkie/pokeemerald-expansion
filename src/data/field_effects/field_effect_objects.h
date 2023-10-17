@@ -1377,6 +1377,31 @@ const struct SpriteTemplate gFieldEffectObjectTemplate_HotSpringsWater = {
     .callback = UpdateHotSpringsWaterFieldEffect,
 };
 
+static const struct SpriteFrameImage sPicTable_SnowDrift[] = {
+    obj_frame_tiles(gFieldEffectObjectPic_SnowDrift),
+};
+
+static const union AnimCmd sAnim_SnowDrift[] =
+{
+    ANIMCMD_FRAME(0, 4),
+    ANIMCMD_END,
+};
+
+static const union AnimCmd *const sAnimTable_SnowDrift[] =
+{
+    sAnim_SnowDrift,
+};
+
+const struct SpriteTemplate gFieldEffectObjectTemplate_SnowDrift = {
+    .tileTag = TAG_NONE,
+    .paletteTag = FLDEFF_PAL_TAG_SNOW,
+    .oam = &gObjectEventBaseOam_16x16,
+    .anims = sAnimTable_SnowDrift,
+    .images = sPicTable_SnowDrift,
+    .affineAnims = gDummySpriteAffineAnimTable,
+    .callback = UpdateSnowDriftFieldEffect,
+};
+
 static const struct SpriteFrameImage sPicTable_AshPuff[] = {
     overworld_frame(gFieldEffectObjectPic_AshPuff, 2, 2, 0),
     overworld_frame(gFieldEffectObjectPic_AshPuff, 2, 2, 1),

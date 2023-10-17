@@ -1049,6 +1049,51 @@ void UpdateHotSpringsWaterFieldEffect(struct Sprite *sprite)
     }
 }
 
+u32 FldEff_SnowDrift(void)
+{
+    u8 objectEventId;
+    struct ObjectEvent *objectEvent;
+    u8 spriteId;
+    struct Sprite *sprite;
+
+    objectEventId = GetObjectEventIdByLocalIdAndMap(gFieldEffectArguments[0], gFieldEffectArguments[1], gFieldEffectArguments[2]);
+    objectEvent = &gObjectEvents[objectEventId];
+    spriteId = CreateSpriteAtEnd(gFieldEffectObjectTemplatePointers[FLDEFFOBJ_SNOW_DRIFT], 0, 0, 0);
+    if (spriteId != MAX_SPRITES)
+    {
+        sprite = &gSprites[spriteId];
+        sprite->coordOffsetEnabled = TRUE;
+        sprite->oam.priority = gSprites[objectEvent->spriteId].oam.priority;
+        sprite->data[0] = gFieldEffectArguments[0];
+        sprite->data[1] = gFieldEffectArguments[1];
+        sprite->data[2] = gFieldEffectArguments[2];
+        sprite->data[3] = gSprites[objectEvent->spriteId].x;
+        sprite->data[4] = gSprites[objectEvent->spriteId].y;
+    }
+    return 0;
+}
+
+void UpdateSnowDriftFieldEffect(struct Sprite *sprite)
+{
+    u8 objectEventId;
+    const struct ObjectEventGraphicsInfo *graphicsInfo;
+    struct Sprite *linkedSprite;
+
+    if (TryGetObjectEventIdByLocalIdAndMap(sprite->data[0], sprite->data[1], sprite->data[2], &objectEventId) || !gObjectEvents[objectEventId].inSnowDrift)
+    {
+        FieldEffectStop(sprite, FLDEFF_SNOW_DRIFT);
+    }
+    else
+    {
+        graphicsInfo = GetObjectEventGraphicsInfo(gObjectEvents[objectEventId].graphicsId);
+        linkedSprite = &gSprites[gObjectEvents[objectEventId].spriteId];
+        sprite->x = linkedSprite->x;
+        sprite->y = (graphicsInfo->height >> 1) + linkedSprite->y - 8;
+        sprite->subpriority = linkedSprite->subpriority - 1;
+        UpdateObjectEventSpriteInvisibility(sprite, FALSE);
+    }
+}
+
 u32 FldEff_UnusedGrass(void)
 {
     u8 spriteId;
