@@ -759,7 +759,7 @@ const struct SpriteTemplate gFieldEffectObjectTemplate_SnowBikeTireTracks = {
     .anims = sAnimTable_SnowBikeTireTracks,
     .images = sPicTable_SnowBikeTireTracks,
     .affineAnims = gDummySpriteAffineAnimTable,
-    .callback = UpdateSnowTracksFieldEffect,
+    .callback = UpdateFootprintsTireTracksFieldEffect, // Make these despawn faster than snow footprints so we don't exceed the sprite cap
 };
 
 static const struct SpriteFrameImage sPicTable_JumpBigSplash[] = {
