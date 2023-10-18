@@ -402,7 +402,25 @@
 #define METATILE_PetalburgGym_SlidingDoor_Frame4  0x21C
 
 // gTileset_PetalburgLeoBSnow
-#define METATILE_PetalburgLeoBSnow_NormalGrass  0x273
+#define METATILE_PetalburgLeoBSnow_NormalGrass    0x273
+#define METATILE_PetalburgLeoBSnow_SnowDrift_BL   0x220
+#define METATILE_PetalburgLeoBSnow_SnowDrift_BM   0x221
+#define METATILE_PetalburgLeoBSnow_SnowDrift_BR   0x222
+#define METATILE_PetalburgLeoBSnow_SnowDrift_CBL  0x223
+#define METATILE_PetalburgLeoBSnow_SnowDrift_CBR  0x224
+#define METATILE_PetalburgLeoBSnow_SnowDrift_CTL  0x214
+#define METATILE_PetalburgLeoBSnow_SnowDrift_CTR  0x21C
+#define METATILE_PetalburgLeoBSnow_SnowDrift_HL   0x208
+#define METATILE_PetalburgLeoBSnow_SnowDrift_HM   0x209
+#define METATILE_PetalburgLeoBSnow_SnowDrift_HR   0x20A
+#define METATILE_PetalburgLeoBSnow_SnowDrift_ML   0x218
+#define METATILE_PetalburgLeoBSnow_SnowDrift_MM   0x219
+#define METATILE_PetalburgLeoBSnow_SnowDrift_MR   0x21A
+#define METATILE_PetalburgLeoBSnow_SnowDrift_TM   0x211
+#define METATILE_PetalburgLeoBSnow_SnowDrift_TR   0x212
+#define METATILE_PetalburgLeoBSnow_SnowDrift_VB   0x21B
+#define METATILE_PetalburgLeoBSnow_SnowDrift_VM   0x213
+#define METATILE_PetalburgLeoBSnow_SnowDrift_VT   0x20B
 
 // gTileset_Petalburg
 #define METATILE_Petalburg_Door_BirchsLab   0x249
