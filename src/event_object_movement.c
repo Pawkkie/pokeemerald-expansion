@@ -7349,6 +7349,7 @@ static void GetGroundEffectFlags_JumpLanding(struct ObjectEvent *objEvent, u32 *
         MetatileBehavior_IsPuddle,
         MetatileBehavior_IsSurfableWaterOrUnderwater,
         MetatileBehavior_IsShallowFlowingWater,
+        MetatileBehavior_IsSnowGrass,
         MetatileBehavior_IsSnowTallGrass,
         MetatileBehavior_IsATile,
     };
@@ -7360,9 +7361,8 @@ static void GetGroundEffectFlags_JumpLanding(struct ObjectEvent *objEvent, u32 *
         GROUND_EFFECT_FLAG_LAND_IN_DEEP_WATER,
         GROUND_EFFECT_FLAG_LAND_IN_SHALLOW_WATER,
         GROUND_EFFECT_FLAG_LAND_ON_SNOW_GROUND,
+        GROUND_EFFECT_FLAG_LAND_IN_SNOW_TALL_GRASS,
         GROUND_EFFECT_FLAG_LAND_ON_NORMAL_GROUND,
-        // GROUND_EFFECT_FLAG_LAND_IN_SNOW_TALL_GRASS,
-        // GROUND_EFFECT_FLAG_LAND_ON_SNOW_GROUND,
     };
 
     if (objEvent->landingJump && !objEvent->disableJumpLandingGroundEffect)
