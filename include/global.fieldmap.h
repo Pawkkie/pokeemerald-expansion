@@ -255,6 +255,7 @@ enum {
     PLAYER_AVATAR_STATE_FISHING,
     PLAYER_AVATAR_STATE_WATERING,
     PLAYER_AVATAR_STATE_RUNNING,
+    PLAYER_AVATAR_STATE_SNOW_DRIFT,
 };
 
 #define PLAYER_AVATAR_FLAG_ON_FOOT      (1 << 0)
@@ -314,7 +315,7 @@ enum
 struct PlayerAvatar
 {
     /*0x00*/ u8 flags;
-    /*0x01*/ u8 transitionFlags; // used to be named bike, but its definitely not that. seems to be some transition flags
+    /*0x01*/ u16 transitionFlags; // Used to be u8 // used to be named bike, but its definitely not that. seems to be some transition flags
     /*0x02*/ u8 runningState; // this is a static running state. 00 is not moving, 01 is turn direction, 02 is moving.
     /*0x03*/ u8 tileTransitionState; // this is a transition running state: 00 is not moving, 01 is transition between tiles, 02 means you are on the frame in which you have centered on a tile but are about to keep moving, even if changing directions. 2 is also used for a ledge hop, since you are transitioning.
     /*0x04*/ u8 spriteId;
