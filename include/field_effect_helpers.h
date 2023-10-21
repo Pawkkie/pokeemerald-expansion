@@ -42,7 +42,6 @@ void UpdateSandPileFieldEffect(struct Sprite *);
 void UpdateDisguiseFieldEffect(struct Sprite *);
 void UpdateShortGrassFieldEffect(struct Sprite *);
 void UpdateHotSpringsWaterFieldEffect(struct Sprite *);
-void UpdateSnowDriftFieldEffect(struct Sprite *);
 void UpdateBubblesFieldEffect(struct Sprite *);
 void UpdateSparkleFieldEffect(struct Sprite *);
 void SetSpriteInvisible(u8 spriteId);

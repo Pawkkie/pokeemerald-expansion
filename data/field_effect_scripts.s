@@ -278,7 +278,7 @@ gFieldEffectScript_HotSpringsWater::
 	field_eff_end
 
 gFieldEffectScript_SnowDrift::
-	field_eff_loadfadedpaldaynight_callnative gSpritePalette_SnowFieldEffect, FldEff_SnowDrift
+	field_eff_callnative FldEff_SnowDrift
 	field_eff_end
 
 gFieldEffectScript_UseWaterfall::

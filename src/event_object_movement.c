@@ -32,6 +32,7 @@
 #include "constants/trainer_types.h"
 #include "constants/union_room.h"
 #include "day_night.h"
+#include "fldeff.h"
 
 // this file was known as evobjmv.c in Game Freak's original source
 
@@ -7317,19 +7318,19 @@ static void GetGroundEffectFlags_HotSprings(struct ObjectEvent *objEvent, u32 *f
 
 static void GetGroundEffectFlags_SnowDrift(struct ObjectEvent *objEvent, u32 *flags)
 {
-    if (MetatileBehavior_IsSnowDrift(objEvent->currentMetatileBehavior)
-        && MetatileBehavior_IsSnowDrift(objEvent->previousMetatileBehavior))
+    if (MetatileBehavior_IsSnowDrift(objEvent->currentMetatileBehavior))
     {
         if (!objEvent->inSnowDrift)
         {
-            objEvent->inSnowDrift = FALSE;
             objEvent->inSnowDrift = TRUE;
             *flags |= GROUND_EFFECT_FLAG_SNOW_DRIFT;
         }
     }
-    else
+
+    else if (objEvent->inSnowDrift)
     {
         objEvent->inSnowDrift = FALSE;
+        *flags |= GROUND_EFFECT_FLAG_SNOW_DRIFT;
     }
 }
 
@@ -7950,8 +7951,7 @@ void filters_out_some_ground_effects(struct ObjectEvent *objEvent, u32 *flags)
                   | GROUND_EFFECT_FLAG_SAND_PILE
                   | GROUND_EFFECT_FLAG_SHALLOW_FLOWING_WATER
                   | GROUND_EFFECT_FLAG_TALL_GRASS_ON_MOVE
-                  | GROUND_EFFECT_FLAG_SNOW_TALL_GRASS_ON_MOVE
-                  | GROUND_EFFECT_FLAG_SNOW_DRIFT);
+                  | GROUND_EFFECT_FLAG_SNOW_TALL_GRASS_ON_MOVE);
     }
 }
 

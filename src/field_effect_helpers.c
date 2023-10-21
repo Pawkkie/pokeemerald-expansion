@@ -14,6 +14,8 @@
 #include "constants/field_effects.h"
 #include "constants/songs.h"
 #include "constants/rgb.h"
+#include "task.h"
+#include "field_player_avatar.h"
 
 #define OBJ_EVENT_PAL_TAG_NONE 0x11FF // duplicate of define in event_object_movement.c
 
@@ -39,6 +41,20 @@ static u32 ShowDisguiseFieldEffect(u8, u8);
 static void LoadFieldEffectPalette_(u8 fieldEffect, bool8 updateGammaType);
 
 void LoadSpecialReflectionPalette(struct Sprite *sprite);
+
+// Snow Drift
+static void Task_SnowDrift(u8);
+static bool8 SnowDriftFieldEffect_Init(struct Task *);
+static bool8 SnowDriftFieldEffect_WaitMovement(struct Task *);
+static bool8 SnowDriftFieldEffect_DoAvatarTransition(struct Task *);
+
+static bool8 (*const sSnowDriftFieldEffectFuncs[])(struct Task *) =
+{
+    SnowDriftFieldEffect_Init,
+    SnowDriftFieldEffect_WaitMovement,
+    SnowDriftFieldEffect_DoAvatarTransition,
+};
+
 
 extern u16 gReflectionPaletteBuffer[];
 
@@ -1049,49 +1065,42 @@ void UpdateHotSpringsWaterFieldEffect(struct Sprite *sprite)
     }
 }
 
-u32 FldEff_SnowDrift(void)
+void Task_SnowDrift(u8 taskId)
 {
-    u8 objectEventId;
-    struct ObjectEvent *objectEvent;
-    u8 spriteId;
-    struct Sprite *sprite;
-
-    objectEventId = GetObjectEventIdByLocalIdAndMap(gFieldEffectArguments[0], gFieldEffectArguments[1], gFieldEffectArguments[2]);
-    objectEvent = &gObjectEvents[objectEventId];
-    spriteId = CreateSpriteAtEnd(gFieldEffectObjectTemplatePointers[FLDEFFOBJ_SNOW_DRIFT], 0, 0, 0);
-    if (spriteId != MAX_SPRITES)
-    {
-        sprite = &gSprites[spriteId];
-        sprite->coordOffsetEnabled = TRUE;
-        sprite->oam.priority = gSprites[objectEvent->spriteId].oam.priority;
-        sprite->data[0] = gFieldEffectArguments[0];
-        sprite->data[1] = gFieldEffectArguments[1];
-        sprite->data[2] = gFieldEffectArguments[2];
-        sprite->data[3] = gSprites[objectEvent->spriteId].x;
-        sprite->data[4] = gSprites[objectEvent->spriteId].y;
-    }
-    return 0;
+    sSnowDriftFieldEffectFuncs[gTasks[taskId].data[0]](&gTasks[taskId]);
 }
 
-void UpdateSnowDriftFieldEffect(struct Sprite *sprite)
+static bool8 SnowDriftFieldEffect_Init(struct Task *task)
 {
-    u8 objectEventId;
-    const struct ObjectEventGraphicsInfo *graphicsInfo;
-    struct Sprite *linkedSprite;
+    gPlayerAvatar.preventStep = TRUE;
+    task->data[0]++;
+    return FALSE;
+}
 
-    if (TryGetObjectEventIdByLocalIdAndMap(sprite->data[0], sprite->data[1], sprite->data[2], &objectEventId) || !gObjectEvents[objectEventId].inSnowDrift)
+static bool8 SnowDriftFieldEffect_WaitMovement(struct Task *task)
+{
+    if (ObjectEventClearHeldMovementIfFinished(&gObjectEvents[gPlayerAvatar.objectEventId]))
     {
-        FieldEffectStop(sprite, FLDEFF_SNOW_DRIFT);
+        task->data[0]++;
+        return FALSE;
     }
-    else
-    {
-        graphicsInfo = GetObjectEventGraphicsInfo(gObjectEvents[objectEventId].graphicsId);
-        linkedSprite = &gSprites[gObjectEvents[objectEventId].spriteId];
-        sprite->x = linkedSprite->x;
-        sprite->y = (graphicsInfo->height >> 1) + linkedSprite->y - 8;
-        sprite->subpriority = linkedSprite->subpriority - 1;
-        UpdateObjectEventSpriteInvisibility(sprite, FALSE);
-    }
+    return FALSE;
+}
+
+static bool8 SnowDriftFieldEffect_DoAvatarTransition(struct Task *task)
+{
+    SetPlayerAvatarTransitionFlags(PLAYER_AVATAR_FLAG_ON_FOOT);
+    gPlayerAvatar.preventStep = FALSE;
+    DestroyTask(FindTaskIdByFunc(Task_SnowDrift));
+    return FALSE;
+}
+
+u32 FldEff_SnowDrift(void)
+{
+    u8 taskId;
+    taskId = CreateTask(Task_SnowDrift, 0xFF);
+    Task_SnowDrift(taskId);
+    return 0;
 }
 
 u32 FldEff_UnusedGrass(void)
