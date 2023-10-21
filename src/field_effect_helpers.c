@@ -1091,6 +1091,7 @@ static bool8 SnowDriftFieldEffect_DoAvatarTransition(struct Task *task)
 {
     SetPlayerAvatarTransitionFlags(PLAYER_AVATAR_FLAG_ON_FOOT);
     gPlayerAvatar.preventStep = FALSE;
+    FieldEffectActiveListRemove(FLDEFF_SNOW_DRIFT);
     DestroyTask(FindTaskIdByFunc(Task_SnowDrift));
     return FALSE;
 }

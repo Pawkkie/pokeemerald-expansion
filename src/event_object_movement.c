@@ -4662,13 +4662,15 @@ void UpdateObjectEventCurrentMovement(struct ObjectEvent *objectEvent, struct Sp
             if(objectEvent->initialCoords.x != objectEvent->currentCoords.x || objectEvent->initialCoords.y != objectEvent->currentCoords.y) // If moving
             {
                 objectEvent->inSnowDrift = FALSE;
-                StartFieldEffectForObjectEvent(FLDEFF_SNOW_DRIFT, objectEvent);
+                if(!FieldEffectActiveListContains(FLDEFF_SNOW_DRIFT))
+                    StartFieldEffectForObjectEvent(FLDEFF_SNOW_DRIFT, objectEvent);
             }
         }
         else if (!objectEvent->inSnowDrift && MetatileBehavior_IsSnowDrift(objectEvent->currentMetatileBehavior)) // If moving into snowdrift
         {
             objectEvent->inSnowDrift = TRUE;
-            StartFieldEffectForObjectEvent(FLDEFF_SNOW_DRIFT, objectEvent);
+            if(!FieldEffectActiveListContains(FLDEFF_SNOW_DRIFT))
+                StartFieldEffectForObjectEvent(FLDEFF_SNOW_DRIFT, objectEvent);
         }
         ObjectEventExecHeldMovementAction(objectEvent, sprite);
     }
