@@ -1844,3 +1844,80 @@ const u8 gText_Nickname[] = _("NICKNAME");
 const u8 gText_AshQty[] = _("ASH QTY:\n{STR_VAR_1}{PAUSE_UNTIL_PRESS}");
 const u8 gText_ThrowInPremierBalls[] = _("I'll throw in some Premier Balls, too.{PAUSE_UNTIL_PRESS}");
 const u8 gText_BasePointsResetToZero[] = _("{STR_VAR_1}'s base points\nwere all reset to zero!{PAUSE_UNTIL_PRESS}");
+
+// Move Relearning in Party Menu
+const u8 gText_Moves_Menu[] = _("RELEARN");
+
+// Pokevial
+const u8 gText_UsedPokeVial[] = _("{PLAYER} has a picnic with the party.\nAll Pokémon were fully restored!{PAUSE_UNTIL_PRESS}");
+const u8 gText_PokeVialEmpty[] = _("The Picnic Basket is empty.\nRefill it at a Pokémon Center.{PAUSE_UNTIL_PRESS}");
+
+// Nature changer
+const u8 gText_FlavourRed[] = _("Red:{CLEAR_TO 0x32}Attack");
+const u8 gText_FlavourYellow[] = _("Yellow:{CLEAR_TO 0x32}Defense");
+const u8 gText_FlavourPink[] = _("Pink:{CLEAR_TO 0x32}Speed");
+const u8 gText_FlavourBlue[] = _("Blue:{CLEAR_TO 0x32}Sp. Atk");
+const u8 gText_FlavourGreen[] = _("Green:{CLEAR_TO 0x32}Sp. Def");
+
+// EV/IV changers
+const u8 gText_View[] = _("View");
+const u8 gText_Modify[] = _("Add EVs");
+const u8 gText_ResetEVs[] = _("Reset EVs");
+const u8 gText_ExplainEVs[] = _("Explain EVs");
+
+const u8 gText_ChangeIVto0[] = _(" 0");
+const u8 gText_ChangeIVto1[] = _(" 1");
+const u8 gText_ChangeIVto14[] = _("14");
+const u8 gText_ChangeIVto15[] = _("15");
+const u8 gText_ChangeIVto30[] = _("30");
+const u8 gText_ChangeIVto31[] = _("31");
+
+const u8 gText_Add4toEV[] = _(" 4 EVs");
+const u8 gText_Add8toEV[] = _(" 8 EVs");
+const u8 gText_Add12toEV[] = _("12 EVs");
+const u8 gText_Add64toEV[] = _("64 EVs");
+const u8 gText_Add128toEV[] = _("128 EVs");
+const u8 gText_Add252toEV[] = _("Max Stat");
+
+const u8 gText_HiddenPower[] = _("Change Hidden Power");
+const u8 gText_ChangeIV[] = _("Change IVs");
+const u8 gText_ExplainIVs[] = _("Explain IVs");
+
+// Hidden Power Types
+const u8 gText_HPFighting[] = _("Fighting");
+const u8 gText_HPFlying[] = _("Flying");
+const u8 gText_HPPoison[] = _("Poison");
+const u8 gText_HPGround[] = _("Ground");
+const u8 gText_HPRock[] = _("Rock");
+const u8 gText_HPBug[] = _("Bug");
+const u8 gText_HPGhost[] = _("Ghost");
+const u8 gText_HPSteel[] = _("Steel");
+const u8 gText_HPFire[] = _("Fire");
+const u8 gText_HPWater[] = _("Water");
+const u8 gText_HPGrass[] = _("Grass");
+const u8 gText_HPElectric[] = _("Electric");
+const u8 gText_HPPsychic[] = _("Psychic");
+const u8 gText_HPIce[] = _("Ice");
+const u8 gText_HPDragon[] = _("Dragon");
+const u8 gText_HPDark[] = _("Dark");
+
+const u8 gText_HP_Placeholder[] =       _("HP{CLEAR_TO 0x36}{STR_VAR_1}");
+const u8 gText_Attack_Placeholder[] =   _("Attack{CLEAR_TO 0x36}{STR_VAR_2}");
+const u8 gText_Defense_Placeholder[] =  _("Defense{CLEAR_TO 0x36}{STR_VAR_3}");
+const u8 gText_Speed_Placeholder[] =    _("Speed{CLEAR_TO 0x36}{EXTRA_STR_VAR_1}");
+const u8 gText_SpAtk_Placeholder[] =    _("Sp. Atk{CLEAR_TO 0x36}{EXTRA_STR_VAR_2}");
+const u8 gText_SpDef_Placeholder[] =    _("Sp. Def{CLEAR_TO 0x36}{EXTRA_STR_VAR_3}");
+
+// Move party items
+const u8 gMenuText_Move[] = _("MOVE");
+const u8 gText_MoveItemWhere[] = _("Move item to where?");
+const u8 gText_XsYAnd[] = _("Swapped {STR_VAR_1}'s {STR_VAR_2}\n");
+const u8 gText_XsYWereSwapped[] = _("and {STR_VAR_1}'s {STR_VAR_2}!{PAUSE_UNTIL_PRESS}");
+
+// frlg_tm_case_port
+const u8 gText_TMCase[] =               _("TM Case");
+const u8 gText_Close[] =                _("Close");
+const u8 gText_TMCaseWillBePutAway[] =  _("The TM Case will be\nput away.");
+const u8 gText_FontSmall[] =            _("{FONT_SMALL}");
+const u8 gText_FontShort[] =            _("{FONT_SHORT}");
+const u8 gText_TMCase_Blue[] =          _("{COLOR_HIGHLIGHT_SHADOW BLUE TRANSPARENT LIGHT_BLUE}{STR_VAR_2}");
