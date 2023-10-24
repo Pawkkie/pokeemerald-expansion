@@ -402,6 +402,8 @@
 #define METATILE_PetalburgGym_SlidingDoor_Frame4  0x21C
 
 // gTileset_PetalburgLeoBSnow
+#define METATILE_PetalburgLeoBSnow_LabDoorBottom  0x24A
+#define METATILE_PetalburgLeoBSnow_LabDoorTop     0x23C
 #define METATILE_PetalburgLeoBSnow_NormalGrass    0x273
 #define METATILE_PetalburgLeoBSnow_SnowDrift_BL   0x220
 #define METATILE_PetalburgLeoBSnow_SnowDrift_BM   0x221
