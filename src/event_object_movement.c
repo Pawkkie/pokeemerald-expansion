@@ -32,6 +32,7 @@
 #include "constants/trainer_types.h"
 #include "constants/union_room.h"
 #include "day_night.h"
+#include "fldeff.h"
 
 // this file was known as evobjmv.c in Game Freak's original source
 
@@ -4646,11 +4647,34 @@ u8 ObjectEventGetHeldMovementActionId(struct ObjectEvent *objectEvent)
 
 void UpdateObjectEventCurrentMovement(struct ObjectEvent *objectEvent, struct Sprite *sprite, bool8 (*callback)(struct ObjectEvent *, struct Sprite *))
 {
+    u16 nextTileBehavior;
+    s16 x = objectEvent->currentCoords.x, y = objectEvent->currentCoords.y;
+
     DoGroundEffects_OnSpawn(objectEvent, sprite);
     TryEnableObjectEventAnim(objectEvent, sprite);
 
     if (ObjectEventIsHeldMovementActive(objectEvent))
+    {
+        PlayerGetDestCoords(&x, &y); // GetXYCoordsOneStepInFrontOfPlayer gives flickering effects
+        nextTileBehavior = MapGridGetMetatileBehaviorAt(x, y);
+        if((objectEvent->inSnowDrift && !MetatileBehavior_IsSnowDrift(nextTileBehavior))
+        || (!MetatileBehavior_IsSnowDrift(nextTileBehavior) && gPlayerAvatar.runningState == 2 )) // If looking out of snowdrift
+        {
+            if(objectEvent->initialCoords.x != objectEvent->currentCoords.x || objectEvent->initialCoords.y != objectEvent->currentCoords.y) // If moving
+            {
+                objectEvent->inSnowDrift = FALSE;
+                if(!FieldEffectActiveListContains(FLDEFF_SNOW_DRIFT))
+                    StartFieldEffectForObjectEvent(FLDEFF_SNOW_DRIFT, objectEvent);
+            }
+        }
+        else if (!objectEvent->inSnowDrift && MetatileBehavior_IsSnowDrift(objectEvent->currentMetatileBehavior)) // If moving into snowdrift
+        {
+            objectEvent->inSnowDrift = TRUE;
+            if(!FieldEffectActiveListContains(FLDEFF_SNOW_DRIFT))
+                StartFieldEffectForObjectEvent(FLDEFF_SNOW_DRIFT, objectEvent);
+        }
         ObjectEventExecHeldMovementAction(objectEvent, sprite);
+    }
     else if (!objectEvent->frozen)
         while (callback(objectEvent, sprite));
 
@@ -7317,20 +7341,20 @@ static void GetGroundEffectFlags_HotSprings(struct ObjectEvent *objEvent, u32 *f
 
 static void GetGroundEffectFlags_SnowDrift(struct ObjectEvent *objEvent, u32 *flags)
 {
-    if (MetatileBehavior_IsSnowDrift(objEvent->currentMetatileBehavior)
-        && MetatileBehavior_IsSnowDrift(objEvent->previousMetatileBehavior))
-    {
-        if (!objEvent->inSnowDrift)
-        {
-            objEvent->inSnowDrift = FALSE;
-            objEvent->inSnowDrift = TRUE;
-            *flags |= GROUND_EFFECT_FLAG_SNOW_DRIFT;
-        }
-    }
-    else
-    {
-        objEvent->inSnowDrift = FALSE;
-    }
+    // if (MetatileBehavior_IsSnowDrift(objEvent->currentMetatileBehavior))
+    // {
+    //     if (!objEvent->inSnowDrift)
+    //     {
+    //         objEvent->inSnowDrift = TRUE;
+    //         *flags |= GROUND_EFFECT_FLAG_SNOW_DRIFT;
+    //     }
+    // }
+
+    // else if (objEvent->inSnowDrift)
+    // {
+    //     objEvent->inSnowDrift = FALSE;
+    //     *flags |= GROUND_EFFECT_FLAG_SNOW_DRIFT;
+    // }
 }
 
 static void GetGroundEffectFlags_Seaweed(struct ObjectEvent *objEvent, u32 *flags)
@@ -7885,7 +7909,7 @@ void GroundEffect_HotSprings(struct ObjectEvent *objEvent, struct Sprite *sprite
 
 void GroundEffect_SnowDrift(struct ObjectEvent *objEvent, struct Sprite *sprite)
 {
-    StartFieldEffectForObjectEvent(FLDEFF_SNOW_DRIFT, objEvent);
+    // StartFieldEffectForObjectEvent(FLDEFF_SNOW_DRIFT, objEvent);
 }
 
 void GroundEffect_Seaweed(struct ObjectEvent *objEvent, struct Sprite *sprite)
@@ -7944,14 +7968,12 @@ void filters_out_some_ground_effects(struct ObjectEvent *objEvent, u32 *flags)
         objEvent->inSandPile = 0;
         objEvent->inShallowFlowingWater = 0;
         objEvent->inHotSprings = 0;
-        objEvent->inSnowDrift = 0;
         *flags &= ~(GROUND_EFFECT_FLAG_HOT_SPRINGS
                   | GROUND_EFFECT_FLAG_SHORT_GRASS
                   | GROUND_EFFECT_FLAG_SAND_PILE
                   | GROUND_EFFECT_FLAG_SHALLOW_FLOWING_WATER
                   | GROUND_EFFECT_FLAG_TALL_GRASS_ON_MOVE
-                  | GROUND_EFFECT_FLAG_SNOW_TALL_GRASS_ON_MOVE
-                  | GROUND_EFFECT_FLAG_SNOW_DRIFT);
+                  | GROUND_EFFECT_FLAG_SNOW_TALL_GRASS_ON_MOVE);
     }
 }
 

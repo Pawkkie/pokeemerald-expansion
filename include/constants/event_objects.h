@@ -249,6 +249,7 @@
 #define OBJ_EVENT_GFX_HEX_MANIAC_ORAS            244
 #define OBJ_EVENT_GFX_ROCKET_GRUNT_F_HGSS        245
 #define OBJ_EVENT_GFX_MAY_RUNNING                246
+#define OBJ_EVENT_GFX_MAY_SNOW_DRIFT             247
 
 // NOTE: By default, the max value for NUM_OBJ_EVENT_GFX is 239.
 //

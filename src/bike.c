@@ -1001,7 +1001,7 @@ bool8 IsPlayerNotUsingAcroBikeOnBumpySlope(void)
         return TRUE;
 }
 
-void GetOnOffBike(u8 transitionFlags)
+void GetOnOffBike(u16 transitionFlags)
 {
     gUnusedBikeCameraAheadPanback = FALSE;
 
