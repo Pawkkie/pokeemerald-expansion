@@ -485,10 +485,6 @@ static bool8 CanMonSurviveHazardSwitchin(u32 battler)
     s32 firstId, lastId, i, j;
     struct Pokemon *party;
 
-    // Only use this if AI_FLAG_SMART_SWITCHING is set for the trainer
-    if (!(AI_THINKING_STRUCT->aiFlags & AI_FLAG_SMART_SWITCHING))
-        return FALSE;
-
     if (ability == ABILITY_REGENERATOR)
         battlerHp = (battlerHp * 133) / 100; // Account for Regenerator healing
     
@@ -1085,7 +1081,7 @@ bool32 ShouldSwitch(u32 battler)
         return TRUE;
 
     //These Functions can prompt switch to generic pary members
-    if (!CanMonSurviveHazardSwitchin(battler))
+    if (!CanMonSurviveHazardSwitchin(battler) && (AI_THINKING_STRUCT->aiFlags & AI_FLAG_SMART_SWITCHING))
         return FALSE;
     if (ShouldSwitchIfAllBadMoves(battler))
         return TRUE;
