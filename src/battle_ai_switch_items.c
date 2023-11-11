@@ -73,7 +73,7 @@ static bool8 HasBadOdds(u32 battler)
     //Variable initialization
 	u8 opposingPosition, atkType1, atkType2, defType1, defType2, effectiveness;
     s32 i, damageDealt = 0, maxDamageDealt = 0, damageTaken = 0, maxDamageTaken = 0;
-    u32 aiMove, playerMove, aiBestMove = MOVE_NONE, aiAbility = GetBattlerAbility(battler), opposingBattler;
+    u32 aiMove, playerMove, aiBestMove = MOVE_NONE, aiAbility = GetBattlerAbility(battler), opposingBattler, weather = AI_GetWeather(AI_DATA);
     bool8 getsOneShot = FALSE, hasStatusMove = FALSE, hasSuperEffectiveMove = FALSE;
 	u16 typeEffectiveness = UQ_4_12(1.0), aiMoveEffect; //baseline typing damage
 
@@ -84,10 +84,10 @@ static bool8 HasBadOdds(u32 battler)
     // Won't bother configuring this for double battles
     if (gBattleTypeFlags & BATTLE_TYPE_DOUBLE) 
         return FALSE;
-
+	
 	opposingPosition = BATTLE_OPPOSITE(GetBattlerPosition(battler));
     opposingBattler = GetBattlerAtPosition(opposingPosition);
-
+	
     // Gets types of player (opposingBattler) and computer (battler)
 	atkType1 = gBattleMons[opposingBattler].type1;
 	atkType2 = gBattleMons[opposingBattler].type2;
@@ -126,6 +126,7 @@ static bool8 HasBadOdds(u32 battler)
                     maxDamageDealt = damageDealt;
                     aiBestMove = aiMove;
                 }
+
             }
         }
     }
@@ -147,7 +148,7 @@ static bool8 HasBadOdds(u32 battler)
         playerMove = gBattleMons[opposingBattler].moves[i];
         if (playerMove != MOVE_NONE && gBattleMoves[playerMove].power != 0)
         {
-            damageTaken = AI_CalcDamage(playerMove, opposingBattler, battler, &effectiveness, FALSE, AI_GetWeather(AI_DATA));
+            damageTaken = AI_CalcDamage(playerMove, opposingBattler, battler, &effectiveness, FALSE, weather);
             if (damageTaken > maxDamageTaken)
                 maxDamageTaken = damageTaken;
         }
@@ -1137,7 +1138,7 @@ void AI_TrySwitchOrUseItem(u32 battler)
         {
             if (*(gBattleStruct->AI_monToSwitchIntoId + battler) == PARTY_SIZE)
             {
-                u8 monToSwitchId = AI_DATA->mostSuitableMonId;
+                s32 monToSwitchId = AI_DATA->mostSuitableMonId;
                 if (monToSwitchId == PARTY_SIZE)
                 {
                     if (!(gBattleTypeFlags & BATTLE_TYPE_DOUBLE))
@@ -1311,7 +1312,81 @@ static u32 GetBestMonDmg(struct Pokemon *party, int firstId, int lastId, u8 inva
             }
         }
     }
+
     return bestMonId;
+}
+
+static bool32 IsMonGrounded(u16 heldItemEffect, u32 ability, u8 type1, u8 type2)
+{
+    // List that makes mon not grounded
+    if (type1 == TYPE_FLYING || type2 == TYPE_FLYING || ability == ABILITY_LEVITATE
+         || (heldItemEffect == HOLD_EFFECT_AIR_BALLOON && ability != ABILITY_KLUTZ))
+    {
+        // List that overrides being off the ground
+        if ((heldItemEffect == HOLD_EFFECT_IRON_BALL && ability != ABILITY_KLUTZ) || (gFieldStatuses & STATUS_FIELD_GRAVITY) || (gFieldStatuses & STATUS_FIELD_MAGIC_ROOM))
+            return TRUE;
+        else
+            return FALSE;
+    }
+    else
+        return TRUE;
+}
+
+// Gets hazard damage
+static u32 GetSwitchinHazardsDamage(u32 battler, struct BattlePokemon *battleMon)
+{
+    u8 defType1 = battleMon->type1, defType2 = battleMon->type2, tSpikesLayers;
+    u16 heldItemEffect = gItems[battleMon->item].holdEffect;
+    u32 maxHP = battleMon->maxHP, ability = battleMon->ability, status = battleMon->status1;
+    u32 spikesDamage = 0, tSpikesDamage = 0, hazardDamage = 0;
+    u32 hazardFlags = gSideStatuses[GetBattlerSide(battler)] & (SIDE_STATUS_SPIKES | SIDE_STATUS_STEALTH_ROCK | SIDE_STATUS_STICKY_WEB | SIDE_STATUS_TOXIC_SPIKES | SIDE_STATUS_SAFEGUARD);
+
+    // Check ways mon might avoid all hazards
+    if (ability != ABILITY_MAGIC_GUARD || (heldItemEffect == HOLD_EFFECT_HEAVY_DUTY_BOOTS &&
+        !((gFieldStatuses & STATUS_FIELD_MAGIC_ROOM) || ability == ABILITY_KLUTZ)))
+    {
+        // Stealth Rock
+        if ((hazardFlags & SIDE_STATUS_STEALTH_ROCK) && heldItemEffect != HOLD_EFFECT_HEAVY_DUTY_BOOTS)
+            hazardDamage += GetStealthHazardDamageByTypesAndHP(gBattleMoves[MOVE_STEALTH_ROCK].type, defType1, defType2, battleMon->hp);
+        // Spikes
+        if ((hazardFlags & SIDE_STATUS_SPIKES) && IsMonGrounded(heldItemEffect, ability, defType1, defType2))
+        {
+            spikesDamage = maxHP / ((5 - gSideTimers[GetBattlerSide(battler)].spikesAmount) * 2);
+            if (spikesDamage == 0)
+                spikesDamage = 1;
+            hazardDamage += spikesDamage;
+        }
+
+        // Toxic Spikes
+        // TODO: CanBePoisoned compatibility to avoid duplicate code
+        if ((hazardFlags & SIDE_STATUS_TOXIC_SPIKES) && (defType1 != TYPE_POISON && defType2 != TYPE_POISON
+            && defType1 != TYPE_STEEL && defType2 != TYPE_STEEL
+            && ability != ABILITY_IMMUNITY && ability != ABILITY_POISON_HEAL && ability != ABILITY_COMATOSE
+            && status == 0
+            && !(hazardFlags & SIDE_STATUS_SAFEGUARD)
+            && !(IsAbilityOnSide(battler, ABILITY_PASTEL_VEIL))
+            && !(IsBattlerTerrainAffected(battler, STATUS_FIELD_MISTY_TERRAIN))
+            && !(IsAbilityStatusProtected(battler))
+            && heldItemEffect != HOLD_EFFECT_CURE_PSN && heldItemEffect != HOLD_EFFECT_CURE_STATUS
+            && IsMonGrounded(heldItemEffect, ability, defType1, defType2)))
+        {
+            tSpikesLayers = gSideTimers[GetBattlerSide(battler)].toxicSpikesAmount;
+            if (tSpikesLayers == 1)
+            {
+                tSpikesDamage = maxHP / 8;
+                if (tSpikesDamage == 0)
+                    tSpikesDamage = 1;
+            }
+            else if (tSpikesLayers >= 2)
+            {
+                tSpikesDamage = maxHP / 16;
+                if (tSpikesDamage == 0)
+                    tSpikesDamage = 1;
+            }
+            hazardDamage += tSpikesDamage;
+        }
+    }
+    return hazardDamage;
 }
 
 // Gets damage / healing from weather

@@ -6526,8 +6526,6 @@ const struct Item gItems[] =
         .flingPower = 10,
     },
 
-#undef CONFUSE_BERRY_HEAL_FRACTION
-
     [ITEM_RAZZ_BERRY] =
     {
         .name = _("Razz Berry"),
