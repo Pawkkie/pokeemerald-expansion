@@ -355,6 +355,7 @@ static void TryUpdateRoundTurnOrder(void);
 static bool32 ChangeOrderTargetAfterAttacker(void);
 void ApplyExperienceMultipliers(s32 *expAmount, u8 expGetterMonId, u8 faintedBattler);
 static void RemoveAllTerrains(void);
+static bool8 CanAbilityPreventStatLoss(u16 abilityDef, bool8 isIntimidate);
 
 static void Cmd_attackcanceler(void);
 static void Cmd_accuracycheck(void);
@@ -979,7 +980,7 @@ static const u16 sFinalStrikeOnlyEffects[] =
     EFFECT_SECRET_POWER,
     EFFECT_SMACK_DOWN,
     EFFECT_SPARKLING_ARIA,
-    EFFECT_SMELLINGSALT,
+    EFFECT_SMELLING_SALTS,
     EFFECT_WAKE_UP_SLAP,
     EFFECT_HIT_ESCAPE,
     EFFECT_RECOIL_HP_25,
@@ -1623,7 +1624,7 @@ u32 GetTotalAccuracy(u32 battlerAtk, u32 battlerDef, u32 move, u32 atkAbility, u
     gPotentialItemEffectBattler = battlerDef;
     accStage = gBattleMons[battlerAtk].statStages[STAT_ACC];
     evasionStage = gBattleMons[battlerDef].statStages[STAT_EVASION];
-    if (atkAbility == ABILITY_UNAWARE || atkAbility == ABILITY_KEEN_EYE)
+    if (atkAbility == ABILITY_UNAWARE || atkAbility == ABILITY_KEEN_EYE || (B_ILLUMINATE_EFFECT >= GEN_9 && atkAbility == ABILITY_ILLUMINATE))
         evasionStage = DEFAULT_STAT_STAGE;
     if (gBattleMoves[move].ignoresTargetDefenseEvasionStages)
         evasionStage = DEFAULT_STAT_STAGE;
@@ -2782,7 +2783,7 @@ void SetMoveEffect(bool32 primary, u32 certain)
         && !primary && gBattleScripting.moveEffect <= MOVE_EFFECT_CONFUSION)
         INCREMENT_RESET_RETURN
 
-    if (TestSheerForceFlag(gBattlerAttacker, gCurrentMove) && affectsUser != MOVE_EFFECT_AFFECTS_USER)
+    if (TestSheerForceFlag(gBattlerAttacker, gCurrentMove) && gBattleScripting.moveEffect != MOVE_EFFECT_CHARGING)
         INCREMENT_RESET_RETURN
 
     if (gBattleMons[gEffectBattler].hp == 0 && !activateAfterFaint)
@@ -3638,15 +3639,12 @@ void SetMoveEffect(bool32 primary, u32 certain)
 
                 break;
             case MOVE_EFFECT_SYRUP_BOMB:
-                if (gStatuses4[gEffectBattler] & STATUS4_SYRUP_BOMB)
-                {
-                    gBattlescriptCurrInstr++;
-                }
-                else
+                if (!(gStatuses4[gEffectBattler] & STATUS4_SYRUP_BOMB))
                 {
                     gStatuses4[gEffectBattler] |= STATUS4_SYRUP_BOMB;
                     gDisableStructs[gBattlerTarget].syrupBombTimer = 3;
-                    gBattlescriptCurrInstr++;
+                    BattleScriptPush(gBattlescriptCurrInstr + 1);
+                    gBattlescriptCurrInstr = BattleScript_SyrupBombActivates;
                 }
                 break;
             }
@@ -5088,6 +5086,7 @@ static void Cmd_playstatchangeanimation(void)
                         && ability != ABILITY_FULL_METAL_BODY
                         && ability != ABILITY_WHITE_SMOKE
                         && !(ability == ABILITY_KEEN_EYE && currStat == STAT_ACC)
+                        && !(B_ILLUMINATE_EFFECT >= GEN_9 && ability == ABILITY_ILLUMINATE && currStat == STAT_ACC)
                         && !(ability == ABILITY_HYPER_CUTTER && currStat == STAT_ATK)
                         && !(ability == ABILITY_BIG_PECKS && currStat == STAT_DEF))
                 {
@@ -7057,6 +7056,7 @@ static void Cmd_returntoball(void)
     u32 battler = GetBattlerForBattleScript(cmd->battler);
     BtlController_EmitReturnMonToBall(battler, BUFFER_A, TRUE);
     MarkBattlerForControllerExec(battler);
+    TryBattleFormChange(battler, FORM_CHANGE_BATTLE_SWITCH);
 
     gBattlescriptCurrInstr = cmd->nextInstr;
 }
@@ -9178,6 +9178,7 @@ static void Cmd_various(void)
             case ABILITY_SCHOOLING:         case ABILITY_COMATOSE:
             case ABILITY_SHIELDS_DOWN:      case ABILITY_DISGUISE:
             case ABILITY_RKS_SYSTEM:        case ABILITY_TRACE:
+            case ABILITY_ZERO_TO_HERO:
                 break;
             default:
                 gBattleStruct->tracedAbility[gBattlerAbility] = gBattleMons[battler].ability; // re-using the variable for trace
@@ -9425,38 +9426,6 @@ static void Cmd_various(void)
         }
         return;
     }
-    case VARIOUS_TRY_REFLECT_TYPE:
-    {
-        VARIOUS_ARGS(const u8 *failInstr);
-        if (GET_BASE_SPECIES_ID(gBattleMons[gBattlerTarget].species) == SPECIES_ARCEUS
-         || GET_BASE_SPECIES_ID(gBattleMons[gBattlerTarget].species) == SPECIES_SILVALLY)
-        {
-            gBattlescriptCurrInstr = cmd->failInstr;
-        }
-        else if (GetBattlerType(gBattlerTarget, 0) == TYPE_MYSTERY && GetBattlerType(gBattlerTarget, 1) != TYPE_MYSTERY)
-        {
-            gBattleMons[gBattlerAttacker].type1 = GetBattlerType(gBattlerTarget, 1);
-            gBattleMons[gBattlerAttacker].type2 = GetBattlerType(gBattlerTarget, 1);
-            gBattlescriptCurrInstr = cmd->nextInstr;
-        }
-        else if (GetBattlerType(gBattlerTarget, 0) != TYPE_MYSTERY && GetBattlerType(gBattlerTarget, 1) == TYPE_MYSTERY)
-        {
-            gBattleMons[gBattlerAttacker].type1 = GetBattlerType(gBattlerTarget, 0);
-            gBattleMons[gBattlerAttacker].type2 = GetBattlerType(gBattlerTarget, 0);
-            gBattlescriptCurrInstr = cmd->nextInstr;
-        }
-        else if (GetBattlerType(gBattlerTarget, 0) == TYPE_MYSTERY && GetBattlerType(gBattlerTarget, 1) == TYPE_MYSTERY)
-        {
-            gBattlescriptCurrInstr = cmd->failInstr;
-        }
-        else
-        {
-            gBattleMons[gBattlerAttacker].type1 = GetBattlerType(gBattlerTarget, 0);
-            gBattleMons[gBattlerAttacker].type2 = GetBattlerType(gBattlerTarget, 1);
-            gBattlescriptCurrInstr = cmd->nextInstr;
-        }
-        return;
-    }
     case VARIOUS_TRY_SOAK:
     {
         VARIOUS_ARGS(const u8 *failInstr);
@@ -9606,7 +9575,7 @@ static void Cmd_various(void)
     {
         VARIOUS_ARGS(const u8 *failInstr);
         u16 move = gLastMoves[gBattlerTarget];
-        if (move == MOVE_NONE || move == MOVE_UNAVAILABLE || gBattleMoves[move].effect == EFFECT_RECHARGE 
+        if (move == MOVE_NONE || move == MOVE_UNAVAILABLE || gBattleMoves[move].effect == EFFECT_RECHARGE
          || gBattleMoves[move].instructBanned || gBattleMoves[move].twoTurnMove || IsDynamaxed(gBattlerTarget))
         {
             gBattlescriptCurrInstr = cmd->failInstr;
@@ -10410,22 +10379,6 @@ static void Cmd_various(void)
             }
             return;
         }
-    case VARIOUS_SET_OCTOLOCK:
-    {
-        VARIOUS_ARGS(const u8 *failInstr);
-        if (gDisableStructs[battler].octolock)
-        {
-            gBattlescriptCurrInstr = cmd->failInstr;
-        }
-        else
-        {
-            gDisableStructs[battler].octolock = TRUE;
-            gBattleMons[battler].status2 |= STATUS2_ESCAPE_PREVENTION;
-            gDisableStructs[battler].battlerPreventingEscape = gBattlerAttacker;
-            gBattlescriptCurrInstr = cmd->nextInstr;
-        }
-        return;
-    }
     case VARIOUS_CHECK_POLTERGEIST:
     {
         VARIOUS_ARGS(const u8 *failInstr);
@@ -11460,16 +11413,9 @@ static u32 ChangeStatBuffs(s8 statValue, u32 statId, u32 flags, const u8 *BS_ptr
             return STAT_CHANGE_DIDNT_WORK;
         }
         else if ((battlerHoldEffect == HOLD_EFFECT_CLEAR_AMULET
-                  || battlerAbility == ABILITY_CLEAR_BODY
-                  || battlerAbility == ABILITY_FULL_METAL_BODY
-                  || battlerAbility == ABILITY_WHITE_SMOKE)
-                 && (!affectsUser || mirrorArmored) && !certain && gCurrentMove != MOVE_CURSE)
+              || CanAbilityPreventStatLoss(battlerAbility, GetBattlerAbility(gBattlerAttacker) == ABILITY_INTIMIDATE))
+              && (!affectsUser || mirrorArmored) && !certain && gCurrentMove != MOVE_CURSE)
         {
-            if (battlerHoldEffect == HOLD_EFFECT_CLEAR_AMULET)
-            {
-                RecordItemEffectBattle(battler, HOLD_EFFECT_CLEAR_AMULET);
-            }
-
             if (flags == STAT_CHANGE_ALLOW_PTR)
             {
                 if (gSpecialStatuses[battler].statLowered)
@@ -11482,7 +11428,9 @@ static u32 ChangeStatBuffs(s8 statValue, u32 statId, u32 flags, const u8 *BS_ptr
                     gBattleScripting.battler = battler;
                     if (battlerHoldEffect == HOLD_EFFECT_CLEAR_AMULET)
                     {
+                        gLastUsedItem = gBattleMons[battler].item;
                         gBattlescriptCurrInstr = BattleScript_ItemNoStatLoss;
+                        RecordItemEffectBattle(battler, HOLD_EFFECT_CLEAR_AMULET);
                     }
                     else
                     {
@@ -11518,6 +11466,7 @@ static u32 ChangeStatBuffs(s8 statValue, u32 statId, u32 flags, const u8 *BS_ptr
         }
         else if (!certain
                 && ((battlerAbility == ABILITY_KEEN_EYE && statId == STAT_ACC)
+                || (B_ILLUMINATE_EFFECT >= GEN_9 && battlerAbility == ABILITY_ILLUMINATE && statId == STAT_ACC)
                 || (battlerAbility == ABILITY_HYPER_CUTTER && statId == STAT_ATK)
                 || (battlerAbility == ABILITY_BIG_PECKS && statId == STAT_DEF)))
         {
@@ -12856,6 +12805,8 @@ static void Cmd_trychoosesleeptalkmove(void)
     }
     else // at least one move can be chosen
     {
+        // Set Sleep Talk as used move, so it works with Last Resort.
+        gDisableStructs[gBattlerAttacker].usedMoves |= gBitTable[gCurrMovePos];
         do
         {
             movePosition = MOD(Random(), MAX_MON_MOVES);
@@ -15792,6 +15743,25 @@ static bool8 IsFinalStrikeEffect(u16 move)
     return FALSE;
 }
 
+static bool8 CanAbilityPreventStatLoss(u16 abilityDef, bool8 byIntimidate)
+{
+    switch (abilityDef)
+    {
+    case ABILITY_CLEAR_BODY:
+    case ABILITY_FULL_METAL_BODY:
+    case ABILITY_WHITE_SMOKE:
+        return TRUE;
+    case ABILITY_INNER_FOCUS:
+    case ABILITY_SCRAPPY:
+    case ABILITY_OWN_TEMPO:
+    case ABILITY_OBLIVIOUS:
+        if (byIntimidate && (B_UPDATED_INTIMIDATE >= GEN_8))
+            return TRUE;
+        break;
+    }
+    return FALSE;
+}
+
 void BS_CheckParentalBondCounter(void)
 {
     NATIVE_ARGS(u8 counter, const u8 *jumpInstr);
@@ -16312,4 +16282,68 @@ void BS_JumpIfTerrainAffected(void)
         gBattlescriptCurrInstr = cmd->jumpInstr;
     else
         gBattlescriptCurrInstr = cmd->nextInstr;
+}
+
+void BS_TryReflectType(void)
+{
+    NATIVE_ARGS(const u8 *failInstr);
+    u16 targetBaseSpecies = GET_BASE_SPECIES_ID(gBattleMons[gBattlerTarget].species);
+    u8 targetType1 = GetBattlerType(gBattlerTarget, 0);
+    u8 targetType2 = GetBattlerType(gBattlerTarget, 1);
+    u8 targetType3 = GetBattlerType(gBattlerTarget, 2);
+
+    if (targetBaseSpecies == SPECIES_ARCEUS || targetBaseSpecies == SPECIES_SILVALLY)
+    {
+        gBattlescriptCurrInstr = cmd->failInstr;
+    }
+    else if (IS_BATTLER_TYPELESS(gBattlerTarget))
+    {
+        gBattlescriptCurrInstr = cmd->failInstr;
+    }
+    else if (targetType1 == TYPE_MYSTERY && targetType2 == TYPE_MYSTERY && targetType3 != TYPE_MYSTERY)
+    {
+        gBattleMons[gBattlerAttacker].type1 = TYPE_NORMAL;
+        gBattleMons[gBattlerAttacker].type2 = TYPE_NORMAL;
+        gBattleMons[gBattlerAttacker].type3 = targetType3;
+        gBattlescriptCurrInstr = cmd->nextInstr;
+    }
+    else if (targetType1 == TYPE_MYSTERY && targetType2 != TYPE_MYSTERY)
+    {
+        gBattleMons[gBattlerAttacker].type1 = targetType2;
+        gBattleMons[gBattlerAttacker].type2 = targetType2;
+        gBattleMons[gBattlerAttacker].type3 = targetType3;
+        gBattlescriptCurrInstr = cmd->nextInstr;
+    }
+    else if (targetType1 != TYPE_MYSTERY && targetType2 == TYPE_MYSTERY)
+    {
+        gBattleMons[gBattlerAttacker].type1 = targetType1;
+        gBattleMons[gBattlerAttacker].type2 = targetType1;
+        gBattleMons[gBattlerAttacker].type3 = targetType3;
+        gBattlescriptCurrInstr = cmd->nextInstr;
+    }
+    else
+    {
+        gBattleMons[gBattlerAttacker].type1 = targetType1;
+        gBattleMons[gBattlerAttacker].type2 = targetType2;
+        gBattleMons[gBattlerAttacker].type3 = targetType3;
+        gBattlescriptCurrInstr = cmd->nextInstr;
+    }
+}
+
+void BS_TrySetOctolock(void)
+{
+    NATIVE_ARGS(u8 battler, const u8 *failInstr);
+    u32 battler = GetBattlerForBattleScript(cmd->battler);
+
+    if (gDisableStructs[battler].octolock)
+    {
+        gBattlescriptCurrInstr = cmd->failInstr;
+    }
+    else
+    {
+        gDisableStructs[battler].octolock = TRUE;
+        gBattleMons[battler].status2 |= STATUS2_ESCAPE_PREVENTION;
+        gDisableStructs[battler].battlerPreventingEscape = gBattlerAttacker;
+        gBattlescriptCurrInstr = cmd->nextInstr;
+    }
 }

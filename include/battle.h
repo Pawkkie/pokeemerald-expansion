@@ -106,6 +106,7 @@ struct DisableStruct
     u8 stickyWebDone:1;
     u8 stealthRockDone:1;
     u8 syrupBombTimer;
+    u8 syrupBombIsShiny:1;
     u8 steelSurgeDone:1;
 };
 
@@ -306,7 +307,6 @@ struct AiLogicData
     u8 hpPercents[MAX_BATTLERS_COUNT];
     u16 partnerMove;
     u16 speedStats[MAX_BATTLERS_COUNT]; // Speed stats for all battles, calculated only once, same way as damages
-    u8 moveDmgResult[MAX_BATTLERS_COUNT][MAX_BATTLERS_COUNT][MAX_MON_MOVES]; // MOVE_POWER defines for GetMoveDamageResult ; attacker, target, moveIndex
     s32 simulatedDmg[MAX_BATTLERS_COUNT][MAX_BATTLERS_COUNT][MAX_MON_MOVES]; // attacker, target, moveIndex
     u8 effectiveness[MAX_BATTLERS_COUNT][MAX_BATTLERS_COUNT][MAX_MON_MOVES]; // attacker, target, moveIndex
     u8 moveAccuracy[MAX_BATTLERS_COUNT][MAX_BATTLERS_COUNT][MAX_MON_MOVES]; // attacker, target, moveIndex
@@ -680,7 +680,7 @@ struct BattleStruct
     u8 lastMoveFailed; // as bits for each battler, for the sake of Stomping Tantrum
     u8 lastMoveTarget[MAX_BATTLERS_COUNT]; // The last target on which each mon used a move, for the sake of Instruct
     u16 tracedAbility[MAX_BATTLERS_COUNT];
-    u16 hpBefore[MAX_BATTLERS_COUNT]; // Hp of battlers before using a move. For Berserk
+    u16 hpBefore[MAX_BATTLERS_COUNT]; // Hp of battlers before using a move. For Berserk and Anger Shell.
     bool8 spriteIgnore0Hp;
     struct Illusion illusion[MAX_BATTLERS_COUNT];
     s32 aiFinalScore[MAX_BATTLERS_COUNT][MAX_BATTLERS_COUNT][MAX_MON_MOVES]; // AI, target, moves to make debugging easier
@@ -708,7 +708,7 @@ struct BattleStruct
     bool8 effectsBeforeUsingMoveDone:1; // Mega Evo and Focus Punch/Shell Trap effects.
     u8 targetsDone[MAX_BATTLERS_COUNT]; // Each battler as a bit.
     u16 overwrittenAbilities[MAX_BATTLERS_COUNT];    // abilities overwritten during battle (keep separate from battle history in case of switching)
-    bool8 allowedToChangeFormInWeather[PARTY_SIZE][2]; // For each party member and side, used by Ice Face.
+    bool8 allowedToChangeFormInWeather[PARTY_SIZE][NUM_BATTLE_SIDES]; // For each party member and side, used by Ice Face.
     u8 battleBondTransformed[NUM_BATTLE_SIDES]; // Bitfield for each party.
     u8 storedHealingWish:4; // Each battler as a bit.
     u8 storedLunarDance:4; // Each battler as a bit.
@@ -726,6 +726,7 @@ struct BattleStruct
     bool8 trainerSlideBeforeFirstTurnMsgDone;
     u32 aiDelayTimer; // Counts number of frames AI takes to choose an action.
     u32 aiDelayFrames; // Number of frames it took to choose an action.
+    bool8 transformZeroToHero[PARTY_SIZE][NUM_BATTLE_SIDES];
 };
 
 // The palaceFlags member of struct BattleStruct contains 1 flag per move to indicate which moves the AI should consider,
@@ -762,12 +763,16 @@ STATIC_ASSERT(sizeof(((struct BattleStruct *)0)->palaceFlags) * 8 >= MAX_BATTLER
 #define BATTLER_DAMAGED(battlerId) ((gSpecialStatuses[battlerId].physicalDmg != 0 || gSpecialStatuses[battlerId].specialDmg != 0))
 
 #define IS_BATTLER_OF_TYPE(battlerId, type)((GetBattlerType(battlerId, 0) == type || GetBattlerType(battlerId, 1) == type || (GetBattlerType(battlerId, 2) != TYPE_MYSTERY && GetBattlerType(battlerId, 2) == type)))
+
+#define IS_BATTLER_TYPELESS(battlerId)(GetBattlerType(battlerId, 0) == TYPE_MYSTERY && GetBattlerType(battlerId, 1) == TYPE_MYSTERY && GetBattlerType(battlerId, 2) == TYPE_MYSTERY)
+
 #define SET_BATTLER_TYPE(battlerId, type)           \
 {                                                   \
     gBattleMons[battlerId].type1 = type;            \
     gBattleMons[battlerId].type2 = type;            \
     gBattleMons[battlerId].type3 = TYPE_MYSTERY;    \
 }
+
 #define RESTORE_BATTLER_TYPE(battlerId)                                                     \
 {                                                                                           \
     gBattleMons[battlerId].type1 = gSpeciesInfo[gBattleMons[battlerId].species].types[0];   \

@@ -607,6 +607,16 @@ static const struct FormChange sEnamorusFormChangeTable[] = {
 
 #endif
 
+#if P_GEN_9_POKEMON == TRUE
+static const struct FormChange sOgerponFormChangeTable[] = {
+    {FORM_CHANGE_ITEM_HOLD, SPECIES_OGERPON_TEAL_MASK,        ITEM_NONE},
+    {FORM_CHANGE_ITEM_HOLD, SPECIES_OGERPON_WELLSPRING_MASK,  ITEM_WELLSPRING_MASK},
+    {FORM_CHANGE_ITEM_HOLD, SPECIES_OGERPON_HEARTHFLAME_MASK, ITEM_HEARTHFLAME_MASK},
+    {FORM_CHANGE_ITEM_HOLD, SPECIES_OGERPON_CORNERSTONE_MASK, ITEM_CORNERSTONE_MASK},
+    {FORM_CHANGE_TERMINATOR},
+};
+#endif
+
 static const struct FormChange sButterfreeFormChangeTable[] =
 {
     {FORM_CHANGE_BATTLE_GIGANTAMAX, SPECIES_BUTTERFREE_GIGANTAMAX},
@@ -787,6 +797,12 @@ static const struct FormChange sUrshifuSingleStrikeFormChangeTable[] =
 static const struct FormChange sUrshifuRapidStrikeFormChangeTable[] =
 {
     {FORM_CHANGE_BATTLE_GIGANTAMAX, SPECIES_URSHIFU_RAPID_STRIKE_STYLE_GIGANTAMAX},
+    {FORM_CHANGE_TERMINATOR},
+};
+
+static const struct FormChange sPalafinZeroFormChangeTable[] =
+{
+    {FORM_CHANGE_BATTLE_SWITCH, SPECIES_PALAFIN_HERO},
     {FORM_CHANGE_TERMINATOR},
 };
 

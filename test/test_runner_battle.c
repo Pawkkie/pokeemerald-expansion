@@ -1984,7 +1984,7 @@ void MoveGetIdAndSlot(s32 battlerId, struct MoveContext *ctx, u32 *moveId, u32 *
 
     if (ctx->explicitUltraBurst && ctx->ultraBurst)
         *moveSlot |= RET_ULTRA_BURST;
-    
+
     if (ctx->explicitDynamax && ctx->dynamax)
         *moveSlot |= RET_DYNAMAX;
 }
@@ -2311,8 +2311,18 @@ static const char *const sQueueGroupTypeMacros[] =
 void OpenQueueGroup(u32 sourceLine, enum QueueGroupType type)
 {
     INVALID_IF(DATA.queueGroupType, "%s inside %s", sQueueGroupTypeMacros[type], sQueueGroupTypeMacros[DATA.queueGroupType]);
-    DATA.queueGroupType = type;
-    DATA.queueGroupStart = DATA.queuedEventsCount;
+    if (DATA.queuedEventsCount > 0
+     && DATA.queuedEvents[DATA.queueGroupStart].groupType == QUEUE_GROUP_NONE_OF
+     && DATA.queuedEvents[DATA.queueGroupStart].groupSize == DATA.queuedEventsCount - DATA.queueGroupStart
+     && type == QUEUE_GROUP_NONE_OF)
+    {
+        INVALID("'NOT x; NOT y;', did you mean 'NONE_OF { x; y; }'?");
+    }
+    else
+    {
+        DATA.queueGroupType = type;
+        DATA.queueGroupStart = DATA.queuedEventsCount;
+    }
 }
 
 void CloseQueueGroup(u32 sourceLine)

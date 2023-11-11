@@ -1366,6 +1366,12 @@
 	.byte \battler
 	.endm
 
+	.macro trysetoctolock battler:req, failInstr:req
+	callnative BS_TrySetOctolock
+	.byte \battler
+	.4byte \failInstr
+	.endm
+
 	.macro setzeffect
 	callnative BS_SetZEffect
 	.endm
@@ -1454,6 +1460,11 @@
 	.byte \battler
 	.4byte \terrainFlags
 	.4byte \jumpInstr
+	.endm
+
+	.macro tryreflecttype failInstr:req
+	callnative BS_TryReflectType
+	.4byte \failInstr
 	.endm
 
 	@ Used to active a different Max Move effects.
@@ -1726,11 +1737,6 @@
 
 	.macro tryelectrify failInstr:req
 	various BS_ATTACKER, VARIOUS_TRY_ELECTRIFY
-	.4byte \failInstr
-	.endm
-
-	.macro tryreflecttype failInstr:req
-	various BS_ATTACKER, VARIOUS_TRY_REFLECT_TYPE
 	.4byte \failInstr
 	.endm
 
@@ -2084,11 +2090,6 @@
 
 	.macro checkpoltergeist battler:req, failInstr:req
 	various \battler, VARIOUS_CHECK_POLTERGEIST
-	.4byte \failInstr
-	.endm
-
-	.macro setoctolock battler:req, failInstr:req
-	various \battler, VARIOUS_SET_OCTOLOCK
 	.4byte \failInstr
 	.endm
 

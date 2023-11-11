@@ -93,6 +93,9 @@ AI_SINGLE_BATTLE_TEST("AI prefers moves with better accuracy, but only if they b
     PARAMETRIZE { move1 = MOVE_MEGA_KICK; move2 = MOVE_SLAM; move3 = MOVE_TACKLE; move4 = MOVE_GUST; hp = 5; expectedMove = MOVE_GUST; expectedMove2 = MOVE_TACKLE; turns = 1; }
     // All moves hit with No guard ability
     PARAMETRIZE { move1 = MOVE_MEGA_KICK; move2 = MOVE_GUST; hp = 5; expectedMove = MOVE_MEGA_KICK; expectedMove2 = MOVE_GUST; turns = 1; }
+    // Tests to compare move that always hits and a beneficial effect. A move with higher acc should be chosen in this case.
+    PARAMETRIZE { move1 = MOVE_SHOCK_WAVE; move2 = MOVE_ICY_WIND; hp = 5; expectedMove = MOVE_SHOCK_WAVE; turns = 1; }
+    PARAMETRIZE { move1 = MOVE_SHOCK_WAVE; move2 = MOVE_ICY_WIND; move3 = MOVE_THUNDERBOLT; hp = 5; expectedMove = MOVE_SHOCK_WAVE; expectedMove2 = MOVE_THUNDERBOLT; turns = 1; }
 
     GIVEN {
         AI_FLAGS(AI_FLAG_CHECK_BAD_MOVE | AI_FLAG_CHECK_VIABILITY | AI_FLAG_TRY_TO_FAINT);
@@ -105,6 +108,9 @@ AI_SINGLE_BATTLE_TEST("AI prefers moves with better accuracy, but only if they b
         ASSUME(gBattleMoves[MOVE_MEGA_KICK].accuracy < gBattleMoves[MOVE_STRENGTH].accuracy);
         ASSUME(gBattleMoves[MOVE_TACKLE].accuracy == 100);
         ASSUME(gBattleMoves[MOVE_GUST].accuracy == 100);
+        ASSUME(gBattleMoves[MOVE_SHOCK_WAVE].accuracy == 0);
+        ASSUME(gBattleMoves[MOVE_THUNDERBOLT].accuracy == 100);
+        ASSUME(gBattleMoves[MOVE_ICY_WIND].accuracy != 100);
         OPPONENT(SPECIES_EXPLOUD) { Moves(move1, move2, move3, move4); Ability(abilityAtk); SpAttack(50); } // Low Sp.Atk, so Swift deals less damage than Strength.
     } WHEN {
             switch (turns)
@@ -191,11 +197,70 @@ AI_SINGLE_BATTLE_TEST("AI prefers Earthquake over Drill Run if both require the 
     }
 }
 
+AI_SINGLE_BATTLE_TEST("AI prefers a weaker move over a one with a downside effect if both require the same number of hits to ko")
+{
+    u16 move1 = MOVE_NONE, move2 = MOVE_NONE, move3 = MOVE_NONE, move4 = MOVE_NONE;
+    u16 hp, expectedMove, turns;
+
+    // Both moves require the same number of turns but Flamethrower will be chosen over Overheat (powerful effect)
+    PARAMETRIZE { move1 = MOVE_OVERHEAT; move2 = MOVE_FLAMETHROWER; hp = 300; expectedMove = MOVE_FLAMETHROWER; turns = 2; }
+    // Overheat kill in least amount of turns
+    PARAMETRIZE { move1 = MOVE_OVERHEAT; move2 = MOVE_FLAMETHROWER; hp = 250; expectedMove = MOVE_OVERHEAT; turns = 1; }
+
+    GIVEN {
+        AI_FLAGS(AI_FLAG_CHECK_BAD_MOVE | AI_FLAG_CHECK_VIABILITY | AI_FLAG_TRY_TO_FAINT);
+        PLAYER(SPECIES_WOBBUFFET) { HP(hp); }
+        PLAYER(SPECIES_WOBBUFFET);
+        OPPONENT(SPECIES_TYPHLOSION) { Moves(move1, move2, move3, move4); }
+    } WHEN {
+        switch (turns)
+        {
+        case 1:
+            TURN { EXPECT_MOVE(opponent, expectedMove); SEND_OUT(player, 1); }
+            break;
+        case 2:
+            TURN { EXPECT_MOVE(opponent, expectedMove); }
+            TURN { EXPECT_MOVE(opponent, expectedMove); SEND_OUT(player, 1); }
+            break;
+        }
+    } SCENE {
+        MESSAGE("Wobbuffet fainted!");
+    }
+}
+
+AI_SINGLE_BATTLE_TEST("AI prefers moves with the best possible score, chosen randomly if tied")
+{
+    GIVEN {
+        AI_FLAGS(AI_FLAG_CHECK_BAD_MOVE | AI_FLAG_CHECK_VIABILITY | AI_FLAG_TRY_TO_FAINT);
+        PLAYER(SPECIES_WOBBUFFET) { HP(5); };
+        PLAYER(SPECIES_WOBBUFFET);
+        OPPONENT(SPECIES_WOBBUFFET) { Moves(MOVE_THUNDERBOLT, MOVE_SLUDGE_BOMB, MOVE_TAKE_DOWN); }
+    } WHEN {
+        TURN { EXPECT_MOVES(opponent, MOVE_THUNDERBOLT, MOVE_SLUDGE_BOMB); SEND_OUT(player, 1); }
+    }
+    SCENE {
+        MESSAGE("Wobbuffet fainted!");
+    }
+}
+
+AI_SINGLE_BATTLE_TEST("AI can choose a status move that boosts the attack by two")
+{
+    GIVEN {
+        AI_FLAGS(AI_FLAG_CHECK_BAD_MOVE | AI_FLAG_CHECK_VIABILITY | AI_FLAG_TRY_TO_FAINT);
+        PLAYER(SPECIES_WOBBUFFET) { HP(278); };
+        PLAYER(SPECIES_WOBBUFFET);
+        OPPONENT(SPECIES_KANGASKHAN) { Moves(MOVE_STRENGTH, MOVE_HORN_ATTACK, MOVE_SWORDS_DANCE); }
+    } WHEN {
+        TURN { EXPECT_MOVES(opponent, MOVE_STRENGTH, MOVE_SWORDS_DANCE); }
+        TURN { EXPECT_MOVE(opponent, MOVE_STRENGTH); SEND_OUT(player, 1); }
+    }
+}
+
 AI_SINGLE_BATTLE_TEST("AI chooses the safest option to faint the target, taking into account accuracy and move effect")
 {
     u16 move1 = MOVE_NONE, move2 = MOVE_NONE, move3 = MOVE_NONE, move4 = MOVE_NONE;
-    u16 expectedMove, abilityAtk = ABILITY_NONE;
-    u16 expectedMove2 = MOVE_NONE;
+    u16 expectedMove, expectedMove2 = MOVE_NONE;
+    u16 abilityAtk = ABILITY_NONE, holdItemAtk = ITEM_NONE;
 
     // Psychic is not very effective, but always hits. Solarbeam requires a charging turn, Double Edge has recoil and Focus Blast can miss;
     PARAMETRIZE { abilityAtk = ABILITY_STURDY; move1 = MOVE_FOCUS_BLAST; move2 = MOVE_SOLAR_BEAM; move3 = MOVE_PSYCHIC; move4 = MOVE_DOUBLE_EDGE; expectedMove = MOVE_PSYCHIC; }
@@ -206,18 +271,60 @@ AI_SINGLE_BATTLE_TEST("AI chooses the safest option to faint the target, taking 
     // This time it's Solarbeam + Psychic, because the weather is sunny.
     PARAMETRIZE { abilityAtk = ABILITY_DROUGHT; move1 = MOVE_FOCUS_BLAST; move2 = MOVE_SOLAR_BEAM; move3 = MOVE_PSYCHIC; move4 = MOVE_DOUBLE_EDGE;
                   expectedMove = MOVE_PSYCHIC; expectedMove2 = MOVE_SOLAR_BEAM; }
+    // Psychic and Solar Beam are chosen because user is holding Power Herb
+    PARAMETRIZE { abilityAtk = ABILITY_STURDY; holdItemAtk = ITEM_POWER_HERB; move1 = MOVE_FOCUS_BLAST; move2 = MOVE_SOLAR_BEAM; move3 = MOVE_PSYCHIC; move4 = MOVE_DOUBLE_EDGE;
+                  expectedMove = MOVE_PSYCHIC; expectedMove2 = MOVE_SOLAR_BEAM; }
+    // Psychic and Skull Bash are chosen because user is holding Power Herb
+    PARAMETRIZE { abilityAtk = ABILITY_STURDY; holdItemAtk = ITEM_POWER_HERB; move1 = MOVE_FOCUS_BLAST; move2 = MOVE_SKULL_BASH; move3 = MOVE_PSYCHIC; move4 = MOVE_DOUBLE_EDGE;
+                  expectedMove = MOVE_PSYCHIC; expectedMove2 = MOVE_SKULL_BASH; }
+    // Skull Bash is chosen because it's the most accurate and is holding Power Herb
+    PARAMETRIZE { abilityAtk = ABILITY_STURDY; holdItemAtk = ITEM_POWER_HERB; move1 = MOVE_FOCUS_BLAST; move2 = MOVE_SKULL_BASH; move3 = MOVE_SLAM; move4 = MOVE_DOUBLE_EDGE;
+                  expectedMove = MOVE_SKULL_BASH; }
+    // Crabhammer is chosen even if Skull Bash is more accurate, the user has no Power Herb
+    PARAMETRIZE { abilityAtk = ABILITY_STURDY; move1 = MOVE_FOCUS_BLAST; move2 = MOVE_SKULL_BASH; move3 = MOVE_SLAM; move4 = MOVE_CRABHAMMER;
+                  expectedMove = MOVE_CRABHAMMER; }
 
     GIVEN {
         AI_FLAGS(AI_FLAG_CHECK_BAD_MOVE | AI_FLAG_CHECK_VIABILITY | AI_FLAG_TRY_TO_FAINT);
         PLAYER(SPECIES_WOBBUFFET) { HP(5); }
         PLAYER(SPECIES_WOBBUFFET);
-        OPPONENT(SPECIES_GEODUDE) { Moves(move1, move2, move3, move4); Ability(abilityAtk); }
+        OPPONENT(SPECIES_GEODUDE) { Moves(move1, move2, move3, move4); Ability(abilityAtk); Item(holdItemAtk); }
     } WHEN {
         TURN {  if (expectedMove2 == MOVE_NONE) { EXPECT_MOVE(opponent, expectedMove); SEND_OUT(player, 1); }
                 else {EXPECT_MOVES(opponent, expectedMove, expectedMove2); SCORE_EQ(opponent, expectedMove, expectedMove2); SEND_OUT(player, 1);}
              }
     }
     SCENE {
+        MESSAGE("Wobbuffet fainted!");
+    }
+}
+
+AI_SINGLE_BATTLE_TEST("AI won't use Solar Beam if there is no Sun up or the user is not holding Power Herb")
+{
+    u16 abilityAtk = ABILITY_NONE;
+    u16 holdItemAtk = ITEM_NONE;
+
+    PARAMETRIZE { abilityAtk = ABILITY_DROUGHT; }
+    PARAMETRIZE { holdItemAtk = ITEM_POWER_HERB; }
+    PARAMETRIZE { }
+
+    GIVEN {
+        AI_FLAGS(AI_FLAG_CHECK_BAD_MOVE | AI_FLAG_CHECK_VIABILITY | AI_FLAG_TRY_TO_FAINT);
+        PLAYER(SPECIES_WOBBUFFET) { HP(211); }
+        PLAYER(SPECIES_WOBBUFFET);
+        OPPONENT(SPECIES_TYPHLOSION) { Moves(MOVE_SOLAR_BEAM, MOVE_GRASS_PLEDGE); Ability(abilityAtk); Item(holdItemAtk); }
+    } WHEN {
+        if (abilityAtk == ABILITY_DROUGHT) {
+            TURN { EXPECT_MOVES(opponent, MOVE_SOLAR_BEAM, MOVE_GRASS_PLEDGE); }
+            TURN { EXPECT_MOVES(opponent, MOVE_SOLAR_BEAM, MOVE_GRASS_PLEDGE); SEND_OUT(player, 1); }
+        } else if (holdItemAtk == ITEM_POWER_HERB) {
+            TURN { EXPECT_MOVES(opponent, MOVE_SOLAR_BEAM, MOVE_GRASS_PLEDGE); MOVE(player, MOVE_KNOCK_OFF); }
+            TURN { EXPECT_MOVE(opponent, MOVE_GRASS_PLEDGE); SEND_OUT(player, 1); }
+        } else {
+            TURN { EXPECT_MOVE(opponent, MOVE_GRASS_PLEDGE); }
+            TURN { EXPECT_MOVE(opponent, MOVE_GRASS_PLEDGE); SEND_OUT(player, 1); }
+        }
+    } SCENE {
         MESSAGE("Wobbuffet fainted!");
     }
 }
