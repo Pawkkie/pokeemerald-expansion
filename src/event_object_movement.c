@@ -4658,7 +4658,7 @@ void UpdateObjectEventCurrentMovement(struct ObjectEvent *objectEvent, struct Sp
         PlayerGetDestCoords(&x, &y); // GetXYCoordsOneStepInFrontOfPlayer gives flickering effects
         nextTileBehavior = MapGridGetMetatileBehaviorAt(x, y);
         if((objectEvent->inSnowDrift && !MetatileBehavior_IsSnowDrift(nextTileBehavior))
-        || (!MetatileBehavior_IsSnowDrift(nextTileBehavior) && gPlayerAvatar.runningState == 2 )) // If looking out of snowdrift
+        || (objectEvent->inSnowDrift && !MetatileBehavior_IsSnowDrift(nextTileBehavior) && gPlayerAvatar.runningState == 2 )) // If looking out of snowdrift
         {
             if(objectEvent->initialCoords.x != objectEvent->currentCoords.x || objectEvent->initialCoords.y != objectEvent->currentCoords.y) // If moving
             {

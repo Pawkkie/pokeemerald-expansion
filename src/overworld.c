@@ -168,7 +168,7 @@ static void SetFieldVBlankCallback(void);
 static void FieldClearVBlankHBlankCallbacks(void);
 static void TransitionMapMusic(void);
 static u16 GetAdjustedInitialTransitionFlags(struct InitialPlayerAvatarState *, u16, u8);
-static u8 GetAdjustedInitialDirection(struct InitialPlayerAvatarState *, u8, u16, u8);
+static u8 GetAdjustedInitialDirection(struct InitialPlayerAvatarState *, u16, u16, u8);
 static u16 GetCenterScreenMetatileBehavior(void);
 
 static void *sUnusedOverworldCallback;
@@ -946,7 +946,7 @@ static u16 GetAdjustedInitialTransitionFlags(struct InitialPlayerAvatarState *pl
         return PLAYER_AVATAR_FLAG_ACRO_BIKE;
 }
 
-static u8 GetAdjustedInitialDirection(struct InitialPlayerAvatarState *playerStruct, u8 transitionFlags, u16 metatileBehavior, u8 mapType)
+static u8 GetAdjustedInitialDirection(struct InitialPlayerAvatarState *playerStruct, u16 transitionFlags, u16 metatileBehavior, u8 mapType)
 {
     if (FlagGet(FLAG_SYS_CRUISE_MODE) && mapType == MAP_TYPE_OCEAN_ROUTE)
         return DIR_EAST;
