@@ -4604,7 +4604,7 @@ void GetCheatCodeFeedback(void)
     static const u8 sText_CheatCodeCaughtEmAll[] = _("CaughtEmAll"); // Mark entire Pokedex as caught
     static const u8 sText_CheatCodeBestBall[] = _("BestBall"); // 100% catch rate with all balls
     static const u8 sText_CheatCodeEviesDayOff[] = _("EviesDayOff"); // EVs are ignored from stat calculation
-    static const u8 sText_CheatCodeIvysDayOff[] = _("IvysDayOff"); // IVs are ignored from stat calculation
+    static const u8 sText_CheatCodeIvysDayOff[] = _("IvysDayOff"); // IVs are set to 31 for stat calculation
     static const u8 sText_CheatCodeUnHatted[] = _("UnHatted"); // Level caps are removed
     struct Pokemon *party = gPlayerParty;
     u32 i;
@@ -4676,7 +4676,7 @@ void GetCheatCodeFeedback(void)
         gSpecialVar_Result = 6;
     }
 
-    // IVs are ignored from stat calculation
+    // IVs are set to 31 for stat calculation
     else if (!StringCompare(gStringVar2, sText_CheatCodeIvysDayOff))
     {
         if (FlagGet(FLAG_IVS_DISABLED))

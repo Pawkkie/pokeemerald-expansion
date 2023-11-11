@@ -199,11 +199,11 @@ CheatCodeEviesDayOffOff_Text:
 
 CheatCodeIvysDayOffOn_Text:
 	.string "You get the sense Ivy is taking some\n"
-	.string "time off. Effect of EVs disabled.$"
+	.string "time off. Effect of IVs maximized.$"
 
 CheatCodeIvysDayOffOff_Text:
 	.string "You get the sense Ivy has returned from\n"
-	.string "her time off. Effect of EVs enabled.$"
+	.string "her time off. Effect of IVs enabled.$"
 
 CheatCodeUnhattedOff_Text:
 	.string "The rush of energy subsides.\n"

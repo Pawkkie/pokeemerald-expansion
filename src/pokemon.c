@@ -4708,7 +4708,7 @@ static u16 CalculateBoxMonChecksum(struct BoxPokemon *boxMon)
     else if (FlagGet(FLAG_EVS_DISABLED) && !FlagGet(FLAG_IVS_DISABLED)) \
         n = (((2 * baseStat + iv) * level) / 100) + 5;                  \
     else if (!FlagGet(FLAG_EVS_DISABLED) && FlagGet(FLAG_IVS_DISABLED)) \
-        n = (((2 * baseStat + ev / 4) * level) / 100) + 5;              \
+        n = (((2 * baseStat + MAX_PER_STAT_IVS + ev / 4) * level) / 100) + 5;              \
     else                                                                \
         n = (((2 * baseStat) * level) / 100) + 5;                       \
     nature = GetMonData(mon, MON_DATA_NATURE, NULL);                    \
