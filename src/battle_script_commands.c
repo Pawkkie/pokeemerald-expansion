@@ -4189,7 +4189,7 @@ static void Cmd_getexp(void)
 
                 if (B_AFFECTION_MECHANICS == TRUE)
                 {
-                    if (GetBattlerFriendshipScore(gBattleStruct->expGetterMonId) >= FRIENDSHIP_50_TO_99)
+                    if (GetBattlerAffectionHearts(gBattleStruct->expGetterMonId) >= FRIENDSHIP_50_TO_99)
                         gBattleMoveDamage = (gBattleMoveDamage * 120) / 100;
                 }
                     if (IsTradedMon(&gPlayerParty[gBattleStruct->expGetterMonId]))
