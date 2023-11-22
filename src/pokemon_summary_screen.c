@@ -3581,14 +3581,14 @@ static void BufferIvOrEvStats(u8 mode)
     case 1:
     case 2:
         BufferStat(gStringVar1, 0, hp, 0, 7);
-        BufferStat(gStringVar2, 0, atk, 1, 7);
-        BufferStat(gStringVar3, 0, def, 2, 7);
+        BufferStat(gStringVar2, natureMod[STAT_ATK - 1], atk, 1, 7);
+        BufferStat(gStringVar3, natureMod[STAT_DEF - 1], def, 2, 7);
         DynamicPlaceholderTextUtil_ExpandPlaceholders(gStringVar4, sStatsLeftColumnLayoutIVEV);
         PrintLeftColumnStats();
 
-        BufferStat(gStringVar1, 0, spA, 0, 3);
-        BufferStat(gStringVar2, 0, spD, 1, 3);
-        BufferStat(gStringVar3, 0, spe, 2, 3);
+        BufferStat(gStringVar1, natureMod[STAT_SPATK - 1], spA, 0, 3);
+        BufferStat(gStringVar2, natureMod[STAT_SPDEF - 1], spD, 1, 3);
+        BufferStat(gStringVar3, natureMod[STAT_SPEED - 1], spe, 2, 3);
         DynamicPlaceholderTextUtil_ExpandPlaceholders(gStringVar4, sStatsRightColumnLayout);
         PrintRightColumnStats();
         break;
