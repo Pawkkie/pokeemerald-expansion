@@ -231,7 +231,7 @@ gBattleScriptsForMoveEffects::
 	.4byte BattleScript_EffectCalmMind                @ EFFECT_CALM_MIND
 	.4byte BattleScript_EffectDragonDance             @ EFFECT_DRAGON_DANCE
 	.4byte BattleScript_EffectCamouflage              @ EFFECT_CAMOUFLAGE
-	.4byte BattleScript_EffectHit                     @ EFFECT_PLEDGE
+	.4byte BattleScript_EffectPledge                  @ EFFECT_PLEDGE
 	.4byte BattleScript_EffectFling                   @ EFFECT_FLING
 	.4byte BattleScript_EffectNaturalGift             @ EFFECT_NATURAL_GIFT
 	.4byte BattleScript_EffectWakeUpSlap              @ EFFECT_WAKE_UP_SLAP
@@ -440,13 +440,18 @@ gBattleScriptsForMoveEffects::
 	.4byte BattleScript_EffectSyrupBomb               @ EFFECT_SYRUP_BOMB
 	.4byte BattleScript_EffectHit                     @ EFFECT_IVY_CUDGEL
 	.4byte BattleScript_EffectMaxMove                 @ EFFECT_MAX_MOVE
+	.4byte BattleScript_EffectGlaiveRush              @ EFFECT_GLAIVE_RUSH
+	.4byte BattleScript_EffectBrickBreak              @ EFFECT_RAGING_BULL
+
+BattleScript_EffectGlaiveRush::
+	call BattleScript_EffectHit_Ret
+	jumpifhalfword CMP_COMMON_BITS, gMoveResultFlags, MOVE_RESULT_DOESNT_AFFECT_FOE, BattleScript_TryFaintMon
+	setglaiverush
+	goto BattleScript_TryFaintMon
 
 BattleScript_EffectSyrupBomb::
 	setmoveeffect MOVE_EFFECT_SYRUP_BOMB
-	call BattleScript_EffectHit_Ret
-	seteffectwithchance
-	tryfaintmon BS_TARGET
-	goto BattleScript_MoveEnd
+	goto BattleScript_EffectHit
 
 BattleScript_SyrupBombActivates::
 	printstring STRINGID_TARGETCOVEREDINSTICKYCANDYSYRUP
@@ -466,6 +471,90 @@ BattleScript_SyrupBombTurnDmgEnd:
 BattleScript_EffectMatchaGotcha::
 	setmoveeffect MOVE_EFFECT_BURN
 	goto BattleScript_EffectAbsorb
+
+BattleScript_EffectPledge::
+	attackcanceler
+	setpledge BattleScript_HitFromAccCheck
+	attackstring
+	pause B_WAIT_TIME_MED
+	ppreduce
+	printstring STRINGID_WAITINGFORPARTNERSMOVE
+	waitmessage B_WAIT_TIME_LONG
+	goto BattleScript_MoveEnd
+
+BattleScript_EffectCombinedPledge_Water::
+	call BattleScript_EffectHit_Pledge
+	setpledgestatus BS_ATTACKER, SIDE_STATUS_RAINBOW
+	pause B_WAIT_TIME_SHORTEST
+	printstring STRINGID_ARAINBOWAPPEAREDONSIDE
+	waitmessage B_WAIT_TIME_LONG
+	playanimation BS_ATTACKER, B_ANIM_RAINBOW
+	waitanimation
+	goto BattleScript_MoveEnd
+
+BattleScript_TheRainbowDisappeared::
+	printstring STRINGID_THERAINBOWDISAPPEARED
+	waitmessage B_WAIT_TIME_LONG
+	end2
+
+BattleScript_EffectCombinedPledge_Fire::
+	call BattleScript_EffectHit_Pledge
+	setpledgestatus BS_TARGET, SIDE_STATUS_SEA_OF_FIRE
+	pause B_WAIT_TIME_SHORTEST
+	printstring STRINGID_SEAOFFIREENVELOPEDSIDE
+	waitmessage B_WAIT_TIME_LONG
+	playanimation BS_TARGET, B_ANIM_SEA_OF_FIRE
+	waitanimation
+	goto BattleScript_MoveEnd
+
+BattleScript_HurtByTheSeaOfFire::
+	printstring STRINGID_HURTBYTHESEAOFFIRE
+	waitmessage B_WAIT_TIME_LONG
+	goto BattleScript_DoTurnDmg
+
+BattleScript_TheSeaOfFireDisappeared::
+	printstring STRINGID_THESEAOFFIREDISAPPEARED
+	waitmessage B_WAIT_TIME_LONG
+	end2
+
+BattleScript_EffectCombinedPledge_Grass::
+	call BattleScript_EffectHit_Pledge
+	setpledgestatus BS_TARGET, SIDE_STATUS_SWAMP
+	pause B_WAIT_TIME_SHORTEST
+	printstring STRINGID_SWAMPENVELOPEDSIDE
+	waitmessage B_WAIT_TIME_LONG
+	playanimation BS_TARGET, B_ANIM_SWAMP
+	waitanimation
+	goto BattleScript_MoveEnd
+
+BattleScript_TheSwampDisappeared::
+	printstring STRINGID_THESWAMPDISAPPEARED
+	waitmessage B_WAIT_TIME_LONG
+	end2
+
+BattleScript_EffectHit_Pledge::
+	pause B_WAIT_TIME_MED
+	printstring STRINGID_THETWOMOVESBECOMEONE
+	waitmessage B_WAIT_TIME_LONG
+	accuracycheck BattleScript_PrintMoveMissed, ACC_CURR_MOVE
+	ppreduce
+	critcalc
+	damagecalc
+	adjustdamage
+	attackanimation
+	waitanimation
+	effectivenesssound
+	hitanimation BS_TARGET
+	waitstate
+	healthbarupdate BS_TARGET
+	datahpupdate BS_TARGET
+	critmessage
+	waitmessage B_WAIT_TIME_LONG
+	resultmessage
+	waitmessage B_WAIT_TIME_LONG
+	seteffectwithchance
+	tryfaintmon BS_TARGET
+	return
 
 BattleScript_EffectSaltCure:
 	call BattleScript_EffectHit_Ret
@@ -529,7 +618,6 @@ BattleScript_EffectMakeItRain:
 BattleScript_MakeItRainContinuous:
 	setmoveeffect MOVE_EFFECT_PAYDAY
 	call BattleScript_EffectHit_Ret
-	seteffectwithchance
 	tryfaintmon BS_TARGET
 	setmoveeffect MOVE_EFFECT_SP_ATK_MINUS_1 | MOVE_EFFECT_AFFECTS_USER | MOVE_EFFECT_CERTAIN
 	seteffectprimary
@@ -1167,9 +1255,8 @@ BattleScript_HyperspaceFuryRemoveProtect::
 
 BattleScript_EffectPlasmaFists:
 	call BattleScript_EffectHit_Ret
-	seteffectwithchance
 	tryfaintmon BS_TARGET
-	applyplasmafists
+	orword gFieldStatuses, STATUS_FIELD_ION_DELUGE
 	printstring STRINGID_IONDELUGEON
 	waitmessage B_WAIT_TIME_LONG
 	goto BattleScript_MoveEnd
@@ -1345,12 +1432,12 @@ BattleScript_NoMoveEffect:
 	goto BattleScript_EffectHit
 
 BattleScript_EffectRelicSong:
-	setmoveeffect MOVE_EFFECT_RELIC_SONG | MOVE_EFFECT_AFFECTS_USER | MOVE_EFFECT_CERTAIN
+	setmoveeffect MOVE_EFFECT_SLEEP
 	call BattleScript_EffectHit_Ret
-	seteffectwithchance
-	argumentstatuseffect
 	tryfaintmon BS_TARGET
-	goto BattleScript_MoveEnd
+	moveendall
+	tryrelicsong
+	end
 
 BattleScript_EffectAllySwitch:
 	attackcanceler
@@ -3135,6 +3222,7 @@ BattleScript_HitFromAtkAnimation::
 	resultmessage
 	waitmessage B_WAIT_TIME_LONG
 	seteffectwithchance
+BattleScript_TryFaintMon::
 	tryfaintmon BS_TARGET
 BattleScript_MoveEnd::
 	moveendall
@@ -3159,6 +3247,7 @@ BattleScript_EffectHit_Ret::
 	waitmessage B_WAIT_TIME_LONG
 	resultmessage
 	waitmessage B_WAIT_TIME_LONG
+	seteffectwithchance
 	return
 
 BattleScript_EffectNaturalGift:
@@ -3353,7 +3442,6 @@ BattleScript_EffectPoisonHit:
 
 BattleScript_EffectAbsorb::
 	call BattleScript_EffectHit_Ret
-	seteffectwithchance
 	jumpifstatus3 BS_ATTACKER, STATUS3_HEAL_BLOCK, BattleScript_AbsorbHealBlock
 	setdrainedhp
 	manipulatedamage DMG_BIG_ROOT
@@ -3788,7 +3876,6 @@ BattleScript_EffectFlinchHit::
 BattleScript_EffectFlinchStatus:
 	setmoveeffect MOVE_EFFECT_FLINCH
 	call BattleScript_EffectHit_Ret
-	seteffectwithchance
 	argumentstatuseffect
 	tryfaintmon BS_TARGET
 	goto BattleScript_MoveEnd
@@ -7739,7 +7826,7 @@ BattleScript_FocusPunchSetUp::
 
 BattleScript_MegaEvolution::
 	flushtextbox
-	trytrainerslidemegaevolutionmsg BS_ATTACKER
+	trytrainerslidemegaevolutionmsg
 	printstring STRINGID_MEGAEVOREACTING
 BattleScript_MegaEvolutionAfterString:
 	waitmessage B_WAIT_TIME_LONG
@@ -7755,7 +7842,7 @@ BattleScript_MegaEvolutionAfterString:
 
 BattleScript_WishMegaEvolution::
 	flushtextbox
-	trytrainerslidemegaevolutionmsg BS_ATTACKER
+	trytrainerslidemegaevolutionmsg
 	printstring STRINGID_FERVENTWISHREACHED
 	goto BattleScript_MegaEvolutionAfterString
 
@@ -7783,7 +7870,7 @@ BattleScript_PrimalReversionRet::
 
 BattleScript_UltraBurst::
 	flushtextbox
-	trytrainerslidezmovemsg BS_ATTACKER
+	trytrainerslidezmovemsg
 	printstring STRINGID_ULTRABURSTREACTING
 	waitmessage B_WAIT_TIME_LONG
 	setbyte gIsCriticalHit, 0
@@ -7827,7 +7914,7 @@ BattleScript_AttackerFormChangeMoveEffect::
 	printstring STRINGID_PKMNTRANSFORMED
 	waitmessage B_WAIT_TIME_LONG
 	handleformchange BS_ATTACKER, 2
-	end3
+	return
 
 BattleScript_BallFetch::
 	call BattleScript_AbilityPopUp
@@ -10002,7 +10089,7 @@ BattleScript_JabocaRowapBerryActivate_Dmg:
 @ z moves / effects
 BattleScript_ZMoveActivateDamaging::
 	flushtextbox
-	trytrainerslidezmovemsg BS_ATTACKER
+	trytrainerslidezmovemsg
 	printstring STRINGID_ZPOWERSURROUNDS
 	playanimation BS_ATTACKER, B_ANIM_ZMOVE_ACTIVATE, NULL
 	printstring STRINGID_ZMOVEUNLEASHED
@@ -10011,7 +10098,7 @@ BattleScript_ZMoveActivateDamaging::
 
 BattleScript_ZMoveActivateStatus::
 	flushtextbox
-	trytrainerslidezmovemsg BS_ATTACKER
+	trytrainerslidezmovemsg
 	savetarget
 	printstring STRINGID_ZPOWERSURROUNDS
 	playanimation BS_ATTACKER, B_ANIM_ZMOVE_ACTIVATE, NULL
@@ -10602,6 +10689,7 @@ BattleScript_EffectSteelsurge::
 
 BattleScript_DynamaxBegins::
 	flushtextbox
+	trytrainerslidedynamaxmsg
 	returnatktoball
 	pause B_WAIT_TIME_SHORT
 	returntoball BS_SCRIPTING

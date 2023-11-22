@@ -56,15 +56,6 @@
 #include "day_night.h"
 #include "constants/day_night.h"
 
-#define DAY_EVO_HOUR_BEGIN       12
-#define DAY_EVO_HOUR_END         HOURS_PER_DAY
-
-#define DUSK_EVO_HOUR_BEGIN      17
-#define DUSK_EVO_HOUR_END        18
-
-#define NIGHT_EVO_HOUR_BEGIN     0
-#define NIGHT_EVO_HOUR_END       12
-
 #if P_FRIENDSHIP_EVO_THRESHOLD >= GEN_9
 #define FRIENDSHIP_EVO_THRESHOLD 160
 #else
@@ -2868,7 +2859,7 @@ const u8 sMonFrontAnimIdsTable[NUM_SPECIES - 1] =
     [SPECIES_GENESECT - 1]                     = ANIM_H_VIBRATE,
 
     // Gen 6
-    [SPECIES_CHESPIN - 1]                      = ANIM_V_JUMPS_SMALL,
+    [SPECIES_CHESPIN - 1]                      = ANIM_H_SLIDE_SLOW,
     [SPECIES_QUILLADIN - 1]                    = ANIM_LUNGE_GROW,
     [SPECIES_CHESNAUGHT - 1]                   = ANIM_GROW_IN_STAGES,
     [SPECIES_FENNEKIN - 1]                     = ANIM_V_SQUISH_AND_BOUNCE,
@@ -2877,19 +2868,19 @@ const u8 sMonFrontAnimIdsTable[NUM_SPECIES - 1] =
     [SPECIES_FROAKIE - 1]                      = ANIM_H_JUMPS,
     [SPECIES_FROGADIER - 1]                    = ANIM_V_SQUISH_AND_BOUNCE_SLOW,
     [SPECIES_GRENINJA - 1]                     = ANIM_V_STRETCH,
-    [SPECIES_BUNNELBY - 1]                     = ANIM_V_JUMPS_SMALL,
+    [SPECIES_BUNNELBY - 1]                     = ANIM_CIRCULAR_STRETCH_TWICE,
     [SPECIES_DIGGERSBY - 1]                    = ANIM_H_JUMPS_V_STRETCH,
-    [SPECIES_FLETCHLING - 1]                   = ANIM_RAPID_H_HOPS,
-    [SPECIES_FLETCHINDER - 1]                  = ANIM_V_SQUISH_AND_BOUNCE,
-    [SPECIES_TALONFLAME - 1]                   = ANIM_SWING_CONCAVE_FAST,
+    [SPECIES_FLETCHLING - 1]                   = ANIM_V_JUMPS_SMALL,
+    [SPECIES_FLETCHINDER - 1]                  = ANIM_V_SLIDE_SLOW,
+    [SPECIES_TALONFLAME - 1]                   = ANIM_V_SLIDE_WOBBLE,
     [SPECIES_SCATTERBUG - 1]                   = ANIM_V_STRETCH,
     [SPECIES_SPEWPA - 1]                       = ANIM_V_SHAKE,
     [SPECIES_VIVILLON_ICY_SNOW - 1]            = ANIM_ZIGZAG_SLOW,
     [SPECIES_LITLEO - 1]                       = ANIM_BACK_AND_LUNGE,
     [SPECIES_PYROAR - 1]                       = ANIM_V_SHAKE,
-    [SPECIES_FLABEBE_RED_FLOWER - 1]           = ANIM_SWING_CONCAVE_FAST_SHORT,
+    [SPECIES_FLABEBE_RED_FLOWER - 1]           = ANIM_H_SLIDE_SLOW,
     [SPECIES_FLOETTE_RED_FLOWER - 1]           = ANIM_V_SLIDE_WOBBLE,
-    [SPECIES_FLORGES_RED_FLOWER - 1]           = ANIM_GROW_VIBRATE,
+    [SPECIES_FLORGES_RED_FLOWER - 1]           = ANIM_V_SLIDE_SLOW,
     [SPECIES_SKIDDO - 1]                       = ANIM_V_SQUISH_AND_BOUNCE,
     [SPECIES_GOGOAT - 1]                       = ANIM_V_STRETCH,
     [SPECIES_PANCHAM - 1]                      = ANIM_H_STRETCH,
@@ -2916,7 +2907,7 @@ const u8 sMonFrontAnimIdsTable[NUM_SPECIES - 1] =
     [SPECIES_HELIOLISK - 1]                    = ANIM_RAPID_H_HOPS,
     [SPECIES_TYRUNT - 1]                       = ANIM_V_SHAKE,
     [SPECIES_TYRANTRUM - 1]                    = ANIM_V_SHAKE,
-    [SPECIES_AMAURA - 1]                       = ANIM_H_STRETCH,
+    [SPECIES_AMAURA - 1]                       = ANIM_CONCAVE_ARC_SMALL_TWICE,
     [SPECIES_AURORUS - 1]                      = ANIM_GROW_VIBRATE,
     [SPECIES_SYLVEON - 1]                      = ANIM_SHRINK_GROW,
     [SPECIES_HAWLUCHA - 1]                     = ANIM_V_SQUISH_AND_BOUNCE_SLOW,
@@ -3410,19 +3401,19 @@ const u8 sMonFrontAnimIdsTable[NUM_SPECIES - 1] =
     [SPECIES_VIVILLON_JUNGLE - 1]              = ANIM_ZIGZAG_SLOW,
     [SPECIES_VIVILLON_FANCY - 1]               = ANIM_ZIGZAG_SLOW,
     [SPECIES_VIVILLON_POKE_BALL - 1]           = ANIM_ZIGZAG_SLOW,
-    [SPECIES_FLABEBE_YELLOW_FLOWER - 1]        = ANIM_SWING_CONCAVE_FAST_SHORT,
-    [SPECIES_FLABEBE_ORANGE_FLOWER - 1]        = ANIM_SWING_CONCAVE_FAST_SHORT,
-    [SPECIES_FLABEBE_BLUE_FLOWER - 1]          = ANIM_SWING_CONCAVE_FAST_SHORT,
-    [SPECIES_FLABEBE_WHITE_FLOWER - 1]         = ANIM_SWING_CONCAVE_FAST_SHORT,
+    [SPECIES_FLABEBE_YELLOW_FLOWER - 1]        = ANIM_H_SLIDE_SLOW,
+    [SPECIES_FLABEBE_ORANGE_FLOWER - 1]        = ANIM_H_SLIDE_SLOW,
+    [SPECIES_FLABEBE_BLUE_FLOWER - 1]          = ANIM_H_SLIDE_SLOW,
+    [SPECIES_FLABEBE_WHITE_FLOWER - 1]         = ANIM_H_SLIDE_SLOW,
     [SPECIES_FLOETTE_YELLOW_FLOWER - 1]        = ANIM_V_SLIDE_WOBBLE,
     [SPECIES_FLOETTE_ORANGE_FLOWER - 1]        = ANIM_V_SLIDE_WOBBLE,
     [SPECIES_FLOETTE_BLUE_FLOWER - 1]          = ANIM_V_SLIDE_WOBBLE,
     [SPECIES_FLOETTE_WHITE_FLOWER - 1]         = ANIM_V_SLIDE_WOBBLE,
     [SPECIES_FLOETTE_ETERNAL_FLOWER - 1]       = ANIM_V_SLIDE_WOBBLE,
-    [SPECIES_FLORGES_YELLOW_FLOWER - 1]        = ANIM_GROW_VIBRATE,
-    [SPECIES_FLORGES_ORANGE_FLOWER - 1]        = ANIM_GROW_VIBRATE,
-    [SPECIES_FLORGES_BLUE_FLOWER - 1]          = ANIM_GROW_VIBRATE,
-    [SPECIES_FLORGES_WHITE_FLOWER - 1]         = ANIM_GROW_VIBRATE,
+    [SPECIES_FLORGES_YELLOW_FLOWER - 1]        = ANIM_V_SLIDE_SLOW,
+    [SPECIES_FLORGES_ORANGE_FLOWER - 1]        = ANIM_V_SLIDE_SLOW,
+    [SPECIES_FLORGES_BLUE_FLOWER - 1]          = ANIM_V_SLIDE_SLOW,
+    [SPECIES_FLORGES_WHITE_FLOWER - 1]         = ANIM_V_SLIDE_SLOW,
     [SPECIES_FURFROU_HEART_TRIM - 1]           = ANIM_H_SLIDE,
     [SPECIES_FURFROU_STAR_TRIM - 1]            = ANIM_H_SLIDE,
     [SPECIES_FURFROU_DIAMOND_TRIM - 1]         = ANIM_H_SLIDE,
@@ -7075,28 +7066,23 @@ u16 GetEvolutionTargetSpecies(struct Pokemon *mon, u8 mode, u16 evolutionItem, s
                     targetSpecies = gEvolutionTable[species][i].targetSpecies;
                 break;
             case EVO_FRIENDSHIP_DAY:
-                RtcCalcLocalTime();
-                if (gLocalTime.hours >= DAY_EVO_HOUR_BEGIN && gLocalTime.hours < DAY_EVO_HOUR_END && friendship >= FRIENDSHIP_EVO_THRESHOLD)
+                if (GetTimeOfDay() != TIME_NIGHT && friendship >= FRIENDSHIP_EVO_THRESHOLD)
                     targetSpecies = gEvolutionTable[species][i].targetSpecies;
                 break;
             case EVO_LEVEL_DAY:
-                RtcCalcLocalTime();
-                if (gLocalTime.hours >= DAY_EVO_HOUR_BEGIN && gLocalTime.hours < DAY_EVO_HOUR_END && gEvolutionTable[species][i].param <= level)
+                if (GetTimeOfDay() != TIME_NIGHT && gEvolutionTable[species][i].param <= level)
                     targetSpecies = gEvolutionTable[species][i].targetSpecies;
                 break;
             case EVO_FRIENDSHIP_NIGHT:
-                RtcCalcLocalTime();
-                if (gLocalTime.hours >= NIGHT_EVO_HOUR_BEGIN && gLocalTime.hours < NIGHT_EVO_HOUR_END && friendship >= FRIENDSHIP_EVO_THRESHOLD)
+                if (GetTimeOfDay() == TIME_NIGHT && friendship >= FRIENDSHIP_EVO_THRESHOLD)
                     targetSpecies = gEvolutionTable[species][i].targetSpecies;
                 break;
             case EVO_LEVEL_NIGHT:
-                RtcCalcLocalTime();
-                if (gLocalTime.hours >= NIGHT_EVO_HOUR_BEGIN && gLocalTime.hours < NIGHT_EVO_HOUR_END && gEvolutionTable[species][i].param <= level)
+                if (GetTimeOfDay() == TIME_NIGHT && gEvolutionTable[species][i].param <= level)
                     targetSpecies = gEvolutionTable[species][i].targetSpecies;
                 break;
             case EVO_ITEM_HOLD_NIGHT:
-                RtcCalcLocalTime();
-                if (gLocalTime.hours >= NIGHT_EVO_HOUR_BEGIN && gLocalTime.hours < NIGHT_EVO_HOUR_END && heldItem == gEvolutionTable[species][i].param)
+                if (GetTimeOfDay() == TIME_NIGHT && heldItem == gEvolutionTable[species][i].param)
                 {
                     heldItem = ITEM_NONE;
                     SetMonData(mon, MON_DATA_HELD_ITEM, &heldItem);
@@ -7104,8 +7090,7 @@ u16 GetEvolutionTargetSpecies(struct Pokemon *mon, u8 mode, u16 evolutionItem, s
                 }
                 break;
             case EVO_ITEM_HOLD_DAY:
-                RtcCalcLocalTime();
-                if (gLocalTime.hours >= DAY_EVO_HOUR_BEGIN && gLocalTime.hours < DAY_EVO_HOUR_END && heldItem == gEvolutionTable[species][i].param)
+                if (GetTimeOfDay() != TIME_NIGHT && heldItem == gEvolutionTable[species][i].param)
                 {
                     heldItem = ITEM_NONE;
                     SetMonData(mon, MON_DATA_HELD_ITEM, &heldItem);
@@ -7113,8 +7098,7 @@ u16 GetEvolutionTargetSpecies(struct Pokemon *mon, u8 mode, u16 evolutionItem, s
                 }
                 break;
             case EVO_LEVEL_DUSK:
-                RtcCalcLocalTime();
-                if (gLocalTime.hours >= DUSK_EVO_HOUR_BEGIN && gLocalTime.hours < DUSK_EVO_HOUR_END && gEvolutionTable[species][i].param <= level)
+                if (GetTimeOfDay() == TIME_DUSK && gEvolutionTable[species][i].param <= level)
                     targetSpecies = gEvolutionTable[species][i].targetSpecies;
                 break;
             case EVO_LEVEL:
@@ -7339,13 +7323,11 @@ u16 GetEvolutionTargetSpecies(struct Pokemon *mon, u8 mode, u16 evolutionItem, s
                     targetSpecies = gEvolutionTable[species][i].targetSpecies;
                 break;
             case EVO_ITEM_NIGHT:
-                RtcCalcLocalTime();
-                if (gLocalTime.hours >= NIGHT_EVO_HOUR_BEGIN && gLocalTime.hours < NIGHT_EVO_HOUR_END && gEvolutionTable[species][i].param == evolutionItem)
+                if (GetTimeOfDay() == TIME_NIGHT && gEvolutionTable[species][i].param == evolutionItem)
                     targetSpecies = gEvolutionTable[species][i].targetSpecies;
                 break;
             case EVO_ITEM_DAY:
-                RtcCalcLocalTime();
-                if (gLocalTime.hours >= DAY_EVO_HOUR_BEGIN && gLocalTime.hours < DAY_EVO_HOUR_END && gEvolutionTable[species][i].param == evolutionItem)
+                if (GetTimeOfDay() != TIME_NIGHT && gEvolutionTable[species][i].param == evolutionItem)
                     targetSpecies = gEvolutionTable[species][i].targetSpecies;
                 break;
             }
@@ -9180,13 +9162,11 @@ u16 GetFormChangeTargetSpeciesBoxMon(struct BoxPokemon *boxMon, u16 method, u32 
                         switch (formChanges[i].param2)
                         {
                         case DAY:
-                            RtcCalcLocalTime();
-                            if (gLocalTime.hours >= DAY_EVO_HOUR_BEGIN && gLocalTime.hours < DAY_EVO_HOUR_END)
+                            if (GetTimeOfDay() != TIME_NIGHT)
                                 targetSpecies = formChanges[i].targetSpecies;
                             break;
                         case NIGHT:
-                            RtcCalcLocalTime();
-                            if (gLocalTime.hours >= NIGHT_EVO_HOUR_BEGIN && gLocalTime.hours < NIGHT_EVO_HOUR_END)
+                            if (GetTimeOfDay() == TIME_NIGHT)
                                 targetSpecies = formChanges[i].targetSpecies;
                             break;
                         default:
@@ -9218,6 +9198,19 @@ u16 GetFormChangeTargetSpeciesBoxMon(struct BoxPokemon *boxMon, u16 method, u32 
                 case FORM_CHANGE_WITHDRAW:
                 case FORM_CHANGE_FAINT:
                     targetSpecies = formChanges[i].targetSpecies;
+                    break;
+                case FORM_CHANGE_TIME_OF_DAY:
+                    switch (formChanges[i].param1)
+                    {
+                    case DAY:
+                        if (GetTimeOfDay() != TIME_NIGHT)
+                            targetSpecies = formChanges[i].targetSpecies;
+                        break;
+                    case NIGHT:
+                        if (GetTimeOfDay() == TIME_NIGHT)
+                            targetSpecies = formChanges[i].targetSpecies;
+                        break;
+                    }
                     break;
                 }
             }

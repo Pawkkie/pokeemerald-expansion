@@ -687,7 +687,17 @@
 #define STRINGID_MOVEBLOCKEDBYDYNAMAX                 685
 #define STRINGID_PKMNGAINEDEXPALL                     686
 #define STRINGID_ZEROTOHEROTRANSFORMATION             687
-#define BATTLESTRINGS_COUNT                           688
+#define STRINGID_THETWOMOVESBECOMEONE                 688
+#define STRINGID_ARAINBOWAPPEAREDONSIDE               689
+#define STRINGID_THERAINBOWDISAPPEARED                690
+#define STRINGID_WAITINGFORPARTNERSMOVE               691
+#define STRINGID_SEAOFFIREENVELOPEDSIDE               692
+#define STRINGID_HURTBYTHESEAOFFIRE                   693
+#define STRINGID_THESEAOFFIREDISAPPEARED              694
+#define STRINGID_SWAMPENVELOPEDSIDE                   695
+#define STRINGID_THESWAMPDISAPPEARED                  696
+
+#define BATTLESTRINGS_COUNT                           697
 
 // This is the string id that gBattleStringsTable starts with.
 // String ids before this (e.g. STRINGID_INTROMSG) are not in the table,

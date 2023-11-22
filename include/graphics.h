@@ -10012,8 +10012,8 @@ extern const u32 gItemIcon_MagmaEmblem[];
 extern const u32 gItemIconPalette_MagmaEmblem[];
 extern const u32 gItemIcon_ContestPass[];
 extern const u32 gItemIconPalette_ContestPass[];
-extern const u32 gItemIcon_OaksParcel[];
-extern const u32 gItemIconPalette_OaksParcel[];
+extern const u32 gItemIcon_Parcel[];
+extern const u32 gItemIconPalette_Parcel[];
 extern const u32 gItemIcon_SecretKey[];
 extern const u32 gItemIconPalette_SecretKey[];
 extern const u32 gItemIcon_BikeVoucher[];
@@ -11552,6 +11552,11 @@ extern const u16 gSlotMachineReelTimePikachu_Pal[];
 
 extern const u32 gBattleAnimBgTilemap_Sandstorm[];
 extern const u32 gBattleAnimBgImage_Sandstorm[];
+
+// Pledge Effect field status - Rainbow
+extern const u32 gBattleAnimBgImage_Rainbow[];
+extern const u32 gBattleAnimBGPalette_Rainbow[];
+extern const u32 gBattleAnimBgTilemap_Rainbow[];
 
 // Pokedex Area Screen
 extern const u32 gPokedexAreaScreenAreaUnknown_Gfx[];
