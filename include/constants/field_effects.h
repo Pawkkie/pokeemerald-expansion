@@ -71,13 +71,13 @@
 #define FLDEFF_USE_VS_SEEKER             67
 #define FLDEFF_X_ICON                    68
 #define FLDEFF_DOUBLE_EXCL_MARK_ICON     69
-#define FLDEFF_SNOW                      67
-#define FLDEFF_SNOW_TALL_GRASS           68
-#define FLDEFF_SNOW_TRACKS               69
-#define FLDEFF_JUMP_SNOW_TALL_GRASS      70
-#define FLDEFF_DUST_SNOW                 71
-#define FLDEFF_SNOW_BIKE_TIRE_TRACKS     72
-#define FLDEFF_SNOW_DRIFT                73
+#define FLDEFF_SNOW                      70
+#define FLDEFF_SNOW_TALL_GRASS           71
+#define FLDEFF_SNOW_TRACKS               72
+#define FLDEFF_JUMP_SNOW_TALL_GRASS      73
+#define FLDEFF_DUST_SNOW                 74
+#define FLDEFF_SNOW_BIKE_TIRE_TRACKS     75
+#define FLDEFF_SNOW_DRIFT                76
 
 #define FLDEFFOBJ_SHADOW_S              0
 #define FLDEFFOBJ_SHADOW_M              1
