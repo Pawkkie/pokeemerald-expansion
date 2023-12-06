@@ -1,3 +1,4 @@
+#include "config/item.h"
 	.include "asm/macros.inc"
 	.include "constants/constants.inc"
 
@@ -72,6 +73,9 @@ gFieldEffectScriptPointers::
 	.4byte gFieldEffectScript_RayquazaSpotlight         @ FLDEFF_RAYQUAZA_SPOTLIGHT
 	.4byte gFieldEffectScript_DestroyDeoxysRock         @ FLDEFF_DESTROY_DEOXYS_ROCK
 	.4byte gFieldEffectScript_MoveDeoxysRock            @ FLDEFF_MOVE_DEOXYS_ROCK
+	.4byte gFldEffScript_UseVsSeeker                    @ FLDEFF_USE_VS_SEEKER
+	.4byte gFldEffScript_XIcon                          @ FLDEFF_X_ICON
+	.4byte gFldEffScript_DoubleExclMarkIcon             @ FLDEFF_DOUBLE_EXCL_MARK_ICON
 	.4byte gFieldEffectScript_Snow                      @ FLDEFF_SNOW
 	.4byte gFieldEffectScript_SnowTallGrass             @ FLDEFF_SNOW_TALL_GRASS
 	.4byte gFieldEffectScript_SnowTracks	            @ FLDEFF_SNOW_TRACKS
@@ -377,4 +381,16 @@ gFieldEffectScript_DestroyDeoxysRock::
 
 gFieldEffectScript_MoveDeoxysRock::
 	field_eff_callnative FldEff_MoveDeoxysRock
+	field_eff_end
+
+gFldEffScript_UseVsSeeker::
+	field_eff_callnative FldEff_UseVsSeeker
+	field_eff_end
+
+gFldEffScript_XIcon::
+	field_eff_callnative FldEff_XIcon
+	field_eff_end
+
+gFldEffScript_DoubleExclMarkIcon::
+	field_eff_callnative FldEff_DoubleExclMarkIcon
 	field_eff_end

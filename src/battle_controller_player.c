@@ -31,6 +31,7 @@
 #include "util.h"
 #include "window.h"
 #include "constants/battle_anim.h"
+#include "constants/hold_effects.h"
 #include "constants/items.h"
 #include "constants/moves.h"
 #include "constants/party_menu.h"

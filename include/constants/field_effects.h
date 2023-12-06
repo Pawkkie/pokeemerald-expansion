@@ -68,6 +68,9 @@
 #define FLDEFF_RAYQUAZA_SPOTLIGHT        64
 #define FLDEFF_DESTROY_DEOXYS_ROCK       65
 #define FLDEFF_MOVE_DEOXYS_ROCK          66
+#define FLDEFF_USE_VS_SEEKER             67
+#define FLDEFF_X_ICON                    68
+#define FLDEFF_DOUBLE_EXCL_MARK_ICON     69
 #define FLDEFF_SNOW                      67
 #define FLDEFF_SNOW_TALL_GRASS           68
 #define FLDEFF_SNOW_TRACKS               69
