@@ -831,7 +831,7 @@ void HandleAction_NothingIsFainted(void)
     gCurrentTurnActionNumber++;
     gCurrentActionFuncId = gActionsByTurnOrder[gCurrentTurnActionNumber];
     gHitMarker &= ~(HITMARKER_DESTINYBOND | HITMARKER_IGNORE_SUBSTITUTE | HITMARKER_ATTACKSTRING_PRINTED
-                    | HITMARKER_NO_PPDEDUCT | HITMARKER_IGNORE_SAFEGUARD | HITMARKER_PASSIVE_DAMAGE
+                    | HITMARKER_NO_PPDEDUCT | HITMARKER_STATUS_ABILITY_EFFECT | HITMARKER_PASSIVE_DAMAGE
                     | HITMARKER_OBEYS | HITMARKER_WAKE_UP_CLEAR | HITMARKER_SYNCHRONISE_EFFECT
                     | HITMARKER_CHARGING | HITMARKER_NEVER_SET);
 }
@@ -845,7 +845,7 @@ void HandleAction_ActionFinished(void)
     gCurrentActionFuncId = gActionsByTurnOrder[gCurrentTurnActionNumber];
     SpecialStatusesClear();
     gHitMarker &= ~(HITMARKER_DESTINYBOND | HITMARKER_IGNORE_SUBSTITUTE | HITMARKER_ATTACKSTRING_PRINTED
-                    | HITMARKER_NO_PPDEDUCT | HITMARKER_IGNORE_SAFEGUARD | HITMARKER_PASSIVE_DAMAGE
+                    | HITMARKER_NO_PPDEDUCT | HITMARKER_STATUS_ABILITY_EFFECT | HITMARKER_PASSIVE_DAMAGE
                     | HITMARKER_OBEYS | HITMARKER_WAKE_UP_CLEAR | HITMARKER_SYNCHRONISE_EFFECT
                     | HITMARKER_CHARGING | HITMARKER_NEVER_SET | HITMARKER_IGNORE_DISGUISE);
 
@@ -2605,7 +2605,7 @@ u8 DoBattlerEndTurnEffects(void)
 {
     u32 battler, ability, i, effect = 0;
 
-    gHitMarker |= (HITMARKER_GRUDGE | HITMARKER_SKIP_DMG_TRACK);
+    gHitMarker |= (HITMARKER_GRUDGE | HITMARKER_IGNORE_BIDE);
     while (gBattleStruct->turnEffectsBattlerId < gBattlersCount && gBattleStruct->turnEffectsTracker <= ENDTURN_BATTLER_COUNT)
     {
         battler = gBattlerAttacker = gBattlerByTurnOrder[gBattleStruct->turnEffectsBattlerId];
@@ -3185,7 +3185,7 @@ u8 DoBattlerEndTurnEffects(void)
             return effect;
 
     }
-    gHitMarker &= ~(HITMARKER_GRUDGE | HITMARKER_SKIP_DMG_TRACK);
+    gHitMarker &= ~(HITMARKER_GRUDGE | HITMARKER_IGNORE_BIDE);
     return 0;
 }
 
@@ -3193,7 +3193,7 @@ bool32 HandleWishPerishSongOnTurnEnd(void)
 {
     u32 battler;
 
-    gHitMarker |= (HITMARKER_GRUDGE | HITMARKER_SKIP_DMG_TRACK);
+    gHitMarker |= (HITMARKER_GRUDGE | HITMARKER_IGNORE_BIDE);
     switch (gBattleStruct->wishPerishSongState)
     {
     case 0:
@@ -3220,7 +3220,7 @@ bool32 HandleWishPerishSongOnTurnEnd(void)
 
                 gBattlerTarget = battler;
                 gBattlerAttacker = gWishFutureKnock.futureSightAttacker[battler];
-                gSpecialStatuses[gBattlerTarget].dmg = 0xFFFF;
+                gSpecialStatuses[gBattlerTarget].shellBellDmg = IGNORE_SHELL_BELL;
                 gCurrentMove = gWishFutureKnock.futureSightMove[battler];
                 SetTypeBeforeUsingMove(gCurrentMove, battler);
                 BattleScriptExecute(BattleScript_MonTookFutureAttack);
@@ -3285,7 +3285,7 @@ bool32 HandleWishPerishSongOnTurnEnd(void)
         break;
     }
 
-    gHitMarker &= ~(HITMARKER_GRUDGE | HITMARKER_SKIP_DMG_TRACK);
+    gHitMarker &= ~(HITMARKER_GRUDGE | HITMARKER_IGNORE_BIDE);
 
     return FALSE;
 }
@@ -3672,11 +3672,11 @@ u8 AtkCanceller_UnableToUseMove(u32 moveType)
                 {
                     // This is removed in FRLG and Emerald for some reason
                     //gBattleMons[gBattlerAttacker].status2 &= ~STATUS2_MULTIPLETURNS;
-                    if (gTakenDmg[gBattlerAttacker])
+                    if (gBideDmg[gBattlerAttacker])
                     {
                         gCurrentMove = MOVE_BIDE;
-                        gBattleScripting.bideDmg = gTakenDmg[gBattlerAttacker] * 2;
-                        gBattlerTarget = gTakenDmgByBattler[gBattlerAttacker];
+                        gBattleScripting.bideDmg = gBideDmg[gBattlerAttacker] * 2;
+                        gBattlerTarget = gBideTarget[gBattlerAttacker];
                         if (gAbsentBattlerFlags & gBitTable[gBattlerTarget])
                             gBattlerTarget = GetMoveTarget(MOVE_BIDE, MOVE_TARGET_SELECTED + 1);
                         gBattlescriptCurrInstr = BattleScript_BideAttack;
@@ -5234,6 +5234,7 @@ u32 AbilityBattleEffects(u32 caseID, u32 battler, u32 ability, u32 special, u32 
             break;
         case ABILITY_STAMINA:
             if (!(gMoveResultFlags & MOVE_RESULT_NO_EFFECT)
+             && gBattlerAttacker != gBattlerTarget
              && TARGET_TURN_DAMAGED
              && IsBattlerAlive(battler)
              && CompareStat(battler, STAT_DEF, MAX_STAT_STAGE, CMP_LESS_THAN))
@@ -5434,7 +5435,7 @@ u32 AbilityBattleEffects(u32 caseID, u32 battler, u32 ability, u32 special, u32 
                 PREPARE_ABILITY_BUFFER(gBattleTextBuff1, gLastUsedAbility);
                 BattleScriptPushCursor();
                 gBattlescriptCurrInstr = BattleScript_GooeyActivates;
-                gHitMarker |= HITMARKER_IGNORE_SAFEGUARD;
+                gHitMarker |= HITMARKER_STATUS_ABILITY_EFFECT;
                 effect++;
             }
             break;
@@ -5484,7 +5485,7 @@ u32 AbilityBattleEffects(u32 caseID, u32 battler, u32 ability, u32 special, u32 
              && gBattleMons[gBattlerTarget].hp == 0
              && IsBattlerAlive(gBattlerAttacker))
             {
-                gBattleMoveDamage = gSpecialStatuses[gBattlerTarget].dmg;
+                gBattleMoveDamage = gSpecialStatuses[gBattlerTarget].shellBellDmg;
                 BattleScriptPushCursor();
                 gBattlescriptCurrInstr = BattleScript_AftermathDmg;
                 effect++;
@@ -5513,7 +5514,7 @@ u32 AbilityBattleEffects(u32 caseID, u32 battler, u32 ability, u32 special, u32 
                     PREPARE_ABILITY_BUFFER(gBattleTextBuff1, gLastUsedAbility);
                     BattleScriptPushCursor();
                     gBattlescriptCurrInstr = BattleScript_AbilityStatusEffect;
-                    gHitMarker |= HITMARKER_IGNORE_SAFEGUARD;
+                    gHitMarker |= HITMARKER_STATUS_ABILITY_EFFECT;
                     effect++;
                 }
             }
@@ -5532,7 +5533,7 @@ u32 AbilityBattleEffects(u32 caseID, u32 battler, u32 ability, u32 special, u32 
                 PREPARE_ABILITY_BUFFER(gBattleTextBuff1, gLastUsedAbility);
                 BattleScriptPushCursor();
                 gBattlescriptCurrInstr = BattleScript_AbilityStatusEffect;
-                gHitMarker |= HITMARKER_IGNORE_SAFEGUARD;
+                gHitMarker |= HITMARKER_STATUS_ABILITY_EFFECT;
                 effect++;
             }
             break;
@@ -5549,7 +5550,7 @@ u32 AbilityBattleEffects(u32 caseID, u32 battler, u32 ability, u32 special, u32 
                 gBattleScripting.moveEffect = MOVE_EFFECT_AFFECTS_USER | MOVE_EFFECT_PARALYSIS;
                 BattleScriptPushCursor();
                 gBattlescriptCurrInstr = BattleScript_AbilityStatusEffect;
-                gHitMarker |= HITMARKER_IGNORE_SAFEGUARD;
+                gHitMarker |= HITMARKER_STATUS_ABILITY_EFFECT;
                 effect++;
             }
             break;
@@ -5565,7 +5566,7 @@ u32 AbilityBattleEffects(u32 caseID, u32 battler, u32 ability, u32 special, u32 
                 gBattleScripting.moveEffect = MOVE_EFFECT_AFFECTS_USER | MOVE_EFFECT_BURN;
                 BattleScriptPushCursor();
                 gBattlescriptCurrInstr = BattleScript_AbilityStatusEffect;
-                gHitMarker |= HITMARKER_IGNORE_SAFEGUARD;
+                gHitMarker |= HITMARKER_STATUS_ABILITY_EFFECT;
                 effect++;
             }
             break;
@@ -5785,7 +5786,7 @@ u32 AbilityBattleEffects(u32 caseID, u32 battler, u32 ability, u32 special, u32 
                 PREPARE_ABILITY_BUFFER(gBattleTextBuff1, gLastUsedAbility);
                 BattleScriptPushCursor();
                 gBattlescriptCurrInstr = BattleScript_AbilityStatusEffect;
-                gHitMarker |= HITMARKER_IGNORE_SAFEGUARD;
+                gHitMarker |= HITMARKER_STATUS_ABILITY_EFFECT;
                 effect++;
             }
             break;
@@ -5975,7 +5976,7 @@ u32 AbilityBattleEffects(u32 caseID, u32 battler, u32 ability, u32 special, u32 
                 PREPARE_ABILITY_BUFFER(gBattleTextBuff1, ABILITY_SYNCHRONIZE);
                 BattleScriptPushCursor();
                 gBattlescriptCurrInstr = BattleScript_SynchronizeActivates;
-                gHitMarker |= HITMARKER_IGNORE_SAFEGUARD;
+                gHitMarker |= HITMARKER_STATUS_ABILITY_EFFECT;
                 effect++;
             }
         }
@@ -5996,7 +5997,7 @@ u32 AbilityBattleEffects(u32 caseID, u32 battler, u32 ability, u32 special, u32 
                 PREPARE_ABILITY_BUFFER(gBattleTextBuff1, ABILITY_SYNCHRONIZE);
                 BattleScriptPushCursor();
                 gBattlescriptCurrInstr = BattleScript_SynchronizeActivates;
-                gHitMarker |= HITMARKER_IGNORE_SAFEGUARD;
+                gHitMarker |= HITMARKER_STATUS_ABILITY_EFFECT;
                 effect++;
             }
         }
@@ -7758,10 +7759,10 @@ u8 ItemBattleEffects(u8 caseID, u32 battler, bool32 moveTurn)
                 gLastUsedItem = atkItem;
                 gPotentialItemEffectBattler = gBattlerAttacker;
                 gBattleScripting.battler = gBattlerAttacker;
-                gBattleMoveDamage = (gSpecialStatuses[gBattlerTarget].dmg / atkHoldEffectParam) * -1;
+                gBattleMoveDamage = (gSpecialStatuses[gBattlerTarget].shellBellDmg / atkHoldEffectParam) * -1;
                 if (gBattleMoveDamage == 0)
                     gBattleMoveDamage = -1;
-                gSpecialStatuses[gBattlerTarget].dmg = 0;
+                gSpecialStatuses[gBattlerTarget].shellBellDmg = 0;
                 BattleScriptPushCursor();
                 gBattlescriptCurrInstr = BattleScript_ItemHealHP_Ret;
                 effect = ITEM_HP_CHANGE;
@@ -8853,6 +8854,10 @@ static inline u32 CalcMoveBasePower(u32 move, u32 battlerAtk, u32 battlerDef, u3
         break;
     case EFFECT_MAX_MOVE:
         basePower = GetMaxMovePower(gBattleMons[battlerAtk].moves[gBattleStruct->chosenMovePositions[battlerAtk]]);
+        break;
+    case EFFECT_RAGE_FIST:
+        basePower += 50 * gBattleStruct->timesGotHit[GetBattlerSide(battlerAtk)][gBattlerPartyIndexes[battlerAtk]];
+        basePower = (basePower > 350) ? 350 : basePower;
         break;
     }
 

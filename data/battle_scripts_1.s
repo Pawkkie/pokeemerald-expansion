@@ -443,6 +443,7 @@ gBattleScriptsForMoveEffects::
 	.4byte BattleScript_EffectMaxMove                 @ EFFECT_MAX_MOVE
 	.4byte BattleScript_EffectGlaiveRush              @ EFFECT_GLAIVE_RUSH
 	.4byte BattleScript_EffectBrickBreak              @ EFFECT_RAGING_BULL
+	.4byte BattleScript_EffectHit                     @ EFFECT_RAGE_FIST
 
 BattleScript_EffectGlaiveRush::
 	call BattleScript_EffectHit_Ret
@@ -1085,8 +1086,7 @@ BattleScript_EffectFling:
 	attackcanceler
 	jumpifcantfling BS_ATTACKER, BattleScript_FailedFromAtkString
 	setlastuseditem BS_ATTACKER
-	removeitem BS_ATTACKER
-	accuracycheck BattleScript_PrintMoveMissed, ACC_CURR_MOVE
+	accuracycheck BattleScript_FlingMissed, ACC_CURR_MOVE
 	attackstring
 	pause B_WAIT_TIME_SHORT
 	printstring STRINGID_PKMNFLUNG
@@ -1095,6 +1095,7 @@ BattleScript_EffectFling:
 	critcalc
 	damagecalc
 	adjustdamage
+	removeitem BS_ATTACKER
 	attackanimation
 	waitanimation
 	effectivenesssound
@@ -1170,6 +1171,12 @@ BattleScript_FlingWhiteHerb:
 	swapattackerwithtarget
 	goto BattleScript_FlingEnd
 
+BattleScript_FlingMissed:
+	removeitem BS_ATTACKER
+	attackstring
+	ppreduce
+	goto BattleScript_MoveMissedPause
+
 BattleScript_EffectShellSideArm:
 	shellsidearmcheck
 	setmoveeffect MOVE_EFFECT_POISON
@@ -1209,7 +1216,7 @@ BattleScript_EffectClangorousSoul:
 	attackstring
 	ppreduce
 	cutonethirdhpraisestats BattleScript_ButItFailed
-	orword gHitMarker, HITMARKER_IGNORE_SUBSTITUTE | HITMARKER_SKIP_DMG_TRACK | HITMARKER_PASSIVE_DAMAGE | HITMARKER_IGNORE_DISGUISE
+	orword gHitMarker, HITMARKER_IGNORE_SUBSTITUTE | HITMARKER_IGNORE_BIDE | HITMARKER_PASSIVE_DAMAGE | HITMARKER_IGNORE_DISGUISE
 	attackanimation
 	waitanimation
 	healthbarupdate BS_ATTACKER
@@ -2149,7 +2156,7 @@ BattleScript_EffectDefog:
 	jumpifsubstituteblocks BattleScript_DefogIfCanClearHazards
 	jumpifstat BS_TARGET, CMP_NOT_EQUAL, STAT_EVASION, MIN_STAT_STAGE, BattleScript_DefogWorks
 BattleScript_DefogIfCanClearHazards:
-	defogclear BS_ATTACKER, FALSE, BattleScript_FailedFromAtkString
+	trydefog FALSE, BattleScript_FailedFromAtkString
 BattleScript_DefogWorks:
 	accuracycheck BattleScript_PrintMoveMissed, ACC_CURR_MOVE
 	attackstring
@@ -2169,7 +2176,7 @@ BattleScript_DefogPrintString::
 	waitmessage B_WAIT_TIME_LONG
 BattleScript_DefogTryHazards::
 	copybyte gEffectBattler, gBattlerAttacker
-	defogclear BS_ATTACKER, TRUE, NULL
+	trydefog TRUE, NULL
 	copybyte gBattlerAttacker, gEffectBattler
 	goto BattleScript_MoveEnd
 BattleScript_DefogTryHazardsWithAnim:
@@ -4833,8 +4840,11 @@ BattleScript_EffectThief::
 	goto BattleScript_EffectHit
 
 BattleScript_EffectHitPreventEscape:
+	attackcanceler
+	accuracycheck BattleScript_PrintMoveMissed, ACC_CURR_MOVE
 	setmoveeffect MOVE_EFFECT_PREVENT_ESCAPE
-	goto BattleScript_EffectHit
+	seteffectprimary
+	goto BattleScript_HitFromAtkString
 
 BattleScript_EffectMeanLook::
 	attackcanceler
@@ -6843,7 +6853,7 @@ BattleScript_DamagingWeatherHeal:
 	printstring STRINGID_ICEBODYHPGAIN
 	waitmessage B_WAIT_TIME_LONG
 BattleScript_DamagingWeatherHpChange:
-	orword gHitMarker, HITMARKER_SKIP_DMG_TRACK | HITMARKER_IGNORE_SUBSTITUTE | HITMARKER_PASSIVE_DAMAGE | HITMARKER_GRUDGE
+	orword gHitMarker, HITMARKER_IGNORE_BIDE | HITMARKER_IGNORE_SUBSTITUTE | HITMARKER_PASSIVE_DAMAGE | HITMARKER_GRUDGE
 	healthbarupdate BS_ATTACKER
 	datahpupdate BS_ATTACKER
 	tryfaintmon BS_ATTACKER
@@ -6853,7 +6863,7 @@ BattleScript_DamagingWeatherLoopIncrement::
 	addbyte gBattleCommunication, 1
 	jumpifbytenotequal gBattleCommunication, gBattlersCount, BattleScript_DamagingWeatherLoop
 BattleScript_DamagingWeatherContinuesEnd::
-	bicword gHitMarker, HITMARKER_SKIP_DMG_TRACK | HITMARKER_IGNORE_SUBSTITUTE | HITMARKER_PASSIVE_DAMAGE | HITMARKER_GRUDGE
+	bicword gHitMarker, HITMARKER_IGNORE_BIDE | HITMARKER_IGNORE_SUBSTITUTE | HITMARKER_PASSIVE_DAMAGE | HITMARKER_GRUDGE
 	call BattleScript_ActivateWeatherAbilities
 	end2
 
@@ -7390,7 +7400,7 @@ BattleScript_EarthEaterActivates::
 	call BattleScript_AbilityPopUp
 	pause B_WAIT_TIME_LONG
 	tryhealquarterhealth BS_TARGET, BattleScript_EarthEaterRet
-	orword gHitMarker, HITMARKER_SKIP_DMG_TRACK | HITMARKER_IGNORE_SUBSTITUTE | HITMARKER_PASSIVE_DAMAGE
+	orword gHitMarker, HITMARKER_IGNORE_BIDE | HITMARKER_IGNORE_SUBSTITUTE | HITMARKER_PASSIVE_DAMAGE
 	healthbarupdate BS_TARGET
 	datahpupdate BS_TARGET
 	printstring STRINGID_PKMNREGAINEDHEALTH
@@ -7967,7 +7977,7 @@ BattleScript_CudChewActivates::
 	call BattleScript_AbilityPopUp
 	setbyte sBERRY_OVERRIDE, 1 @ override the requirements for eating berries
 	consumeberry BS_TARGET, FALSE
-	orword gHitMarker, HITMARKER_SKIP_DMG_TRACK | HITMARKER_IGNORE_SUBSTITUTE | HITMARKER_PASSIVE_DAMAGE
+	orword gHitMarker, HITMARKER_IGNORE_BIDE | HITMARKER_IGNORE_SUBSTITUTE | HITMARKER_PASSIVE_DAMAGE
 	healthbarupdate BS_ATTACKER
 	datahpupdate BS_ATTACKER
 	setbyte sBERRY_OVERRIDE, 0
@@ -8027,10 +8037,11 @@ BattleScript_IllusionOff::
 	return
 
 BattleScript_CottonDownActivates::
-	setbyte sFIXED_ABILITY_POPUP, TRUE
-	call BattleScript_AbilityPopUp
+	showabilitypopup BS_TARGET
+	pause B_WAIT_TIME_LONG
+	destroyabilitypopup
 	copybyte gEffectBattler, gBattlerTarget
-	savetarget
+	swapattackerwithtarget
 	setbyte gBattlerTarget, 0
 BattleScript_CottonDownLoop:
 	jumpiffainted BS_TARGET, TRUE, BattleScript_CottonDownLoopIncrement
@@ -8049,8 +8060,7 @@ BattleScript_CottonDownLoopIncrement:
 	addbyte gBattlerTarget, 1
 	jumpifbytenotequal gBattlerTarget, gBattlersCount, BattleScript_CottonDownLoop
 BattleScript_CottonDownReturn:
-	restoretarget
-	destroyabilitypopup
+	swapattackerwithtarget
 	return
 
 BattleScript_AnticipationActivates::
@@ -9114,14 +9124,14 @@ BattleScript_GrassyTerrainLoop:
 	printstring STRINGID_GRASSYTERRAINHEALS
 	waitmessage B_WAIT_TIME_LONG
 BattleScript_GrassyTerrainHpChange:
-	orword gHitMarker, HITMARKER_SKIP_DMG_TRACK | HITMARKER_IGNORE_SUBSTITUTE | HITMARKER_PASSIVE_DAMAGE
+	orword gHitMarker, HITMARKER_IGNORE_BIDE | HITMARKER_IGNORE_SUBSTITUTE | HITMARKER_PASSIVE_DAMAGE
 	healthbarupdate BS_ATTACKER
 	datahpupdate BS_ATTACKER
 BattleScript_GrassyTerrainLoopIncrement::
 	addbyte gBattleCommunication, 1
 	jumpifbytenotequal gBattleCommunication, gBattlersCount, BattleScript_GrassyTerrainLoop
 BattleScript_GrassyTerrainLoopEnd::
-	bicword gHitMarker, HITMARKER_SKIP_DMG_TRACK | HITMARKER_IGNORE_SUBSTITUTE | HITMARKER_PASSIVE_DAMAGE
+	bicword gHitMarker, HITMARKER_IGNORE_BIDE | HITMARKER_IGNORE_SUBSTITUTE | HITMARKER_PASSIVE_DAMAGE
 	jumpifword CMP_COMMON_BITS, gFieldStatuses, STATUS_FIELD_TERRAIN_PERMANENT, BattleScript_GrassyTerrainHealEnd
 BattleScript_GrassyTerrainHealEnd:
 	end2
@@ -9399,7 +9409,7 @@ BattleScript_KingsShieldEffect::
 	return
 
 BattleScript_BanefulBunkerEffect::
-	orword gHitMarker, HITMARKER_IGNORE_SUBSTITUTE | HITMARKER_IGNORE_SAFEGUARD | HITMARKER_PASSIVE_DAMAGE
+	orword gHitMarker, HITMARKER_IGNORE_SUBSTITUTE | HITMARKER_STATUS_ABILITY_EFFECT | HITMARKER_PASSIVE_DAMAGE
 	bichalfword gMoveResultFlags, MOVE_RESULT_NO_EFFECT
 	seteffectsecondary
 	setmoveeffect 0
@@ -9677,7 +9687,7 @@ BattleScript_ItemHealHP_RemoveItemRet_Anim:
 	playanimation BS_SCRIPTING, B_ANIM_HELD_ITEM_EFFECT
 	printstring STRINGID_PKMNSITEMRESTOREDHEALTH
 	waitmessage B_WAIT_TIME_LONG
-	orword gHitMarker, HITMARKER_SKIP_DMG_TRACK | HITMARKER_IGNORE_SUBSTITUTE | HITMARKER_PASSIVE_DAMAGE
+	orword gHitMarker, HITMARKER_IGNORE_BIDE | HITMARKER_IGNORE_SUBSTITUTE | HITMARKER_PASSIVE_DAMAGE
 	healthbarupdate BS_SCRIPTING
 	datahpupdate BS_SCRIPTING
 	removeitem BS_SCRIPTING
@@ -9692,7 +9702,7 @@ BattleScript_ItemHealHP_RemoveItemEnd2_Anim:
 	playanimation BS_ATTACKER, B_ANIM_HELD_ITEM_EFFECT
 	printstring STRINGID_PKMNSITEMRESTOREDHEALTH
 	waitmessage B_WAIT_TIME_LONG
-	orword gHitMarker, HITMARKER_SKIP_DMG_TRACK | HITMARKER_IGNORE_SUBSTITUTE | HITMARKER_PASSIVE_DAMAGE
+	orword gHitMarker, HITMARKER_IGNORE_BIDE | HITMARKER_IGNORE_SUBSTITUTE | HITMARKER_PASSIVE_DAMAGE
 	healthbarupdate BS_ATTACKER
 	datahpupdate BS_ATTACKER
 	removeitem BS_ATTACKER
@@ -9748,7 +9758,7 @@ BattleScript_ItemHealHP_Ret::
 	playanimation BS_ATTACKER, B_ANIM_HELD_ITEM_EFFECT
 	printstring STRINGID_PKMNSITEMRESTOREDHPALITTLE
 	waitmessage B_WAIT_TIME_LONG
-	orword gHitMarker, HITMARKER_SKIP_DMG_TRACK | HITMARKER_IGNORE_SUBSTITUTE | HITMARKER_IGNORE_DISGUISE | HITMARKER_PASSIVE_DAMAGE
+	orword gHitMarker, HITMARKER_IGNORE_BIDE | HITMARKER_IGNORE_SUBSTITUTE | HITMARKER_IGNORE_DISGUISE | HITMARKER_PASSIVE_DAMAGE
 	healthbarupdate BS_ATTACKER
 	datahpupdate BS_ATTACKER
 	return
@@ -9803,7 +9813,7 @@ BattleScript_BerryConfuseHealEnd2_Anim:
 	playanimation BS_SCRIPTING, B_ANIM_HELD_ITEM_EFFECT
 	printstring STRINGID_PKMNSITEMRESTOREDHEALTH
 	waitmessage B_WAIT_TIME_LONG
-	orword gHitMarker, HITMARKER_SKIP_DMG_TRACK | HITMARKER_IGNORE_SUBSTITUTE | HITMARKER_PASSIVE_DAMAGE
+	orword gHitMarker, HITMARKER_IGNORE_BIDE | HITMARKER_IGNORE_SUBSTITUTE | HITMARKER_PASSIVE_DAMAGE
 	healthbarupdate BS_SCRIPTING
 	datahpupdate BS_SCRIPTING
 	printstring STRINGID_FORXCOMMAYZ
@@ -9822,7 +9832,7 @@ BattleScript_BerryConfuseHealRet_Anim:
 	playanimation BS_SCRIPTING, B_ANIM_HELD_ITEM_EFFECT
 	printstring STRINGID_PKMNSITEMRESTOREDHEALTH
 	waitmessage B_WAIT_TIME_LONG
-	orword gHitMarker, HITMARKER_SKIP_DMG_TRACK | HITMARKER_IGNORE_SUBSTITUTE | HITMARKER_PASSIVE_DAMAGE
+	orword gHitMarker, HITMARKER_IGNORE_BIDE | HITMARKER_IGNORE_SUBSTITUTE | HITMARKER_PASSIVE_DAMAGE
 	healthbarupdate BS_SCRIPTING
 	datahpupdate BS_SCRIPTING
 	printstring STRINGID_FORXCOMMAYZ
@@ -10560,7 +10570,7 @@ BattleScript_DamageNonTypesLoop::
 	waitmessage B_WAIT_TIME_LONG
 	effectivenesssound
 	hitanimation BS_ATTACKER
-	orword gHitMarker, HITMARKER_SKIP_DMG_TRACK | HITMARKER_IGNORE_SUBSTITUTE | HITMARKER_PASSIVE_DAMAGE | HITMARKER_GRUDGE
+	orword gHitMarker, HITMARKER_IGNORE_BIDE | HITMARKER_IGNORE_SUBSTITUTE | HITMARKER_PASSIVE_DAMAGE | HITMARKER_GRUDGE
 	healthbarupdate BS_ATTACKER
 	datahpupdate BS_ATTACKER
 	tryfaintmon BS_ATTACKER
@@ -10570,7 +10580,7 @@ BattleScript_DamageNonTypesLoopIncrement::
 	addbyte gBattleCommunication, 1
 	jumpifbytenotequal gBattleCommunication, gBattlersCount, BattleScript_DamageNonTypesLoop
 BattleScript_DamageNonTypesContinuesEnd::
-	bicword gHitMarker, HITMARKER_SKIP_DMG_TRACK | HITMARKER_IGNORE_SUBSTITUTE | HITMARKER_PASSIVE_DAMAGE | HITMARKER_GRUDGE
+	bicword gHitMarker, HITMARKER_IGNORE_BIDE | HITMARKER_IGNORE_SUBSTITUTE | HITMARKER_PASSIVE_DAMAGE | HITMARKER_GRUDGE
 	end2
 
 BattleScript_EffectTryReducePP::
