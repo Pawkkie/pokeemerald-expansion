@@ -1245,11 +1245,12 @@ static bool32 TryAegiFormChange(void)
 bool32 ProteanTryChangeType(u32 battler, u32 ability, u32 move, u32 moveType)
 {
       if ((ability == ABILITY_PROTEAN || ability == ABILITY_LIBERO)
+         && !gDisableStructs[gBattlerAttacker].usedProteanLibero
          && (gBattleMons[battler].type1 != moveType || gBattleMons[battler].type2 != moveType
              || (gBattleMons[battler].type3 != moveType && gBattleMons[battler].type3 != TYPE_MYSTERY))
          && move != MOVE_STRUGGLE)
     {
-        SET_BATTLER_TYPE(gBattlerAttacker, moveType);
+        SET_BATTLER_TYPE(battler, moveType);
         return TRUE;
     }
     return FALSE;
@@ -1325,6 +1326,8 @@ static void Cmd_attackcanceler(void)
     // Check Protean activation.
     if (ProteanTryChangeType(gBattlerAttacker, attackerAbility, gCurrentMove, moveType))
     {
+        if (B_PROTEAN_LIBERO == GEN_9)
+            gDisableStructs[gBattlerAttacker].usedProteanLibero = TRUE;
         PREPARE_TYPE_BUFFER(gBattleTextBuff1, moveType);
         gBattlerAbility = gBattlerAttacker;
         BattleScriptPushCursor();
@@ -10666,7 +10669,9 @@ static void Cmd_setprotectlike(void)
     if (gCurrentTurnActionNumber == (gBattlersCount - 1))
         notLastTurn = FALSE;
 
-    if (sProtectSuccessRates[gDisableStructs[gBattlerAttacker].protectUses] >= Random() && notLastTurn)
+    if ((sProtectSuccessRates[gDisableStructs[gBattlerAttacker].protectUses] >= Random() && notLastTurn)
+        || (gCurrentMove == MOVE_WIDE_GUARD && B_WIDE_GUARD != GEN_5)
+        || (gCurrentMove == MOVE_QUICK_GUARD && B_QUICK_GUARD != GEN_5))
     {
         if (!gBattleMoves[gCurrentMove].argument) // Protects one mon only.
         {
@@ -12422,6 +12427,10 @@ static void Cmd_metronome(void)
     u32 moveCount = MOVES_COUNT_GEN4;
 #elif B_METRONOME_MOVES >= GEN_3
     u32 moveCount = MOVES_COUNT_GEN3;
+#elif B_METRONOME_MOVES >= GEN_2
+    u32 moveCount = MOVES_COUNT_GEN2;
+#else
+    u32 moveCount = MOVES_COUNT_GEN1;
 #endif
 
     gCurrentMove = RandomUniformExcept(RNG_METRONOME, 1, moveCount - 1, InvalidMetronomeMove);
@@ -14136,6 +14145,11 @@ static void Cmd_tryimprison(void)
     {
         gBattlescriptCurrInstr = cmd->failInstr;
     }
+    else if (B_IMPRISON >= GEN_5)
+    {
+        gStatuses3[gBattlerAttacker] |= STATUS3_IMPRISONED_OTHERS;
+        gBattlescriptCurrInstr = cmd->nextInstr;
+    }
     else
     {
         u8 battler, sideAttacker;
@@ -14870,7 +14884,8 @@ static void Cmd_handleballthrow(void)
                     ballMultiplier = 400;
                 break;
             case ITEM_DUSK_BALL:
-                if ((GetTimeOfDay() == TIME_EVENING || GetTimeOfDay() == TIME_NIGHT) || gMapHeader.cave || gMapHeader.mapType == MAP_TYPE_UNDERGROUND)
+                i = GetTimeOfDay();
+                if (i == TIME_EVENING || i == TIME_NIGHT || gMapHeader.cave || gMapHeader.mapType == MAP_TYPE_UNDERGROUND)
                     ballMultiplier = (B_DUSK_BALL_MODIFIER >= GEN_7 ? 300 : 350);
                 break;
             case ITEM_QUICK_BALL:
@@ -15043,8 +15058,16 @@ static void Cmd_handleballthrow(void)
             }
             else
             {
-                odds = Sqrt(Sqrt(16711680 / odds));
-                odds = 1048560 / odds;
+                if (P_CATCH_CURVE >= GEN_6)
+                {
+                    odds = (255 * 255 * 255) / (odds * odds * odds);
+                    odds = 65536 / Sqrt(Sqrt(Sqrt(Sqrt(odds))));
+                }
+                else
+                {
+                    odds = Sqrt(Sqrt(16711680 / odds));
+                    odds = 1048560 / odds;
+                }
                 for (shakes = 0; shakes < maxShakes && Random() < odds; shakes++);
             }
 

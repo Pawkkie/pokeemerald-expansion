@@ -3789,9 +3789,6 @@ static void TryDoEventsBeforeFirstTurn(void)
         *(gBattleStruct->monToSwitchIntoId + i) = PARTY_SIZE;
         gChosenActionByBattler[i] = B_ACTION_NONE;
         gChosenMoveByBattler[i] = MOVE_NONE;
-        // Record party slots of player's mons that appeared in battle
-        if (!BattlerHasAi(i))
-            gBattleStruct->appearedInBattle |= gBitTable[gBattlerPartyIndexes[i]];
     }
     TurnValuesCleanUp(FALSE);
     SpecialStatusesClear();
@@ -3804,7 +3801,12 @@ static void TryDoEventsBeforeFirstTurn(void)
         gBattleCommunication[i] = 0;
 
     for (i = 0; i < gBattlersCount; i++)
+    {
         gBattleMons[i].status2 &= ~STATUS2_FLINCHED;
+        // Record party slots of player's mons that appeared in battle
+        if (!BattlerHasAi(i))
+            gBattleStruct->appearedInBattle |= gBitTable[gBattlerPartyIndexes[i]];
+    }
 
     *(&gBattleStruct->turnEffectsTracker) = 0;
     *(&gBattleStruct->turnEffectsBattlerId) = 0;
@@ -4660,6 +4662,9 @@ s8 GetMovePriority(u32 battler, u16 move)
 {
     s8 priority;
     u16 ability = GetBattlerAbility(battler);
+
+    if (gBattleStruct->zmove.toBeUsed[battler] && gBattleMoves[move].power != 0)
+        move = gBattleStruct->zmove.toBeUsed[battler];
 
     priority = gBattleMoves[move].priority;
 
@@ -5593,12 +5598,7 @@ void SetTypeBeforeUsingMove(u32 move, u32 battlerAtk)
             gBattleStruct->dynamicMoveType++;
         gBattleStruct->dynamicMoveType |= F_DYNAMIC_TYPE_IGNORE_PHYSICALITY | F_DYNAMIC_TYPE_SET;
     }
-    else if (gBattleMoves[move].effect == EFFECT_CHANGE_TYPE_ON_ITEM)
-    {
-        if (holdEffect == gBattleMoves[move].argument)
-            gBattleStruct->dynamicMoveType = ItemId_GetSecondaryId(gBattleMons[battlerAtk].item) | F_DYNAMIC_TYPE_SET;
-    }
-    else if (gBattleMoves[move].effect == EFFECT_IVY_CUDGEL && holdEffect == HOLD_EFFECT_MASK)
+    else if (gBattleMoves[move].effect == EFFECT_CHANGE_TYPE_ON_ITEM && holdEffect == gBattleMoves[move].argument)
     {
         gBattleStruct->dynamicMoveType = ItemId_GetSecondaryId(gBattleMons[battlerAtk].item) | F_DYNAMIC_TYPE_SET;
     }
