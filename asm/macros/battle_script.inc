@@ -362,11 +362,6 @@
 	.byte 0x3f
 	.endm
 
-	.macro jumpifaffectedbyprotect failInstr:req
-	.byte 0x40
-	.4byte \failInstr
-	.endm
-
 	.macro call instr:req
 	.byte 0x41
 	.4byte \instr
@@ -1555,6 +1550,10 @@
 	callnative BS_TryDefog
 	.byte \clear
 	.4byte \failInstr
+	.endm
+
+	.macro trytriggerstatusform
+	callnative BS_TryTriggerStatusForm
 	.endm
 
 @ various command changed to more readable macros

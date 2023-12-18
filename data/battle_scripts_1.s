@@ -8072,12 +8072,14 @@ BattleScript_AnticipationActivates::
 BattleScript_AftermathDmg::
 	pause B_WAIT_TIME_SHORT
 	call BattleScript_AbilityPopUp
+	jumpifability BS_ATTACKER, ABILITY_MAGIC_GUARD, BattleScript_AftermathDmgRet
 	orword gHitMarker, HITMARKER_IGNORE_SUBSTITUTE | HITMARKER_PASSIVE_DAMAGE
 	healthbarupdate BS_ATTACKER
 	datahpupdate BS_ATTACKER
 	printstring STRINGID_AFTERMATHDMG
 	waitmessage B_WAIT_TIME_LONG
 	tryfaintmon BS_ATTACKER
+BattleScript_AftermathDmgRet:
 	return
 
 BattleScript_DampPreventsAftermath::
@@ -8342,6 +8344,8 @@ BattleScript_MoveEffectSleep::
 BattleScript_UpdateEffectStatusIconRet::
 	updatestatusicon BS_EFFECT_BATTLER
 	waitstate
+	trytriggerstatusform
+	flushtextbox
 	return
 
 BattleScript_YawnMakesAsleep::
@@ -10438,9 +10442,6 @@ BattleScript_PastelVeilLoopIncrement:
 BattleScript_PastelVeilEnd:
 	end3
 
-sByteFour:
-.byte MAX_BATTLERS_COUNT
-
 BattleScript_NeutralizingGasExits::
 	savetarget
 	pause B_WAIT_TIME_SHORT
@@ -10450,7 +10451,7 @@ BattleScript_NeutralizingGasExits::
 BattleScript_NeutralizingGasExitsLoop:
 	switchinabilities BS_TARGET
 	addbyte gBattlerTarget, 1
-	jumpifbytenotequal gBattlerTarget, sByteFour, BattleScript_NeutralizingGasExitsLoop	@ SOMEHOW, comparing to gBattlersCount is problematic.
+	jumpifbytenotequal gBattlerTarget, gBattlersCount, BattleScript_NeutralizingGasExitsLoop
 	restoretarget
 	return
 
