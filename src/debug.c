@@ -4992,7 +4992,7 @@ static void DebugAction_PartyBoxes_AccessPC(u8 taskId)
 
 static void DebugAction_PartyBoxes_MoveReminder(u8 taskId)
 {
-    Debug_DestroyMenu_Full_Script(taskId, FallarborTown_MoveRelearnersHouse_EventScript_ChooseMon);
+    // Debug_DestroyMenu_Full_Script(taskId, FallarborTown_MoveRelearnersHouse_EventScript_ChooseMon);
 }
 
 static void DebugAction_PartyBoxes_HatchAnEgg(u8 taskId)
