@@ -300,25 +300,19 @@ static void PlayerPartnerHandleDrawTrainerPic(u32 battler)
     {
         trainerPicId = TRAINER_BACK_PIC_STEVEN;
         xPos = 90;
-        yPos = (8 - gTrainerBackPicCoords[trainerPicId].size) * 4 + 80;
-    }
-    else if (gPartnerTrainerId >= TRAINER_CUSTOM_PARTNER)
-    {
-        trainerPicId = gPartnerSpriteId;
-        xPos = 90;
-        yPos = (8 - gTrainerBackPicCoords[trainerPicId].size) * 4 + 80;
+        yPos = (8 - gTrainerBacksprites[trainerPicId].coordinates.size) * 4 + 80;
     }
     else if (IsAiVsAiBattle())
     {
         trainerPicId = gTrainers[gPartnerTrainerId].trainerPic;
         xPos = 60;
-        yPos = (8 - gTrainerFrontPicCoords[trainerPicId].size) * 4 + 80;
+        yPos = (8 - gTrainerSprites[trainerPicId].y_offset) * 4 + 80;
     }
     else
     {
         trainerPicId = GetFrontierTrainerFrontSpriteId(gPartnerTrainerId);
         xPos = 32;
-        yPos = (8 - gTrainerFrontPicCoords[trainerPicId].size) * 4 + 80;
+        yPos = (8 - gTrainerSprites[trainerPicId].y_offset) * 4 + 80;
     }
 
     // Use back pic only if the partner is Steven or a custom partner.
@@ -439,14 +433,12 @@ static void PlayerPartnerHandleIntroTrainerBallThrow(u32 battler)
 {
     const u32 *trainerPal;
 
-    if (gPartnerTrainerId == TRAINER_STEVEN_PARTNER)
-        trainerPal = gTrainerBackPicPaletteTable[TRAINER_BACK_PIC_STEVEN].data;
-    else if (gPartnerTrainerId >= TRAINER_CUSTOM_PARTNER) // Custom multi battle.
-        trainerPal = gTrainerBackPicPaletteTable[gPartnerSpriteId].data;
+    if (gPartnerTrainerId > TRAINER_PARTNER(PARTNER_NONE))
+        trainerPal = gTrainerBacksprites[gPartnerSpriteId].palette.data;
     else if (IsAiVsAiBattle())
-        trainerPal = gTrainerFrontPicPaletteTable[gTrainers[gPartnerTrainerId].trainerPic].data;
+        trainerPal = gTrainerSprites[gTrainers[gPartnerTrainerId].trainerPic].palette.data;
     else
-        trainerPal = gTrainerFrontPicPaletteTable[GetFrontierTrainerFrontSpriteId(gPartnerTrainerId)].data; // 2 vs 2 multi battle in Battle Frontier, load front sprite and pal.
+        trainerPal = gTrainerSprites[GetFrontierTrainerFrontSpriteId(gPartnerTrainerId)].palette.data; // 2 vs 2 multi battle in Battle Frontier, load front sprite and pal.
 
     BtlController_HandleIntroTrainerBallThrow(battler, 0xD6F9, trainerPal, 24, Controller_PlayerPartnerShowIntroHealthbox);
 }
