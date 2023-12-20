@@ -34,7 +34,6 @@ EWRAM_DATA static u8 sHeaderBoxWindowId = 0;
 EWRAM_DATA u8 sItemIconSpriteId = 0;
 EWRAM_DATA u8 sItemIconSpriteId2 = 0;
 
-#include "data/text/item_descriptions.h"
 #include "data/items.h"
 
 // code
