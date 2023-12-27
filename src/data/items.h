@@ -1287,8 +1287,9 @@ const struct Item gItems[] =
                                        "ups Attack, but\n"
                                        "reduces Defense."),
         .pocket = POCKET_ITEMS,
-        .type = ITEM_USE_BAG_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_CannotUse, // Todo
+        .type = ITEM_USE_PARTY_MENU,
+        .fieldUseFunc = ItemUseOutOfBattle_Mint,
+        .secondaryId = NATURE_LONELY,
         .flingPower = 10,
     },
 
@@ -1300,8 +1301,9 @@ const struct Item gItems[] =
                                        "ups Attack, but\n"
                                        "reduces Sp. Atk."),
         .pocket = POCKET_ITEMS,
-        .type = ITEM_USE_BAG_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_CannotUse, // Todo
+        .type = ITEM_USE_PARTY_MENU,
+        .fieldUseFunc = ItemUseOutOfBattle_Mint,
+        .secondaryId = NATURE_ADAMANT,
         .flingPower = 10,
     },
 
@@ -1313,8 +1315,9 @@ const struct Item gItems[] =
                                        "ups Attack, but\n"
                                        "reduces Sp. Def."),
         .pocket = POCKET_ITEMS,
-        .type = ITEM_USE_BAG_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_CannotUse, // Todo
+        .type = ITEM_USE_PARTY_MENU,
+        .fieldUseFunc = ItemUseOutOfBattle_Mint,
+        .secondaryId = NATURE_NAUGHTY,
         .flingPower = 10,
     },
 
@@ -1326,8 +1329,9 @@ const struct Item gItems[] =
                                        "ups Attack, but\n"
                                        "reduces Speed."),
         .pocket = POCKET_ITEMS,
-        .type = ITEM_USE_BAG_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_CannotUse, // Todo
+        .type = ITEM_USE_PARTY_MENU,
+        .fieldUseFunc = ItemUseOutOfBattle_Mint,
+        .secondaryId = NATURE_BRAVE,
         .flingPower = 10,
     },
 
@@ -1339,8 +1343,9 @@ const struct Item gItems[] =
                                        "ups Defense, but\n"
                                        "reduces Attack."),
         .pocket = POCKET_ITEMS,
-        .type = ITEM_USE_BAG_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_CannotUse, // Todo
+        .type = ITEM_USE_PARTY_MENU,
+        .fieldUseFunc = ItemUseOutOfBattle_Mint,
+        .secondaryId = NATURE_BOLD,
         .flingPower = 10,
     },
 
@@ -1352,8 +1357,9 @@ const struct Item gItems[] =
                                        "ups Defense, but\n"
                                        "reduces Sp. Atk."),
         .pocket = POCKET_ITEMS,
-        .type = ITEM_USE_BAG_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_CannotUse, // Todo
+        .type = ITEM_USE_PARTY_MENU,
+        .fieldUseFunc = ItemUseOutOfBattle_Mint,
+        .secondaryId = NATURE_IMPISH,
         .flingPower = 10,
     },
 
@@ -1365,8 +1371,9 @@ const struct Item gItems[] =
                                        "ups Defense, but\n"
                                        "reduces Sp. Def."),
         .pocket = POCKET_ITEMS,
-        .type = ITEM_USE_BAG_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_CannotUse, // Todo
+        .type = ITEM_USE_PARTY_MENU,
+        .fieldUseFunc = ItemUseOutOfBattle_Mint,
+        .secondaryId = NATURE_LAX,
         .flingPower = 10,
     },
 
@@ -1378,8 +1385,9 @@ const struct Item gItems[] =
                                        "ups Defense, but\n"
                                        "reduces Speed."),
         .pocket = POCKET_ITEMS,
-        .type = ITEM_USE_BAG_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_CannotUse, // Todo
+        .type = ITEM_USE_PARTY_MENU,
+        .fieldUseFunc = ItemUseOutOfBattle_Mint,
+        .secondaryId = NATURE_RELAXED,
         .flingPower = 10,
     },
 
@@ -1391,8 +1399,9 @@ const struct Item gItems[] =
                                        "ups Sp. Atk, but\n"
                                        "reduces Attack."),
         .pocket = POCKET_ITEMS,
-        .type = ITEM_USE_BAG_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_CannotUse, // Todo
+        .type = ITEM_USE_PARTY_MENU,
+        .fieldUseFunc = ItemUseOutOfBattle_Mint,
+        .secondaryId = NATURE_MODEST,
         .flingPower = 10,
     },
 
@@ -1404,8 +1413,9 @@ const struct Item gItems[] =
                                        "ups Sp. Atk, but\n"
                                        "reduces Defense."),
         .pocket = POCKET_ITEMS,
-        .type = ITEM_USE_BAG_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_CannotUse, // Todo
+        .type = ITEM_USE_PARTY_MENU,
+        .fieldUseFunc = ItemUseOutOfBattle_Mint,
+        .secondaryId = NATURE_MILD,
         .flingPower = 10,
     },
 
@@ -1417,8 +1427,9 @@ const struct Item gItems[] =
                                        "ups Sp. Atk, but\n"
                                        "reduces Sp. Def."),
         .pocket = POCKET_ITEMS,
-        .type = ITEM_USE_BAG_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_CannotUse, // Todo
+        .type = ITEM_USE_PARTY_MENU,
+        .fieldUseFunc = ItemUseOutOfBattle_Mint,
+        .secondaryId = NATURE_RASH,
         .flingPower = 10,
     },
 
@@ -1430,8 +1441,9 @@ const struct Item gItems[] =
                                        "ups Sp. Atk, but\n"
                                        "reduces Speed."),
         .pocket = POCKET_ITEMS,
-        .type = ITEM_USE_BAG_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_CannotUse, // Todo
+        .type = ITEM_USE_PARTY_MENU,
+        .fieldUseFunc = ItemUseOutOfBattle_Mint,
+        .secondaryId = NATURE_QUIET,
         .flingPower = 10,
     },
 
@@ -1443,8 +1455,9 @@ const struct Item gItems[] =
                                        "ups Sp. Def, but\n"
                                        "reduces Attack."),
         .pocket = POCKET_ITEMS,
-        .type = ITEM_USE_BAG_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_CannotUse, // Todo
+        .type = ITEM_USE_PARTY_MENU,
+        .fieldUseFunc = ItemUseOutOfBattle_Mint,
+        .secondaryId = NATURE_CALM,
         .flingPower = 10,
     },
 
@@ -1456,8 +1469,9 @@ const struct Item gItems[] =
                                        "ups Sp. Def, but\n"
                                        "reduces Defense."),
         .pocket = POCKET_ITEMS,
-        .type = ITEM_USE_BAG_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_CannotUse, // Todo
+        .type = ITEM_USE_PARTY_MENU,
+        .fieldUseFunc = ItemUseOutOfBattle_Mint,
+        .secondaryId = NATURE_GENTLE,
         .flingPower = 10,
     },
 
@@ -1469,8 +1483,9 @@ const struct Item gItems[] =
                                        "ups Sp. Def, but\n"
                                        "reduces Sp. Atk."),
         .pocket = POCKET_ITEMS,
-        .type = ITEM_USE_BAG_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_CannotUse, // Todo
+        .type = ITEM_USE_PARTY_MENU,
+        .fieldUseFunc = ItemUseOutOfBattle_Mint,
+        .secondaryId = NATURE_CAREFUL,
         .flingPower = 10,
     },
 
@@ -1482,8 +1497,9 @@ const struct Item gItems[] =
                                        "ups Sp. Def, but\n"
                                        "reduces Speed."),
         .pocket = POCKET_ITEMS,
-        .type = ITEM_USE_BAG_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_CannotUse, // Todo
+        .type = ITEM_USE_PARTY_MENU,
+        .fieldUseFunc = ItemUseOutOfBattle_Mint,
+        .secondaryId = NATURE_SASSY,
         .flingPower = 10,
     },
 
@@ -1495,8 +1511,9 @@ const struct Item gItems[] =
                                        "ups Speed, but\n"
                                        "reduces Attack."),
         .pocket = POCKET_ITEMS,
-        .type = ITEM_USE_BAG_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_CannotUse, // Todo
+        .type = ITEM_USE_PARTY_MENU,
+        .fieldUseFunc = ItemUseOutOfBattle_Mint,
+        .secondaryId = NATURE_TIMID,
         .flingPower = 10,
     },
 
@@ -1508,8 +1525,9 @@ const struct Item gItems[] =
                                        "ups Speed, but\n"
                                        "reduces Defense."),
         .pocket = POCKET_ITEMS,
-        .type = ITEM_USE_BAG_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_CannotUse, // Todo
+        .type = ITEM_USE_PARTY_MENU,
+        .fieldUseFunc = ItemUseOutOfBattle_Mint,
+        .secondaryId = NATURE_HASTY,
         .flingPower = 10,
     },
 
@@ -1521,8 +1539,9 @@ const struct Item gItems[] =
                                        "ups Speed, but\n"
                                        "reduces Sp. Atk."),
         .pocket = POCKET_ITEMS,
-        .type = ITEM_USE_BAG_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_CannotUse, // Todo
+        .type = ITEM_USE_PARTY_MENU,
+        .fieldUseFunc = ItemUseOutOfBattle_Mint,
+        .secondaryId = NATURE_JOLLY,
         .flingPower = 10,
     },
 
@@ -1534,8 +1553,9 @@ const struct Item gItems[] =
                                        "ups Speed, but\n"
                                        "reduces Sp. Def."),
         .pocket = POCKET_ITEMS,
-        .type = ITEM_USE_BAG_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_CannotUse, // Todo
+        .type = ITEM_USE_PARTY_MENU,
+        .fieldUseFunc = ItemUseOutOfBattle_Mint,
+        .secondaryId = NATURE_NAIVE,
         .flingPower = 10,
     },
 
@@ -1547,8 +1567,9 @@ const struct Item gItems[] =
                                        "makes each stat\n"
                                        "grow equally."),
         .pocket = POCKET_ITEMS,
-        .type = ITEM_USE_BAG_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_CannotUse, // Todo
+        .type = ITEM_USE_PARTY_MENU,
+        .fieldUseFunc = ItemUseOutOfBattle_Mint,
+        .secondaryId = NATURE_SERIOUS,
         .flingPower = 10,
     },
 
@@ -1645,8 +1666,8 @@ const struct Item gItems[] =
                                        "Level of a single\n"
                                        "Pokémon by one."),
         .pocket = POCKET_ITEMS,
-        .type = ITEM_USE_BAG_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_CannotUse, // Todo
+        .type = ITEM_USE_PARTY_MENU,
+        .fieldUseFunc = ItemUseOutOfBattle_DynamaxCandy,
         .flingPower = 30,
     },
 

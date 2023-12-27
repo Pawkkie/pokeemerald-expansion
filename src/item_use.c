@@ -808,6 +808,12 @@ void ItemUseOutOfBattle_AbilityPatch(u8 taskId)
     SetUpItemUseCallback(taskId);
 }
 
+void ItemUseOutOfBattle_Mint(u8 taskId)
+{
+    gItemUseCB = ItemUseCB_Mint;
+    SetUpItemUseCallback(taskId);
+}
+
 void ItemUseOutOfBattle_AbilityChanger(u8 taskId)
 {
     gItemUseCB = ItemUseCB_AbilityChanger;
@@ -847,6 +853,12 @@ void ItemUseOutOfBattle_PPUp(u8 taskId)
 void ItemUseOutOfBattle_RareCandy(u8 taskId)
 {
     gItemUseCB = ItemUseCB_RareCandy;
+    SetUpItemUseCallback(taskId);
+}
+
+void ItemUseOutOfBattle_DynamaxCandy(u8 taskId)
+{
+    gItemUseCB = ItemUseCB_DynamaxCandy;
     SetUpItemUseCallback(taskId);
 }
 
