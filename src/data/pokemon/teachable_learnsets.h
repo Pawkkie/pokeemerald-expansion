@@ -35434,6 +35434,7 @@ static const u16 sOinkologneTeachableLearnset[] = {
     MOVE_ZEN_HEADBUTT,
     MOVE_UNAVAILABLE,
 };
+
 #endif //P_FAMILY_LECHONK
 
 #if P_FAMILY_TAROUNTULA
