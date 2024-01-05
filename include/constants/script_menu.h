@@ -122,12 +122,13 @@
 #define MULTI_SLATEPORT_TENT_RULES         111
 #define MULTI_FALLARBOR_TENT_RULES         112
 #define MULTI_TAG_MATCH_TYPE               113
-#define MULTI_SUPER_TRAINING_MENU          114
-#define MULTI_IV_MENU                      115
-#define MULTI_EV_MENU                      116
-#define MULTI_BASE_STATS                   117
-#define MULTI_HYPER_TRAINING_MENU          118
-#define MULTI_FLAVORS                      119
+#define MULTI_BERRY_PLOT                   114
+#define MULTI_SUPER_TRAINING_MENU          115
+#define MULTI_IV_MENU                      116
+#define MULTI_EV_MENU                      117
+#define MULTI_BASE_STATS                   118
+#define MULTI_HYPER_TRAINING_MENU          119
+#define MULTI_FLAVORS                      120
 
 // Lilycove SS Tidal Multichoice Selections
 #define SSTIDAL_SELECTION_SLATEPORT        0
