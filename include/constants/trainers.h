@@ -108,6 +108,7 @@
 #define TRAINER_PIC_LEAF                  90
 #define TRAINER_PIC_RS_BRENDAN            91
 #define TRAINER_PIC_RS_MAY                92
+#define TRAINER_PIC_COUNT                 93
 
 // New front sprites
 #define TRAINER_PIC_BREEDER_F_HGSS        93
