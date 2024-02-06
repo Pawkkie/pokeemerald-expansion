@@ -7,4 +7,10 @@
 #define DEFAULT_3(_default, ...) DEFAULT(_default __VA_OPT__(, THIRD(__VA_ARGS__)))
 #define DEFAULT_4(_default, ...) DEFAULT(_default __VA_OPT__(, FOURTH(__VA_ARGS__)))
 
+/* Expands to the first/second/third/fourth argument. */
+#define FIRST(a, ...) a
+#define SECOND(a, ...) __VA_OPT__(FIRST(__VA_ARGS__))
+#define THIRD(a, ...) __VA_OPT__(SECOND(__VA_ARGS__))
+#define FOURTH(a, ...) __VA_OPT__(THIRD(__VA_ARGS__))
+
 #endif
