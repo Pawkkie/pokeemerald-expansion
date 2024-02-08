@@ -550,6 +550,10 @@ gSpecials::
 	def_special ObjectEventInteractionBerryHasWeed
 	def_special ObjectEventInteractionBerryHasPests
 	def_special CanWaterBerryPlot
+	def_special Script_GetChosenMonOffensiveEV
+	def_special Script_GetChosenMonDefensiveEV
+	def_special Script_GetChosenMonOffensiveIV
+	def_special Script_GetChosenMonDefensiveIV
 	def_special AreChosenMonEVsMaxedOut
 	def_special ResetChosenMonEVs
 	def_special CheckChosenMonCanGainEVs

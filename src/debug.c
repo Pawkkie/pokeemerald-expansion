@@ -109,6 +109,9 @@ enum PartyBoxesMenu
     DEBUG_PARTY_BOXES_MENU_ITEM_HEAL_PARTY,
     DEBUG_PARTY_BOXES_MENU_ITEM_POISON_MONS,
     DEBUG_PARTY_BOXES_MENU_ITEM_CLEAR_BOXES,
+    DEBUG_PARTY_MENU_ITEM_CHECK_EV,
+    DEBUG_PARTY_MENU_ITEM_CHECK_IV,
+    DEBUG_PARTY_MENU_ITEM_CLEAR_PARTY,
 };
 
 enum ScriptMenu
@@ -366,6 +369,9 @@ static void DebugAction_PartyBoxes_HatchAnEgg(u8 taskId);
 static void DebugAction_PartyBoxes_HealParty(u8 taskId);
 static void DebugAction_PartyBoxes_PoisonMons(u8 taskId);
 static void DebugAction_PartyBoxes_ClearBoxes(u8 taskId);
+static void DebugAction_Party_CheckEV(u8 taskId);
+static void DebugAction_Party_CheckIV(u8 taskId);
+static void DebugAction_Party_ClearParty(u8 taskId);
 
 static void DebugAction_FlagsVars_Flags(u8 taskId);
 static void DebugAction_FlagsVars_FlagsSelect(u8 taskId);
@@ -432,6 +438,8 @@ static void DebugAction_BerryFunctions_Weeds(u8 taskId);
 extern const u8 Debug_FlagsNotSetOverworldConfigMessage[];
 extern const u8 Debug_FlagsNotSetBattleConfigMessage[];
 extern const u8 Debug_FlagsAndVarNotSetBattleConfigMessage[];
+extern const u8 Debug_EventScript_CheckEV[];
+extern const u8 Debug_EventScript_CheckIV[];
 extern const u8 Debug_EventScript_Script_1[];
 extern const u8 Debug_EventScript_Script_2[];
 extern const u8 Debug_EventScript_Script_3[];
@@ -515,6 +523,9 @@ static const u8 sDebugText_PartyBoxes_MoveReminder[] =       _("Move Reminder");
 static const u8 sDebugText_PartyBoxes_HatchAnEgg[] =         _("Hatch an Egg");
 static const u8 sDebugText_PartyBoxes_HealParty[] =          _("Heal Party");
 static const u8 sDebugText_PartyBoxes_PoisonParty[] =        _("Poison party");
+static const u8 sDebugText_Party_CheckEV[] =                 _("Check EV");
+static const u8 sDebugText_Party_CheckIV[] =                 _("Check IV");
+static const u8 sDebugText_Party_ClearParty[] =              _("Clear Party");
 static const u8 sDebugText_PartyBoxes_ClearBoxes[] =         _("Clear Storage Boxes");
 // Flags/Vars Menu
 static const u8 sDebugText_FlagsVars_Flags[] =                  _("Set Flag XYZ…{CLEAR_TO 110}{RIGHT_ARROW}");
@@ -696,6 +707,9 @@ static const struct ListMenuItem sDebugMenu_Items_PartyBoxes[] =
     [DEBUG_PARTY_BOXES_MENU_ITEM_HEAL_PARTY]     = {sDebugText_PartyBoxes_HealParty,      DEBUG_PARTY_BOXES_MENU_ITEM_HEAL_PARTY},
     [DEBUG_PARTY_BOXES_MENU_ITEM_POISON_MONS]    = {sDebugText_PartyBoxes_PoisonParty,    DEBUG_PARTY_BOXES_MENU_ITEM_POISON_MONS},
     [DEBUG_PARTY_BOXES_MENU_ITEM_CLEAR_BOXES]    = {sDebugText_PartyBoxes_ClearBoxes,     DEBUG_PARTY_BOXES_MENU_ITEM_CLEAR_BOXES},
+    [DEBUG_PARTY_MENU_ITEM_CHECK_EV]       = {sDebugText_Party_CheckEV,        DEBUG_PARTY_MENU_ITEM_CHECK_EV},
+    [DEBUG_PARTY_MENU_ITEM_CHECK_IV]       = {sDebugText_Party_CheckIV,        DEBUG_PARTY_MENU_ITEM_CHECK_IV},
+    [DEBUG_PARTY_MENU_ITEM_CLEAR_PARTY]    = {sDebugText_Party_ClearParty,     DEBUG_PARTY_MENU_ITEM_CLEAR_PARTY},
 };
 
 static const struct ListMenuItem sDebugMenu_Items_Scripts[] =
@@ -857,6 +871,9 @@ static void (*const sDebugMenu_Actions_PartyBoxes[])(u8) =
     [DEBUG_PARTY_BOXES_MENU_ITEM_HEAL_PARTY]    = DebugAction_PartyBoxes_HealParty,
     [DEBUG_PARTY_BOXES_MENU_ITEM_POISON_MONS]   = DebugAction_PartyBoxes_PoisonMons,
     [DEBUG_PARTY_BOXES_MENU_ITEM_CLEAR_BOXES]   = DebugAction_PartyBoxes_ClearBoxes,
+    [DEBUG_PARTY_MENU_ITEM_CHECK_EV]      = DebugAction_Party_CheckEV,
+    [DEBUG_PARTY_MENU_ITEM_CHECK_IV]      = DebugAction_Party_CheckIV,
+    [DEBUG_PARTY_MENU_ITEM_CLEAR_PARTY]   = DebugAction_Party_ClearParty,
 };
 
 static void (*const sDebugMenu_Actions_Scripts[])(u8) =
@@ -3230,7 +3247,7 @@ static void DebugAction_Give_Pokemon_SelectLevel(u8 taskId)
         if (gTasks[taskId].tIsComplex == FALSE)
         {
             PlaySE(MUS_LEVEL_UP);
-            ScriptGiveMon(sDebugMonData->species, gTasks[taskId].tInput, ITEM_NONE, 0, 0, 0);
+            ScriptGiveMon(sDebugMonData->species, gTasks[taskId].tInput, ITEM_NONE);
             // Set flag for user convenience
             FlagSet(FLAG_SYS_POKEMON_GET);
             Free(sDebugMonData);
@@ -5197,6 +5214,23 @@ static void DebugAction_PartyBoxes_PoisonMons(u8 taskId)
         }
     }
     PlaySE(SE_FIELD_POISON);
+    ScriptContext_Enable();
+    Debug_DestroyMenu_Full(taskId);
+}
+
+static void DebugAction_Party_CheckEV(u8 taskId)
+{
+    Debug_DestroyMenu_Full_Script(taskId, Debug_EventScript_CheckEV);
+}
+
+static void DebugAction_Party_CheckIV(u8 taskId)
+{
+    Debug_DestroyMenu_Full_Script(taskId, Debug_EventScript_CheckIV);
+}
+
+static void DebugAction_Party_ClearParty(u8 taskId)
+{
+    ZeroPlayerPartyMons();
     ScriptContext_Enable();
     Debug_DestroyMenu_Full(taskId);
 }
