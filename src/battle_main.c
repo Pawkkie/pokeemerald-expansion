@@ -2963,6 +2963,10 @@ static void BattleStartClearSetData(void)
     memset(&gSideTimers, 0, sizeof(gSideTimers));
     memset(&gWishFutureKnock, 0, sizeof(gWishFutureKnock));
     memset(&gBattleResults, 0, sizeof(gBattleResults));
+    memset(&gBattleScripting, 0, sizeof(gBattleScripting));
+
+    gBattleScripting.battleStyle = gSaveBlock2Ptr->optionsBattleStyle;
+    gBattleScripting.expOnCatch = (B_EXP_CATCH >= GEN_6);
 
     for (i = 0; i < MAX_BATTLERS_COUNT; i++)
     {
@@ -2999,7 +3003,6 @@ static void BattleStartClearSetData(void)
     gBattlerAttacker = 0;
     gBattlerTarget = 0;
     gEffectBattler = 0;
-    gBattleScripting.battler = 0;
     gBattlerAbility = 0;
     gBattleWeather = 0;
     gHitMarker = 0;
@@ -3014,12 +3017,7 @@ static void BattleStartClearSetData(void)
         gHitMarker |= HITMARKER_NO_ANIMATIONS;
     }
 
-    gBattleScripting.battleStyle = gSaveBlock2Ptr->optionsBattleStyle;
-	gBattleScripting.expOnCatch = (B_EXP_CATCH >= GEN_6);
-	gBattleScripting.monCaught = FALSE;
-
     gMultiHitCounter = 0;
-    gBattleScripting.savedDmg = 0;
     gBattleOutcome = 0;
     gBattleControllerExecFlags = 0;
     gPaydayMoney = 0;
@@ -3032,8 +3030,6 @@ static void BattleStartClearSetData(void)
     gPauseCounterBattle = 0;
     gBattleMoveDamage = 0;
     gIntroSlideFlags = 0;
-    gBattleScripting.animTurn = 0;
-    gBattleScripting.animTargetsHit = 0;
     gLeveledUpInBattle = 0;
     gAbsentBattlerFlags = 0;
     gBattleStruct->runTries = 0;
@@ -3130,6 +3126,8 @@ void SwitchInClearSetData(u32 battler)
             gBattleMons[i].status2 &= ~STATUS2_INFATUATED_WITH(battler);
         if ((gBattleMons[i].status2 & STATUS2_WRAPPED) && *(gBattleStruct->wrappedBy + i) == battler)
             gBattleMons[i].status2 &= ~STATUS2_WRAPPED;
+        if ((gStatuses4[i] & STATUS4_SYRUP_BOMB) && *(gBattleStruct->stickySyrupdBy + i) == battler)
+            gStatuses4[i] &= ~STATUS4_SYRUP_BOMB;
     }
 
     gActionSelectionCursor[battler] = 0;
@@ -3234,6 +3232,8 @@ const u8* FaintClearSetData(u32 battler)
             gBattleMons[i].status2 &= ~STATUS2_INFATUATED_WITH(battler);
         if ((gBattleMons[i].status2 & STATUS2_WRAPPED) && *(gBattleStruct->wrappedBy + i) == battler)
             gBattleMons[i].status2 &= ~STATUS2_WRAPPED;
+        if ((gStatuses4[i] & STATUS4_SYRUP_BOMB) && *(gBattleStruct->stickySyrupdBy + i) == battler)
+            gStatuses4[i] &= ~STATUS4_SYRUP_BOMB;
     }
 
     gActionSelectionCursor[battler] = 0;
@@ -4039,7 +4039,7 @@ static void HandleTurnActionSelectionState(void)
             if ((gBattleTypeFlags & BATTLE_TYPE_HAS_AI || IsWildMonSmart())
                     && (BattlerHasAi(battler) && !(gBattleTypeFlags & BATTLE_TYPE_PALACE)))
             {
-                AI_DATA->mostSuitableMonId = GetMostSuitableMonToSwitchInto(battler, FALSE);
+                AI_DATA->mostSuitableMonId[battler] = GetMostSuitableMonToSwitchInto(battler, FALSE);
                 gBattleStruct->aiMoveOrAction[battler] = ComputeBattleAiScores(battler);
             }
             // fallthrough
@@ -4683,7 +4683,7 @@ s8 GetMovePriority(u32 battler, u16 move)
     {
         priority++;
     }
-    else if (ability == ABILITY_TRIAGE && IsHealingMoveEffect(gBattleMoves[move].effect))
+    else if (ability == ABILITY_TRIAGE && IsHealingMove(move))
         priority += 3;
 
     if (gProtectStructs[battler].quash)
@@ -4720,9 +4720,9 @@ u32 GetWhichBattlerFasterArgs(u32 battler1, u32 battler2, bool32 ignoreChosenMov
             strikesFirst = 1;
         else if (ability2 == ABILITY_STALL && ability1 != ABILITY_STALL)
             strikesFirst = 0;
-        else if (ability1 == ABILITY_MYCELIUM_MIGHT && ability2 != ABILITY_MYCELIUM_MIGHT && IS_MOVE_STATUS(gCurrentMove))
+        else if (ability1 == ABILITY_MYCELIUM_MIGHT && ability2 != ABILITY_MYCELIUM_MIGHT && IS_MOVE_STATUS(gChosenMoveByBattler[battler1]))
             strikesFirst = 1;
-        else if (ability2 == ABILITY_MYCELIUM_MIGHT && ability1 != ABILITY_MYCELIUM_MIGHT && IS_MOVE_STATUS(gCurrentMove))
+        else if (ability2 == ABILITY_MYCELIUM_MIGHT && ability1 != ABILITY_MYCELIUM_MIGHT && IS_MOVE_STATUS(gChosenMoveByBattler[battler2]))
             strikesFirst = 0;
         else
         {
@@ -4906,6 +4906,7 @@ static void TurnValuesCleanUp(bool8 var0)
         else
         {
             memset(&gProtectStructs[i], 0, sizeof(struct ProtectStruct));
+            memset(&gQueuedStatBoosts[i], 0, sizeof(struct QueuedStatBoost));
 
             if (gDisableStructs[i].isFirstTurn)
                 gDisableStructs[i].isFirstTurn--;
@@ -4928,6 +4929,8 @@ static void TurnValuesCleanUp(bool8 var0)
     gSideStatuses[B_SIDE_OPPONENT] &= ~(SIDE_STATUS_QUICK_GUARD | SIDE_STATUS_WIDE_GUARD | SIDE_STATUS_CRAFTY_SHIELD | SIDE_STATUS_MAT_BLOCK);
     gSideTimers[B_SIDE_PLAYER].followmeTimer = 0;
     gSideTimers[B_SIDE_OPPONENT].followmeTimer = 0;
+
+    gBattleStruct->pledgeMove = FALSE; // combined pledge move may not have been used due to a canceller
 }
 
 void SpecialStatusesClear(void)

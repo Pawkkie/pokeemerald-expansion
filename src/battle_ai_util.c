@@ -709,11 +709,14 @@ s32 AI_CalcDamage(u32 move, u32 battlerAtk, u32 battlerDef, u8 *typeEffectivenes
         gBattleStruct->zmove.baseMoves[battlerAtk] = move;
         gBattleStruct->zmove.active = TRUE;
     }
+    else if (gBattleMoves[move].effect == EFFECT_PHOTON_GEYSER)
+        gBattleStruct->swapDamageCategory = (GetSplitBasedOnStats(gBattlerAttacker) == SPLIT_PHYSICAL);
+
+    if (gBattleMoves[move].effect == EFFECT_NATURE_POWER)
+        move = GetNaturePowerMove();
 
     gBattleStruct->dynamicMoveType = 0;
 
-    if (move == MOVE_NATURE_POWER)
-        move = GetNaturePowerMove();
 
     SetTypeBeforeUsingMove(move, battlerAtk);
     GET_MOVE_TYPE(move, moveType);
@@ -825,6 +828,7 @@ s32 AI_CalcDamage(u32 move, u32 battlerAtk, u32 battlerDef, u8 *typeEffectivenes
     // convert multiper to AI_EFFECTIVENESS_xX
     *typeEffectiveness = AI_GetEffectiveness(effectivenessMultiplier);
 
+    gBattleStruct->swapDamageCategory = FALSE;
     gBattleStruct->zmove.active = FALSE;
     gBattleStruct->zmove.baseMoves[battlerAtk] = MOVE_NONE;
     return dmg;
@@ -922,6 +926,7 @@ static bool32 AI_IsMoveEffectInPlus(u32 battlerAtk, u32 battlerDef, u32 move, s3
         if (ShouldLowerStat(battlerDef, abilityDef, STAT_DEF) && noOfHitsToKo != 1)
             return TRUE;
         break;
+    case EFFECT_BULLDOZE:
     case EFFECT_SPEED_DOWN_HIT:
         if (ShouldLowerStat(battlerDef, abilityDef, STAT_SPEED) && noOfHitsToKo != 1)
             return TRUE;
@@ -967,7 +972,7 @@ static bool32 AI_IsMoveEffectInMinus(u32 battlerAtk, u32 battlerDef, u32 move, s
     case EFFECT_OVERHEAT:
     case EFFECT_MAKE_IT_RAIN:
     case EFFECT_MIND_BLOWN:
-    case EFFECT_STEEL_BEAM:
+    case EFFECT_MAX_HP_50_RECOIL:
         return TRUE;
     case EFFECT_RECOIL_25:
     case EFFECT_RECOIL_IF_MISS:
@@ -2017,28 +2022,9 @@ bool32 HasSleepMoveWithLowAccuracy(u32 battlerAtk, u32 battlerDef)
     return FALSE;
 }
 
-bool32 IsHealingMoveEffect(u32 effect)
+bool32 IsHealingMove(u32 move)
 {
-    switch (effect)
-    {
-    case EFFECT_RESTORE_HP:
-    case EFFECT_MORNING_SUN:
-    case EFFECT_SYNTHESIS:
-    case EFFECT_MOONLIGHT:
-    case EFFECT_SOFTBOILED:
-    case EFFECT_ROOST:
-    case EFFECT_SWALLOW:
-    case EFFECT_WISH:
-    case EFFECT_HEALING_WISH:
-    case EFFECT_HEAL_PULSE:
-    case EFFECT_REST:
-    case EFFECT_JUNGLE_HEALING:
-    case EFFECT_ABSORB:
-    case EFFECT_DREAM_EATER:
-        return TRUE;
-    default:
-        return FALSE;
-    }
+    return gBattleMoves[move].healBlockBanned;
 }
 
 bool32 HasHealingEffect(u32 battlerId)
@@ -2048,7 +2034,7 @@ bool32 HasHealingEffect(u32 battlerId)
 
     for (i = 0; i < MAX_MON_MOVES; i++)
     {
-        if (moves[i] != MOVE_NONE && moves[i] != MOVE_UNAVAILABLE && IsHealingMoveEffect(gBattleMoves[moves[i]].effect))
+        if (moves[i] != MOVE_NONE && moves[i] != MOVE_UNAVAILABLE && IsHealingMove(moves[i]))
             return TRUE;
     }
 
@@ -2764,17 +2750,11 @@ bool32 AI_CanPutToSleep(u32 battlerAtk, u32 battlerDef, u32 defAbility, u32 move
     return TRUE;
 }
 
-static bool32 AI_CanPoisonType(u32 battlerAttacker, u32 battlerTarget, u32 move)
-{
-    return ((AI_DATA->abilities[battlerAttacker] == ABILITY_CORROSION && gBattleMoves[move].split == SPLIT_STATUS)
-            || !(IS_BATTLER_OF_TYPE(battlerTarget, TYPE_POISON) || IS_BATTLER_OF_TYPE(battlerTarget, TYPE_STEEL)));
-}
-
 static bool32 AI_CanBePoisoned(u32 battlerAtk, u32 battlerDef, u32 move)
 {
     u32 ability = AI_DATA->abilities[battlerDef];
 
-    if (!(AI_CanPoisonType(battlerAtk, battlerDef, move))
+    if (!(CanPoisonType(battlerAtk, battlerDef))
      || gSideStatuses[GetBattlerSide(battlerDef)] & SIDE_STATUS_SAFEGUARD
      || gBattleMons[battlerDef].status1 & STATUS1_ANY
      || ability == ABILITY_IMMUNITY

@@ -50,6 +50,7 @@
 // Turn settings
 #define B_BINDING_TURNS             GEN_LATEST // In Gen5+, binding moves last for 4-5 turns instead of 2-5 turns. (With Grip Claw, 7 and 5 turns respectively.)
 #define B_UPROAR_TURNS              GEN_LATEST // In Gen5+, Uproar lasts for 3 turns instead of 2-5 turns.
+#define B_UPROAR_IGNORE_SOUNDPROOF  GEN_LATEST // In Gen5+, Uproar status ignores Soundproof.
 #define B_DISABLE_TURNS             GEN_LATEST // Disable's turns. See Cmd_disablelastusedattack.
 #define B_TAILWIND_TURNS            GEN_LATEST // In Gen5+, Tailwind lasts 4 turns instead of 3.
 #define B_SLEEP_TURNS               GEN_LATEST // In Gen5+, sleep lasts for 1-3 turns instead of 2-5 turns.
@@ -108,9 +109,10 @@
 #define B_STOCKPILE_RAISES_DEFS     GEN_LATEST // In Gen4+, Stockpile also raises Defense and Sp. Defense stats. Once Spit Up / Swallow is used, these stat changes are lost.
 #define B_TRANSFORM_SHINY           GEN_LATEST // In Gen4+, Transform will copy the shiny state of the opponent instead of maintaining its own shiny state.
 #define B_TRANSFORM_FORM_CHANGES    GEN_LATEST // In Gen5+, Transformed Pokemon cannot change forms.
-#define B_WIDE_GUARD                GEN_LATEST // In Gen5 only, Quick Guard has a chance to fail if used consecutively.
-#define B_QUICK_GUARD               GEN_LATEST // In Gen5 only, Wide Guard has a chance to fail if used consecutively.
+#define B_WIDE_GUARD                GEN_LATEST // In Gen5 only, Wide Guard has a chance to fail if used consecutively.
+#define B_QUICK_GUARD               GEN_LATEST // In Gen5 only, Quick Guard has a chance to fail if used consecutively.
 #define B_IMPRISON                  GEN_LATEST // In Gen5+, Imprison doesn't fail if opposing pokemon don't have any moves the user knows.
+#define B_SKETCH_BANS               GEN_LATEST // In Gen9+, Sketch is unable to copy more moves than in previous generations.
 
 // Ability settings
 #define B_EXPANDED_ABILITY_NAMES    TRUE       // If TRUE, ability names are increased from 12 characters to 16 characters.
