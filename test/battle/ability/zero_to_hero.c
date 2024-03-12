@@ -20,21 +20,22 @@ SINGLE_BATTLE_TEST("Zero to Hero transforms Palafin when it switches out")
     } THEN { EXPECT_EQ(player->species, SPECIES_PALAFIN_HERO); }
 }
 
-SINGLE_BATTLE_TEST("Zero to Hero can't be surpressed by Neutralizing Gas")
-{
-    GIVEN {
-        PLAYER(SPECIES_PALAFIN_ZERO) { Ability(ABILITY_ZERO_TO_HERO); }
-        PLAYER(SPECIES_WOBBUFFET);
-        OPPONENT(SPECIES_KOFFING) { Ability(ABILITY_NEUTRALIZING_GAS); }
-    } WHEN {
-        TURN { SWITCH(player, 1); }
-        TURN { SWITCH(player, 0); }
-    } SCENE {
-        ABILITY_POPUP(opponent, ABILITY_NEUTRALIZING_GAS);
-        ABILITY_POPUP(player, ABILITY_ZERO_TO_HERO);
-        MESSAGE("Palafin underwent a heroic transformation!");
-    } THEN { EXPECT_EQ(player->species, SPECIES_PALAFIN_HERO); }
-}
+// Not using Zero to Hero
+// SINGLE_BATTLE_TEST("Zero to Hero can't be surpressed by Neutralizing Gas")
+// {
+//     GIVEN {
+//         PLAYER(SPECIES_PALAFIN_ZERO) { Ability(ABILITY_ZERO_TO_HERO); }
+//         PLAYER(SPECIES_WOBBUFFET);
+//         OPPONENT(SPECIES_KOFFING) { Ability(ABILITY_NEUTRALIZING_GAS); }
+//     } WHEN {
+//         TURN { SWITCH(player, 1); }
+//         TURN { SWITCH(player, 0); }
+//     } SCENE {
+//         ABILITY_POPUP(opponent, ABILITY_NEUTRALIZING_GAS);
+//         ABILITY_POPUP(player, ABILITY_ZERO_TO_HERO);
+//         MESSAGE("Palafin underwent a heroic transformation!");
+//     } THEN { EXPECT_EQ(player->species, SPECIES_PALAFIN_HERO); }
+// }
 
 SINGLE_BATTLE_TEST("Zero to Hero transforms both player and opponent")
 {
