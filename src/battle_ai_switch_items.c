@@ -1531,7 +1531,7 @@ static u32 GetSwitchinHitsToKO(s32 damageTaken, u32 battler)
     s32 currentHP = startingHP;
 
     // No damage being dealt
-    if (damageTaken + statusDamage + recurringDamage == 0)
+    if (damageTaken + statusDamage + recurringDamage < recurringHealing)
         return startingHP;
 
     // Mon fainted to hazards
@@ -1600,10 +1600,6 @@ static u32 GetSwitchinHitsToKO(s32 damageTaken, u32 battler)
         // Reduce weather duration
         if (weatherDuration != 0)
             weatherDuration--;
-
-        // If after receiving all damage we've haven't net a loss of HP, the mon takes "infinite" turns to KO; just return hits to KO equal to its HP value for simplicity
-        if (currentHP >= startingHP)
-            return startingHP;
 
         hitsToKO++;
     }
