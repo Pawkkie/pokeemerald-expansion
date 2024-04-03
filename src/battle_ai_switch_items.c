@@ -1590,7 +1590,7 @@ static u32 GetSwitchinHitsToKO(s32 damageTaken, u32 battler)
         }
 
         // Healing from items occurs before status so we can do the rest in one line
-        if (currentHP != 0)
+        if (currentHP >= 0)
             currentHP = currentHP + recurringHealing - recurringDamage - statusDamage;
 
         // Recalculate toxic damage if needed
@@ -1600,6 +1600,10 @@ static u32 GetSwitchinHitsToKO(s32 damageTaken, u32 battler)
         // Reduce weather duration
         if (weatherDuration != 0)
             weatherDuration--;
+
+        // If after receiving all damage we've haven't net a loss of HP, the mon takes "infinite" turns to KO; just return hits to KO equal to its HP value for simplicity
+        if (currentHP >= startingHP)
+            return startingHP;
 
         hitsToKO++;
     }
