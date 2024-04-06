@@ -2394,7 +2394,7 @@ const struct SpeciesInfo gSpeciesInfoGen8[] =
         // .palette = gMonPalette_Hydrapple,
         // .shinyPalette = gMonShinyPalette_Hydrapple,
         // .iconSprite = gMonIcon_Hydrapple,
-        .iconPalIndex = 1,
+        .iconPalIndex = 5,
         //FOOTPRINT(Hydrapple)
         .levelUpLearnset = sHydrappleLevelUpLearnset,
         .teachableLearnset = sHydrappleTeachableLearnset,
@@ -5387,10 +5387,10 @@ const struct SpeciesInfo gSpeciesInfoGen8[] =
         .backPicSize = MON_COORDS_SIZE(64, 64),
         .backPicYOffset = 7,
         .backAnimId = BACK_ANIM_NONE,
-        //.palette = gMonPalette_Archaludon,
-        //.shinyPalette = gMonShinyPalette_Archaludon,
-        //.iconSprite = gMonIcon_Archaludon,
-        //.iconPalIndex = 0,
+        // .palette = gMonPalette_Archaludon,
+        // .shinyPalette = gMonShinyPalette_Archaludon,
+        .iconSprite = gMonIcon_Archaludon,
+        .iconPalIndex = 0,
         //FOOTPRINT(Archaludon)
         .levelUpLearnset = sArchaludonLevelUpLearnset,
         .teachableLearnset = sArchaludonTeachableLearnset,
