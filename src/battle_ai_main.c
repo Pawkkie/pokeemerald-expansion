@@ -170,6 +170,10 @@ void BattleAI_SetupFlags(void)
 
     if (gBattleTypeFlags & (BATTLE_TYPE_DOUBLE | BATTLE_TYPE_TWO_OPPONENTS) || gTrainers[gTrainerBattleOpponent_A].doubleBattle)
         AI_THINKING_STRUCT->aiFlags |= AI_FLAG_DOUBLE_BATTLE; // Act smart in doubles and don't attack your partner.
+
+    // Automatically add smart choice flag to smart switching to greatly improve its behavior
+    if (gBattleTypeFlags & AI_FLAG_SMART_SWITCHING)
+        AI_THINKING_STRUCT->aiFlags |= AI_FLAG_SMART_MON_CHOICES;
 }
 
 // sBattler_AI set in ComputeBattleAiScores
