@@ -2248,6 +2248,8 @@ BattleScript_EffectCopycat:
 	trycopycat BattleScript_CopycatFail
 	attackanimation
 	waitanimation
+	setbyte sB_ANIM_TURN, 0
+	setbyte sB_ANIM_TARGETS_HIT, 0
 	jumptocalledmove TRUE
 BattleScript_CopycatFail:
 	ppreduce

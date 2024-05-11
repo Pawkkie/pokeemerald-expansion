@@ -16601,7 +16601,7 @@ void BS_TryCopycat(void)
 {
     NATIVE_ARGS(const u8 *failInstr);
 
-    if (gLastUsedMove == MOVE_NONE || gLastUsedMove == MOVE_UNAVAILABLE || gBattleMoves[gLastUsedMove].copycatBanned)
+    if (gLastUsedMove == MOVE_NONE || gLastUsedMove == MOVE_UNAVAILABLE || gBattleMoves[gLastUsedMove].copycatBanned || IsZMove(gLastUsedMove))
     {
         gBattlescriptCurrInstr = cmd->failInstr;
     }
