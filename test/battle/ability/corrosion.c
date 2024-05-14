@@ -38,11 +38,16 @@ SINGLE_BATTLE_TEST("Corrosion can poison or badly poison a Steel type with a sta
         TURN { MOVE(player, move); }
     } SCENE {
         ANIMATION(ANIM_TYPE_MOVE, move, player);
-        ANIMATION(ANIM_TYPE_STATUS, B_ANIM_STATUS_PSN, opponent);
         if (move == MOVE_POISON_POWDER)
+        {
+            ANIMATION(ANIM_TYPE_STATUS, B_ANIM_STATUS_PSN, opponent);
             STATUS_ICON(opponent, poison: TRUE);
+        }
         else
+        {
+            ANIMATION(ANIM_TYPE_STATUS, B_ANIM_STATUS_TOX, opponent);
             STATUS_ICON(opponent, badPoison: TRUE);
+        }
     }
 }
 
@@ -82,11 +87,16 @@ SINGLE_BATTLE_TEST("Corrosion can poison Poison- and Steel-type targets if it us
     } SCENE {
         ANIMATION(ANIM_TYPE_MOVE, MOVE_FLING, player);
         HP_BAR(opponent);
-        ANIMATION(ANIM_TYPE_STATUS, B_ANIM_STATUS_PSN, opponent);
         if (heldItem == ITEM_POISON_BARB)
+        {
+            ANIMATION(ANIM_TYPE_STATUS, B_ANIM_STATUS_PSN, opponent);
             STATUS_ICON(opponent, poison: TRUE);
+        }
         else
+        {
+            ANIMATION(ANIM_TYPE_STATUS, B_ANIM_STATUS_TOX, opponent);
             STATUS_ICON(opponent, badPoison: TRUE);
+        }
     }
 }
 
@@ -99,7 +109,7 @@ SINGLE_BATTLE_TEST("If a Poison- or Steel-type Pokémon with Corrosion holds a T
     } WHEN {
         TURN { }
     } SCENE {
-        ANIMATION(ANIM_TYPE_STATUS, B_ANIM_STATUS_PSN, player);
+        ANIMATION(ANIM_TYPE_STATUS, B_ANIM_STATUS_TOX, player);
         STATUS_ICON(player, badPoison: TRUE);
     }
 }
@@ -114,10 +124,10 @@ SINGLE_BATTLE_TEST("If a Poison- or Steel-type Pokémon with Corrosion poisons a
         TURN { MOVE(player, MOVE_TOXIC); }
     } SCENE {
         ANIMATION(ANIM_TYPE_MOVE, MOVE_TOXIC, player);
-        ANIMATION(ANIM_TYPE_STATUS, B_ANIM_STATUS_PSN, opponent);
+        ANIMATION(ANIM_TYPE_STATUS, B_ANIM_STATUS_TOX, opponent);
         STATUS_ICON(opponent, badPoison: TRUE);
         NONE_OF {
-            ANIMATION(ANIM_TYPE_STATUS, B_ANIM_STATUS_PSN, player);
+            ANIMATION(ANIM_TYPE_STATUS, B_ANIM_STATUS_TOX, player);
             STATUS_ICON(player, badPoison: TRUE);
         }
     }
