@@ -3,8 +3,8 @@
 
 ASSUMPTIONS
 {
-    ASSUME(gItemsInfo[ITEM_PROTECTIVE_PADS].holdEffect == HOLD_EFFECT_PROTECTIVE_PADS);
-    ASSUME(gMovesInfo[MOVE_TACKLE].makesContact == TRUE);
+    ASSUME(gItems[ITEM_PROTECTIVE_PADS].holdEffect == HOLD_EFFECT_PROTECTIVE_PADS);
+    ASSUME(gBattleMoves[MOVE_TACKLE].makesContact == TRUE);
 }
 
 SINGLE_BATTLE_TEST("Protective Pads protected moves still make direct contact", s16 damage)
