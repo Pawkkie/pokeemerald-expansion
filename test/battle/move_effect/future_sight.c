@@ -3,8 +3,8 @@
 
 ASSUMPTIONS
 {
-    ASSUME(gMovesInfo[MOVE_SEED_FLARE].power == gMovesInfo[MOVE_FUTURE_SIGHT].power);
-    ASSUME(gMovesInfo[MOVE_SEED_FLARE].category == gMovesInfo[MOVE_FUTURE_SIGHT].category);
+    ASSUME(gBattleMoves[MOVE_SEED_FLARE].power == gBattleMoves[MOVE_FUTURE_SIGHT].power);
+    ASSUME(gBattleMoves[MOVE_SEED_FLARE].split == gBattleMoves[MOVE_FUTURE_SIGHT].split);
 }
 
 SINGLE_BATTLE_TEST("Future Sight uses Sp. Atk stat of the original user without modifiers")

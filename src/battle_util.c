@@ -10054,7 +10054,7 @@ static inline s32 DoFutureSightAttackDamageCalcVars(u32 move, u32 battlerAtk, u3
     struct Pokemon *partyMon = &party[gWishFutureKnock.futureSightPartyIndex[battlerDef]];
     u32 partyMonLevel = GetMonData(partyMon, MON_DATA_LEVEL, NULL);
     u32 partyMonSpecies = GetMonData(partyMon, MON_DATA_SPECIES, NULL);
-    gBattleMovePower = gMovesInfo[move].power;
+    gBattleMovePower = gBattleMoves[move].power;
 
     if (IS_MOVE_PHYSICAL(move))
         userFinalAttack = GetMonData(partyMon, MON_DATA_ATK, NULL);
@@ -10116,7 +10116,7 @@ s32 CalculateMoveDamage(u32 move, u32 battlerAtk, u32 battlerDef, u32 moveType, 
 {
     struct Pokemon *party = GetSideParty(GetBattlerSide(gBattlerAttacker));
 
-    if (gMovesInfo[move].effect == EFFECT_FUTURE_SIGHT
+    if (gBattleMoves[move].effect == EFFECT_FUTURE_SIGHT
      && (&party[gWishFutureKnock.futureSightPartyIndex[battlerDef]] != &party[gBattlerPartyIndexes[battlerAtk]]) )
     {
         return DoFutureSightAttackDamageCalc(move, battlerAtk, battlerDef, moveType, isCrit, randomFactor,
