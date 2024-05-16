@@ -14,6 +14,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT_DYNAMAX] =
         .metronomeBanned = TRUE,
         .mirrorMoveBanned = TRUE,
         .sketchBanned = TRUE,
+        .assistBanned = TRUE,
     },
 
     [MOVE_POUND] =
