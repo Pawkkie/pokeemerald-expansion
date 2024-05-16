@@ -437,6 +437,19 @@ const struct TrainerSprite gTrainerSprites[] =
     TRAINER_SPRITE(LEAF, Leaf),
     TRAINER_SPRITE(RS_BRENDAN, RubySapphireBrendan),
     TRAINER_SPRITE(RS_MAY, RubySapphireMay),
+    // New front sprites
+    TRAINER_SPRITE(BREEDER_F_HGSS, BreederFHGSS),
+    TRAINER_SPRITE(LASS_HGSS, LassHGSS),
+    TRAINER_SPRITE(ROCKET_GRUNT_F_HGSS, RocketGruntFHGSS),
+    TRAINER_SPRITE(BEAUTY_PP, BeautyPP),
+    TRAINER_SPRITE(BUG_CATCHER_F_PP, BugCatcherFPP),
+    TRAINER_SPRITE(FIREBREATHER_PP, FirebreatherPP),
+    TRAINER_SPRITE(FISHERMAN_PP, FishermanPP),
+    TRAINER_SPRITE(GUARD_F_PP, GuardFPP),
+    TRAINER_SPRITE(GUARD_M_PP, GuardMPP),
+    TRAINER_SPRITE(PSYCHIC_M_PP, PsychicMPP),
+    TRAINER_SPRITE(ROCKET_GRUNT_F_PP, RocketGruntFPP),
+    TRAINER_SPRITE(HEX_MANIAC_ORAS, HexManiacORAS),
 };
 
 static const union AnimCmd sAnimCmd_Hoenn[] =
