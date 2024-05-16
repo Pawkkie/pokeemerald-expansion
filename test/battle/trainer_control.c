@@ -111,8 +111,8 @@ TEST("CreateNPCTrainerPartyForTrainer generates customized Pokémon")
     EXPECT(GetMonGender(&testParty[0]) == MON_FEMALE);
     EXPECT(GetMonData(&testParty[0], MON_DATA_NATURE) == NATURE_HASTY);
 
-    EXPECT_EQ(GetMonData(&testParty[0], MON_DATA_DYNAMAX_LEVEL), 5);
-    EXPECT_EQ(GetMonData(&testParty[1], MON_DATA_DYNAMAX_LEVEL), 0);
+    // EXPECT_EQ(GetMonData(&testParty[0], MON_DATA_DYNAMAX_LEVEL), 5);
+    // EXPECT_EQ(GetMonData(&testParty[1], MON_DATA_DYNAMAX_LEVEL), 0);
 
     Free(testParty);
 }

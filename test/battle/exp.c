@@ -119,32 +119,34 @@ WILD_BATTLE_TEST("Large exp gains are supported", s32 exp) // #1455
     }
 }
 
-#if I_EXP_SHARE_ITEM < GEN_6
 
-WILD_BATTLE_TEST("Exp Share(held) gives Experience to mons which did not participate in battle")
-{
-    u32 item = 0;
+// psf's EXP share test, I have my own one
+// #if I_EXP_SHARE_ITEM < GEN_6
 
-    PARAMETRIZE { item = ITEM_NONE; }
-    PARAMETRIZE { item = ITEM_EXP_SHARE; }
+// WILD_BATTLE_TEST("Exp Share(held) gives Experience to mons which did not participate in battle")
+// {
+//     u32 item = 0;
 
-    GIVEN {
-        PLAYER(SPECIES_WOBBUFFET);
-        PLAYER(SPECIES_WYNAUT) { Level(40); Item(item); }
-        OPPONENT(SPECIES_CATERPIE) { Level(10); HP(1); }
-    } WHEN {
-        TURN { MOVE(player, MOVE_TACKLE); }
-    } SCENE {
-        MESSAGE("Wobbuffet used Tackle!");
-        MESSAGE("Wild Caterpie fainted!");
-        // This message should appear only for gen6> exp share.
-        NOT MESSAGE("The rest of your team gained EXP. Points thanks to the Exp. Share!");
-    } THEN {
-        if (item == ITEM_EXP_SHARE)
-            EXPECT_GT(GetMonData(&gPlayerParty[1], MON_DATA_EXP), gExperienceTables[gSpeciesInfo[SPECIES_WYNAUT].growthRate][40]);
-        else
-            EXPECT_EQ(GetMonData(&gPlayerParty[1], MON_DATA_EXP), gExperienceTables[gSpeciesInfo[SPECIES_WYNAUT].growthRate][40]);
-    }
-}
+//     PARAMETRIZE { item = ITEM_NONE; }
+//     PARAMETRIZE { item = ITEM_EXP_SHARE; }
 
-#endif // I_EXP_SHARE_ITEM
+//     GIVEN {
+//         PLAYER(SPECIES_WOBBUFFET);
+//         PLAYER(SPECIES_WYNAUT) { Level(40); Item(item); }
+//         OPPONENT(SPECIES_CATERPIE) { Level(10); HP(1); }
+//     } WHEN {
+//         TURN { MOVE(player, MOVE_TACKLE); }
+//     } SCENE {
+//         MESSAGE("Wobbuffet used Tackle!");
+//         MESSAGE("Wild Caterpie fainted!");
+//         // This message should appear only for gen6> exp share.
+//         NOT MESSAGE("The rest of your team gained EXP. Points thanks to the Exp. Share!");
+//     } THEN {
+//         if (item == ITEM_EXP_SHARE)
+//             EXPECT_GT(GetMonData(&gPlayerParty[1], MON_DATA_EXP), gExperienceTables[gSpeciesInfo[SPECIES_WYNAUT].growthRate][40]);
+//         else
+//             EXPECT_EQ(GetMonData(&gPlayerParty[1], MON_DATA_EXP), gExperienceTables[gSpeciesInfo[SPECIES_WYNAUT].growthRate][40]);
+//     }
+// }
+
+// #endif // I_EXP_SHARE_ITEM

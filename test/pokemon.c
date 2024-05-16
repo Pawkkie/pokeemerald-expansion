@@ -5,22 +5,23 @@
 #include "test/overworld_script.h"
 #include "test/test.h"
 
-TEST("Nature independent from Hidden Nature")
-{
-    u32 i, j, nature = 0, hiddenNature = 0;
-    struct Pokemon mon;
-    for (i = 0; i < NUM_NATURES; i++)
-    {
-        for (j = 0; j < NUM_NATURES; j++)
-        {
-            PARAMETRIZE { nature = i; hiddenNature = j; }
-        }
-    }
-    CreateMonWithNature(&mon, SPECIES_WOBBUFFET, 100, 0, nature);
-    SetMonData(&mon, MON_DATA_HIDDEN_NATURE, &hiddenNature);
-    EXPECT_EQ(GetNature(&mon), nature);
-    EXPECT_EQ(GetMonData(&mon, MON_DATA_HIDDEN_NATURE), hiddenNature);
-}
+// Don't have Hidden Natures
+// TEST("Nature independent from Hidden Nature")
+// {
+//     u32 i, j, nature = 0, hiddenNature = 0;
+//     struct Pokemon mon;
+//     for (i = 0; i < NUM_NATURES; i++)
+//     {
+//         for (j = 0; j < NUM_NATURES; j++)
+//         {
+//             PARAMETRIZE { nature = i; hiddenNature = j; }
+//         }
+//     }
+//     CreateMonWithNature(&mon, SPECIES_WOBBUFFET, 100, 0, nature);
+//     SetMonData(&mon, MON_DATA_NATURE, &hiddenNature);
+//     EXPECT_EQ(GetNature(&mon), nature);
+//     EXPECT_EQ(GetMonData(&mon, MON_DATA_NATURE), hiddenNature);
+// }
 
 TEST("Terastallization type defaults to primary or secondary type")
 {
@@ -141,29 +142,31 @@ TEST("canhypertrain/hypertrain affect MON_DATA_HYPER_TRAINED_* and recalculate s
     EXPECT(!VarGet(VAR_RESULT));
 }
 
-TEST("hasgigantamaxfactor/togglegigantamaxfactor affect MON_DATA_GIGANTAMAX_FACTOR")
-{
-    CreateMon(&gPlayerParty[0], SPECIES_WOBBUFFET, 100, 0, FALSE, 0, OT_ID_PRESET, 0);
+// We don't gigantamax here
 
-    RUN_OVERWORLD_SCRIPT(
-        hasgigantamaxfactor 0;
-    );
-    EXPECT(!VarGet(VAR_RESULT));
+// TEST("hasgigantamaxfactor/togglegigantamaxfactor affect MON_DATA_GIGANTAMAX_FACTOR")
+// {
+//     CreateMon(&gPlayerParty[0], SPECIES_WOBBUFFET, 100, 0, FALSE, 0, OT_ID_PRESET, 0);
 
-    RUN_OVERWORLD_SCRIPT(
-        togglegigantamaxfactor 0;
-        hasgigantamaxfactor 0;
-    );
-    EXPECT(VarGet(VAR_RESULT));
-    EXPECT(GetMonData(&gPlayerParty[0], MON_DATA_GIGANTAMAX_FACTOR));
+//     RUN_OVERWORLD_SCRIPT(
+//         hasgigantamaxfactor 0;
+//     );
+//     EXPECT(!VarGet(VAR_RESULT));
 
-    RUN_OVERWORLD_SCRIPT(
-        togglegigantamaxfactor 0;
-        hasgigantamaxfactor 0;
-    );
-    EXPECT(!VarGet(VAR_RESULT));
-    EXPECT(!GetMonData(&gPlayerParty[0], MON_DATA_GIGANTAMAX_FACTOR));
-}
+//     RUN_OVERWORLD_SCRIPT(
+//         togglegigantamaxfactor 0;
+//         hasgigantamaxfactor 0;
+//     );
+//     EXPECT(VarGet(VAR_RESULT));
+//     EXPECT(GetMonData(&gPlayerParty[0], MON_DATA_GIGANTAMAX_FACTOR));
+
+//     RUN_OVERWORLD_SCRIPT(
+//         togglegigantamaxfactor 0;
+//         hasgigantamaxfactor 0;
+//     );
+//     EXPECT(!VarGet(VAR_RESULT));
+//     EXPECT(!GetMonData(&gPlayerParty[0], MON_DATA_GIGANTAMAX_FACTOR));
+// }
 
 TEST("togglegigantamaxfactor fails for Melmetal")
 {
