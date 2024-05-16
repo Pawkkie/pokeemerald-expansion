@@ -97,7 +97,7 @@ SINGLE_BATTLE_TEST("Supreme Overlord's message displays correctly after all batt
     // For some reason the Ability Pop Up fails to appear after Explosion.
     KNOWN_FAILING;
     GIVEN {
-        ASSUME(gMovesInfo[MOVE_EXPLOSION].effect == EFFECT_EXPLOSION);
+        ASSUME(gBattleMoves[MOVE_EXPLOSION].effect == EFFECT_EXPLOSION);
         PLAYER(SPECIES_WOBBUFFET) { HP(1);}
         PLAYER(SPECIES_KINGAMBIT);
         OPPONENT(SPECIES_WOBBUFFET);
@@ -121,7 +121,7 @@ SINGLE_BATTLE_TEST("Supreme Overlord's message displays correctly after all batt
     // For some reason the Ability Pop Up fails to appear after Explosion.
     KNOWN_FAILING;
     GIVEN {
-        ASSUME(gMovesInfo[MOVE_EXPLOSION].effect == EFFECT_EXPLOSION);
+        ASSUME(gBattleMoves[MOVE_EXPLOSION].effect == EFFECT_EXPLOSION);
         PLAYER(SPECIES_WOBBUFFET);
         PLAYER(SPECIES_WOBBUFFET);
         OPPONENT(SPECIES_WOBBUFFET) { HP(1);}
