@@ -218,7 +218,7 @@ SINGLE_BATTLE_TEST("Defiant activates before White Herb")
 SINGLE_BATTLE_TEST("Defiant activates for each stat that is lowered")
 {
     GIVEN {
-        ASSUME(gMovesInfo[MOVE_TICKLE].effect == EFFECT_TICKLE);
+        ASSUME(gBattleMoves[MOVE_TICKLE].effect == EFFECT_TICKLE);
         PLAYER(SPECIES_MANKEY) { Ability(ABILITY_DEFIANT); }
         OPPONENT(SPECIES_WOBBUFFET);
     } WHEN {
@@ -252,10 +252,10 @@ SINGLE_BATTLE_TEST("Defiant doesn't activate if the pokemon lowers it's own stat
     PARAMETRIZE { move = MOVE_SPIN_OUT; }
 
     GIVEN {
-        ASSUME(MoveHasAdditionalEffectSelf(MOVE_SUPERPOWER, MOVE_EFFECT_ATK_DEF_DOWN));
-        ASSUME(MoveHasAdditionalEffectSelf(MOVE_CLOSE_COMBAT, MOVE_EFFECT_DEF_SPDEF_DOWN));
-        ASSUME(MoveHasAdditionalEffectSelf(MOVE_MAKE_IT_RAIN, MOVE_EFFECT_SP_ATK_MINUS_1));
-        ASSUME(MoveHasAdditionalEffectSelf(MOVE_SPIN_OUT, MOVE_EFFECT_SPD_MINUS_2));
+        ASSUME(gBattleMoves[MOVE_SUPERPOWER].effect == MOVE_EFFECT_ATK_DEF_DOWN);
+        ASSUME(gBattleMoves[MOVE_CLOSE_COMBAT].effect == MOVE_EFFECT_DEF_SPDEF_DOWN);
+        ASSUME(gBattleMoves[MOVE_MAKE_IT_RAIN].effect == MOVE_EFFECT_SP_ATK_MINUS_1);
+        ASSUME(gBattleMoves[MOVE_SPIN_OUT].effect == MOVE_EFFECT_SPD_MINUS_2);
         PLAYER(SPECIES_MANKEY) { Ability(ABILITY_DEFIANT); }
         OPPONENT(SPECIES_WOBBUFFET);
     } WHEN {
