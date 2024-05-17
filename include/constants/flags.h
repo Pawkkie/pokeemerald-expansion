@@ -58,7 +58,7 @@
 #define FLAG_BEST_BALL       0x2D // Forces every ball to have 100% catch rate
 #define FLAG_USABLE_BALLS    0x2E // Allows balls to be usable outside of battle
 #define FLAG_NO_LEVEL_CAP    0x2F // Remove level cap
-#define FLAG_UNUSED_0x030    0x30 // Unused Flag
+#define FLAG_VS_SEEKER       0x30 // Enable VS Seeker
 #define FLAG_UNUSED_0x031    0x31 // Unused Flag
 #define FLAG_UNUSED_0x032    0x32 // Unused Flag
 #define FLAG_UNUSED_0x033    0x33 // Unused Flag

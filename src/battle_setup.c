@@ -1438,7 +1438,7 @@ static void CB2_EndTrainerBattle(void)
         DowngradeBadPoison();
         if (!InBattlePyramid() && !InTrainerHillChallenge())
         {
-            RegisterTrainerInMatchCall();
+            // RegisterTrainerInMatchCall();
             SetBattledTrainersFlags();
         }
     }
@@ -1458,7 +1458,7 @@ static void CB2_EndRematchBattle(void)
     else
     {
         SetMainCallback2(CB2_ReturnToFieldContinueScriptPlayMapMusic);
-        RegisterTrainerInMatchCall();
+        // RegisterTrainerInMatchCall();
         SetBattledTrainersFlags();
         HandleRematchVarsOnBattleEnd();
         DowngradeBadPoison();
@@ -1873,7 +1873,7 @@ static u32 GetTrainerMatchCallFlag(u32 trainerId)
     return 0xFFFF;
 }
 
-static void RegisterTrainerInMatchCall(void)
+static UNUSED void RegisterTrainerInMatchCall(void)
 {
     if (FlagGet(FLAG_HAS_MATCH_CALL))
     {
