@@ -9932,7 +9932,7 @@ const struct Item gItems[] =
         .price = 0,
         .importance = 1,
         .description = COMPOUND_STRING("A catalog full of\n"
-                                       "deviced liked by\n"
+                                       "devices liked by\n"
                                        "Rotom."),
         .pocket = POCKET_KEY_ITEMS,
         .type = ITEM_USE_PARTY_MENU,
