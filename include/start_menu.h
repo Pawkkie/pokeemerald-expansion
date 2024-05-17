@@ -5,7 +5,7 @@
 #define ICON_WINDOW_OFFSET               2         // The extra space allocated to fit icons
 #define TEXT_WINDOW_OFFSET               22        // The gap added to shift the text rightwards for the icons
 #define COLOR_ICON_OFFSET                7         // In "start_menu_icons.png", its the number of 32x32 blocks till the colored likewise sprite
-
+#define USE_START_MENU_ICONS             FALSE     // Enable DPP start menu icons. Disable DEBUG_OVERWORLD_MENU to use
 
 extern bool8 (*gMenuCallback)(void);
 

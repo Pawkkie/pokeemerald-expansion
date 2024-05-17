@@ -636,23 +636,33 @@ static bool32 PrintStartMenuActions(s8 *pIndex, u32 count)
     {
         if (sStartMenuItems[sCurrentStartMenuActions[index]].func.u8_void == StartMenuPlayerNameCallback)
         {
+#if USE_START_MENU_ICONS
             if (gShouldStartMenuIconsBePrinted)
                 PrintPlayerNameOnWindow(GetStartMenuWindowId(), sStartMenuItems[sCurrentStartMenuActions[index]].text, TEXT_WINDOW_OFFSET, text_yposition);
             else
                 PrintPlayerNameOnWindow(GetStartMenuWindowId(), sStartMenuItems[sCurrentStartMenuActions[index]].text, 8, (index << 4) + 9);
+#else 
+            PrintPlayerNameOnWindow(GetStartMenuWindowId(), sStartMenuItems[sCurrentStartMenuActions[index]].text, 8, (index << 4) + 9);
+#endif
         }
         else
         {
             StringExpandPlaceholders(gStringVar4, sStartMenuItems[sCurrentStartMenuActions[index]].text);
+#if USE_START_MENU_ICONS
             // Set Up Printer and Print
             if (gShouldStartMenuIconsBePrinted)
                 AddTextPrinterParameterized(GetStartMenuWindowId(), FONT_NORMAL, gStringVar4, TEXT_WINDOW_OFFSET, text_yposition, TEXT_SKIP_DRAW, NULL);
             else
                 AddTextPrinterParameterized(GetStartMenuWindowId(), FONT_NORMAL, gStringVar4, 8, (index << 4) + 9, TEXT_SKIP_DRAW, NULL);
+#else
+            AddTextPrinterParameterized(GetStartMenuWindowId(), FONT_NORMAL, gStringVar4, 8, (index << 4) + 9, TEXT_SKIP_DRAW, NULL);
+#endif
         }
+
+#if USE_START_MENU_ICONS
         // Loads up each of the icons upon opening the start menu
         DynamicallyLoadStartMenuIcon(index);
-
+#endif
         index++;
         if (index >= sNumStartMenuActions)
         {
@@ -737,19 +747,20 @@ static void CreateStartMenuTask(TaskFunc followupFunc)
 
 static bool8 FieldCB_ReturnToFieldStartMenu(void)
 {
+#if USE_START_MENU_ICONS
     struct SpritePalette palSheet;
     palSheet.data = sStartMenuIconsPal;
     palSheet.tag = spritePaletteTagId;
-
+#endif
     if (InitStartMenuStep() == FALSE)
     {
         return FALSE;
     }
-
+#if USE_START_MENU_ICONS
     // Fix Palette bugs when returning to the start menu from overworld callbacks
     sIsStartMenuIconPaletteLoaded = FALSE;
     gStartMenuIconPaletteNum = LoadSpritePalette(&palSheet);
-    
+#endif
     ReturnToFieldOpenStartMenu();
     return TRUE;
 }
@@ -789,7 +800,9 @@ void ShowStartMenu(void)
         PlayerFreeze();
         StopPlayerAvatar();
     }
+#if USE_START_MENU_ICONS
     gShouldStartMenuIconsBePrinted = TRUE;
+#endif
     CreateStartMenuTask(Task_ShowStartMenu);
     LockPlayerFieldControls();
 }
@@ -799,6 +812,7 @@ void ShowStartMenu(void)
 
 static bool8 HandleStartMenuInput(void)
 {
+#if USE_START_MENU_ICONS
     bool8 (*callback)(void);
     callback = sStartMenuItems[sCurrentStartMenuActions[sStartMenuCursorPos]].func.u8_void;
 
@@ -812,10 +826,12 @@ static bool8 HandleStartMenuInput(void)
             so this should stop it from infinitely printing */
         }
     }
+#endif
     if (JOY_NEW(DPAD_UP))
     {
         PlaySE(SE_SELECT);
         sStartMenuCursorPos = Menu_MoveCursor(-1);
+#if USE_START_MENU_ICONS
         if (callbackConditions)
         {
             if (sStartMenuCursorPos != (sNumStartMenuActions - 1)) // Not at bottom of start menu
@@ -829,12 +845,14 @@ static bool8 HandleStartMenuInput(void)
             }
         }
         sIsStartMenuIconRefreshed = FALSE;
+#endif
     }
 
     if (JOY_NEW(DPAD_DOWN))
     {
         PlaySE(SE_SELECT);
         sStartMenuCursorPos = Menu_MoveCursor(1);
+#if USE_START_MENU_ICONS
         if (callbackConditions)
         {
             if (sStartMenuCursorPos != 0)
@@ -848,6 +866,7 @@ static bool8 HandleStartMenuInput(void)
             }
         }
         sIsStartMenuIconRefreshed = FALSE;
+#endif
     }
 
     if (JOY_NEW(A_BUTTON))
@@ -1076,8 +1095,10 @@ static bool8 StartMenuBattlePyramidBagCallback(void)
 
 static bool8 SaveStartCallback(void)
 {
+#if USE_START_MENU_ICONS
     DeleteAllStartMenuIcons();
     gShouldStartMenuIconsBePrinted = TRUE;
+#endif
     InitSave();
     gMenuCallback = SaveCallback;
 
@@ -1690,7 +1711,9 @@ void SaveForBattleTowerLink(void)
 
 static void HideStartMenuWindow(void)
 {
+#if USE_START_MENU_ICONS
     DeleteAllStartMenuIcons();
+#endif
     ClearStdWindowAndFrame(GetStartMenuWindowId(), TRUE);
     RemoveStartMenuWindow();
     ScriptUnfreezeObjectEvents();
