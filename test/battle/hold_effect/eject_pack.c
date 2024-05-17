@@ -46,7 +46,7 @@ SINGLE_BATTLE_TEST("Eject Pack does not activate if there are no pokemon left to
 SINGLE_BATTLE_TEST("Eject Pack triggers on the correct pokemon")
 {
     GIVEN {
-        ASSUME(gItemsInfo[ITEM_LIFE_ORB].holdEffect == HOLD_EFFECT_LIFE_ORB);
+        ASSUME(gItems[ITEM_LIFE_ORB].holdEffect == HOLD_EFFECT_LIFE_ORB);
         PLAYER(SPECIES_WOBBUFFET) { Item(ITEM_EJECT_PACK); }
         PLAYER(SPECIES_WYNAUT);
         OPPONENT(SPECIES_WOBBUFFET)  { Item(ITEM_EJECT_PACK); }
