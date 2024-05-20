@@ -423,7 +423,7 @@ static const struct SpriteFrameImage sPicTable_MayNormal[] = {
 };
 
 static const struct SpriteFrameImage sPicTable_MayRunning[] = {
-    overworld_ascending_frames(gObjectEventPic_MayNormal, 4, 4),
+    overworld_ascending_frames(gObjectEventPic_MayRunning, 4, 4),
 };
 
 static const struct SpriteFrameImage sPicTable_MaySnowDrift[] = {
