@@ -4414,8 +4414,8 @@
     {
       "id": "LAYOUT_RESEARCH_OUTPOST",
       "name": "ResearchOutpost_Layout",
-      "width": 35,
-      "height": 25,
+      "width": 80,
+      "height": 80,
       "primary_tileset": "gTileset_GeneralLeoBSnow",
       "secondary_tileset": "gTileset_PetalburgLeoBSnow",
       "border_filepath": "data/layouts/ResearchOutpost/border.bin",
