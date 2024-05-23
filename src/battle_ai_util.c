@@ -687,6 +687,7 @@ s32 AI_CalcDamageSaveBattlers(u32 move, u32 battlerAtk, u32 battlerDef, u8 *type
     return AI_CalcDamage(move, battlerAtk, battlerDef, typeEffectiveness, considerZPower, AI_GetWeather(AI_DATA), dmgRoll);
 }
 
+// Range from 85% to 100%
 static inline s32 LowestRollDmg(s32 dmg)
 {
     dmg *= 100 - 15;
@@ -769,7 +770,7 @@ s32 AI_CalcDamage(u32 move, u32 battlerAtk, u32 battlerDef, u8 *typeEffectivenes
             // With critChance getting closer to 1, dmg gets closer to critDmg.
             if (dmgRoll == DMG_ROLL_AVERAGE)
                 dmg = AverageRollDmg((critDmg + normalDmg * (critChance - 1)) / (critChance));
-            else if (dmgRoll == DMG_ROLL_HIGH)
+            else if (dmgRoll == DMG_ROLL_HIGHEST)
                 dmg = HighestRollDmg((critDmg + normalDmg * (critChance - 1)) / (critChance));
             else
                 dmg = LowestRollDmg((critDmg + normalDmg * (critChance - 1)) / (critChance)); // Default to lowest roll
@@ -779,7 +780,7 @@ s32 AI_CalcDamage(u32 move, u32 battlerAtk, u32 battlerDef, u8 *typeEffectivenes
         {
             if (dmgRoll == DMG_ROLL_AVERAGE)
                 dmg = AverageRollDmg(normalDmg);
-            else if (dmgRoll == DMG_ROLL_HIGH)
+            else if (dmgRoll == DMG_ROLL_HIGHEST)
                 dmg = HighestRollDmg(normalDmg);
             else
                 dmg = LowestRollDmg(normalDmg); // Default to lowest roll
@@ -3363,7 +3364,7 @@ s32 AI_CalcPartyMonDamage(u32 move, u32 battlerAtk, u32 battlerDef, struct Battl
         gBattleMons[battlerAtk] = switchinCandidate;
     else
         gBattleMons[battlerDef] = switchinCandidate;
-    dmg = AI_CalcDamage(move, battlerAtk, battlerDef, &effectiveness, FALSE, AI_GetWeather(AI_DATA), DMG_ROLL_LOW);
+    dmg = AI_CalcDamage(move, battlerAtk, battlerDef, &effectiveness, FALSE, AI_GetWeather(AI_DATA), DMG_ROLL_LOWEST);
     FreeRestoreBattleMons(savedBattleMons);
     return dmg;
 }

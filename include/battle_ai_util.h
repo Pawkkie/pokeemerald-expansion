@@ -11,9 +11,9 @@
 
 enum
 {
-    DMG_ROLL_LOW,
+    DMG_ROLL_LOWEST,
     DMG_ROLL_AVERAGE,
-    DMG_ROLL_HIGH,
+    DMG_ROLL_HIGHEST,
 };
 
 bool32 AI_RandLessThan(u32 val);
