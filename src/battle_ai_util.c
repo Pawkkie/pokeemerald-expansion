@@ -680,11 +680,11 @@ bool32 MovesWithSplitUnusable(u32 attacker, u32 target, u32 split)
 }
 
 // To save computation time this function has 2 variants. One saves, sets and restores battlers, while the other doesn't.
-s32 AI_CalcDamageSaveBattlers(u32 move, u32 battlerAtk, u32 battlerDef, u8 *typeEffectiveness, bool32 considerZPower)
+s32 AI_CalcDamageSaveBattlers(u32 move, u32 battlerAtk, u32 battlerDef, u8 *typeEffectiveness, bool32 considerZPower, u8 dmgRoll)
 {
     SaveBattlerData(battlerAtk);
     SaveBattlerData(battlerDef);
-    return AI_CalcDamage(move, battlerAtk, battlerDef, typeEffectiveness, considerZPower, AI_GetWeather(AI_DATA), DMG_ROLL_LOW);
+    return AI_CalcDamage(move, battlerAtk, battlerDef, typeEffectiveness, considerZPower, AI_GetWeather(AI_DATA), dmgRoll);
 }
 
 static inline s32 LowestRollDmg(s32 dmg)
@@ -701,7 +701,7 @@ static inline s32 HighestRollDmg(s32 dmg)
 
 static inline s32 AverageRollDmg(s32 dmg)
 {
-    dmg = (HighestRollDmg(dmg) * 100 + LowestRollDmg(dmg) * 100) / 2;
+    dmg = ((HighestRollDmg(dmg) + LowestRollDmg(dmg)) * 100) / 2;
     dmg /= 100;
     return dmg;
 }
@@ -3354,7 +3354,7 @@ void FreeRestoreBattleMons(struct BattlePokemon *savedBattleMons)
 }
 
 // party logic
-s32 AI_CalcPartyMonDamage(u32 move, u32 battlerAtk, u32 battlerDef, struct BattlePokemon switchinCandidate, bool8 isPartyMonAttacker)
+s32 AI_CalcPartyMonDamage(u32 move, u32 battlerAtk, u32 battlerDef, struct BattlePokemon switchinCandidate, bool8 isPartyMonAttacker, u8 dmgRoll)
 {
     s32 dmg;
     u8 effectiveness;
@@ -3782,7 +3782,7 @@ bool32 ShouldUseZMove(u32 battlerAtk, u32 battlerDef, u32 chosenMove)
         else if (!IS_MOVE_STATUS(chosenMove) && IS_MOVE_STATUS(gBattleStruct->zmove.chosenZMove))
             return FALSE;
 
-        if (!IS_MOVE_STATUS(chosenMove) && AI_CalcDamageSaveBattlers(chosenMove, battlerAtk, battlerDef, &effectiveness, FALSE) >= gBattleMons[battlerDef].hp)
+        if (!IS_MOVE_STATUS(chosenMove) && AI_CalcDamageSaveBattlers(chosenMove, battlerAtk, battlerDef, &effectiveness, FALSE, DMG_ROLL_AVERAGE) >= gBattleMons[battlerDef].hp)
             return FALSE;   // don't waste damaging z move if can otherwise faint target
 
         return TRUE;
