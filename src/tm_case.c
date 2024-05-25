@@ -1042,7 +1042,7 @@ static void TMCase_MoveCursor_UpdatePrintedTMInfo(u16 itemId)
 
 static void PlaceHMTileInWindow(u8 windowId, u8 x, u8 y)
 {
-    BlitBitmapToWindow(windowId, gUnknown_8E99118, x, y, 16, 12);
+    // BlitBitmapToWindow(windowId, gUnknown_8E99118, x, y, 16, 12);
 }
 
 static UNUSED void HandlePrintMoneyOnHand(void)
