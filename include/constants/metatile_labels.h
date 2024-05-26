@@ -421,7 +421,7 @@
 #define METATILE_PetalburgLeoBSnow_SnowDrift_HM   0x209
 #define METATILE_PetalburgLeoBSnow_SnowDrift_HR   0x20A
 #define METATILE_PetalburgLeoBSnow_SnowDrift_ML   0x218
-#define METATILE_PetalburgLeoBSnow_SnowDrift_MM   0x219
+#define METATILE_PetalburgLeoBSnow_SnowDrift_MM   0x236
 #define METATILE_PetalburgLeoBSnow_SnowDrift_MR   0x21A
 #define METATILE_PetalburgLeoBSnow_SnowDrift_TM   0x211
 #define METATILE_PetalburgLeoBSnow_SnowDrift_TR   0x212
