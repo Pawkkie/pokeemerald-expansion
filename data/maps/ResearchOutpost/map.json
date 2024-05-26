@@ -3,7 +3,7 @@
   "name": "ResearchOutpost",
   "layout": "LAYOUT_RESEARCH_OUTPOST",
   "music": "MUS_DP_ROUTE216_DAY",
-  "region_map_section": "MAPSEC_LITTLEROOT_TOWN",
+  "region_map_section": "MAPSEC_RESEARCH_OUTPOST",
   "requires_flash": false,
   "weather": "WEATHER_BLIZZARD",
   "map_type": "MAP_TYPE_TOWN",
