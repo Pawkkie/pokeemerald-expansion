@@ -1591,7 +1591,7 @@ bool32 IsHealBlockPreventingMove(u32 battler, u32 move)
     return gBattleMoves[move].healBlockBanned;
 }
 
-static bool32 IsBelchPreventingMove(u32 battler, u32 move)
+bool32 IsBelchPreventingMove(u32 battler, u32 move)
 {
     if (gBattleMoves[move].effect != EFFECT_BELCH)
         return FALSE;

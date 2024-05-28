@@ -2156,7 +2156,7 @@ static s32 AI_CheckBadMove(u32 battlerAtk, u32 battlerDef, u32 move, s32 score)
                 ADJUST_SCORE(-10);
             break;
         case EFFECT_BELCH:
-            if (ItemId_GetPocket(GetUsedHeldItem(battlerAtk)) != POCKET_BERRIES)
+            if (IsBelchPreventingMove(battlerAtk, move))
                 ADJUST_SCORE(-10); // attacker has not consumed a berry
             break;
         case EFFECT_YAWN:
