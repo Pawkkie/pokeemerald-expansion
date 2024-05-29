@@ -3,8 +3,8 @@
 
 ASSUMPTIONS
 {
-    ASSUME(gMovesInfo[MOVE_SMELLING_SALTS].additionalEffects->moveEffect == MOVE_EFFECT_REMOVE_STATUS);
-    ASSUME(gMovesInfo[MOVE_SMELLING_SALTS].argument == STATUS1_PARALYSIS);
+    ASSUME(gBattleMoves[MOVE_SMELLING_SALTS].additionalEffects->moveEffect == MOVE_EFFECT_REMOVE_STATUS);
+    ASSUME(gBattleMoves[MOVE_SMELLING_SALTS].argument == STATUS1_PARALYSIS);
 }
 
 SINGLE_BATTLE_TEST("Smelling Salts does not cure paralyzed pokemons behind substitutes or get increased power")
