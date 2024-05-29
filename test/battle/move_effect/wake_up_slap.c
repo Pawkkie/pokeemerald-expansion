@@ -3,8 +3,7 @@
 
 ASSUMPTIONS
 {
-    ASSUME(gBattleMoves[MOVE_WAKE_UP_SLAP].additionalEffects->moveEffect == MOVE_EFFECT_REMOVE_STATUS);
-    ASSUME(gBattleMoves[MOVE_WAKE_UP_SLAP].argument == STATUS1_SLEEP);
+    ASSUME(gBattleMoves[MOVE_WAKE_UP_SLAP].effect == EFFECT_WAKE_UP_SLAP);
 }
 
 SINGLE_BATTLE_TEST("Wake-Up Slap does not cure paralyzed pokemons behind substitutes or get increased power")

@@ -3,7 +3,7 @@
 
 ASSUMPTIONS
 {
-    ASSUME(gBattleMoves[MOVE_SMACK_DOWN].additionalEffects->moveEffect == MOVE_EFFECT_SMACK_DOWN);
+    ASSUME(gBattleMoves[MOVE_SMACK_DOWN].effect == EFFECT_SMACK_DOWN);
 }
 
 SINGLE_BATTLE_TEST("Smack Down does not ground mons behind substitutes")

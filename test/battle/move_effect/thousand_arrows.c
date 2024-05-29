@@ -3,8 +3,7 @@
 
 ASSUMPTIONS
 {
-    ASSUME(gBattleMoves[MOVE_THOUSAND_ARROWS].additionalEffects->moveEffect == MOVE_EFFECT_SMACK_DOWN);
-    ASSUME(gBattleMoves[MOVE_THOUSAND_ARROWS].ignoreTypeIfFlyingAndUngrounded == TRUE);
+    ASSUME(gBattleMoves[MOVE_THOUSAND_ARROWS].effect == EFFECT_SMACK_DOWN);
 }
 
 SINGLE_BATTLE_TEST("Thousand Arrows does not ground mons behind substitutes")

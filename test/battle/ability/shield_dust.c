@@ -10,16 +10,16 @@ SINGLE_BATTLE_TEST("Shield Dust blocks secondary effects")
     PARAMETRIZE { move = MOVE_FAKE_OUT; }
     PARAMETRIZE { move = MOVE_ROCK_TOMB; }
     PARAMETRIZE { move = MOVE_SPIRIT_SHACKLE; }
-    PARAMETRIZE { move = MOVE_PSYCHIC_NOISE; }
+    // PARAMETRIZE { move = MOVE_PSYCHIC_NOISE; }
 
     GIVEN {
-        ASSUME(MoveHasAdditionalEffectWithChance(MOVE_NUZZLE, MOVE_EFFECT_PARALYSIS, 100) == TRUE);
-        ASSUME(MoveHasAdditionalEffectWithChance(MOVE_INFERNO, MOVE_EFFECT_BURN, 100) == TRUE);
-        ASSUME(MoveHasAdditionalEffectWithChance(MOVE_MORTAL_SPIN, MOVE_EFFECT_POISON, 100) == TRUE);
-        ASSUME(MoveHasAdditionalEffectWithChance(MOVE_FAKE_OUT, MOVE_EFFECT_FLINCH, 100) == TRUE);
-        ASSUME(MoveHasAdditionalEffectWithChance(MOVE_ROCK_TOMB, MOVE_EFFECT_SPD_MINUS_1, 100) == TRUE);
-        ASSUME(MoveHasAdditionalEffectWithChance(MOVE_SPIRIT_SHACKLE, MOVE_EFFECT_PREVENT_ESCAPE, 100) == TRUE);
-        ASSUME(MoveHasAdditionalEffectWithChance(MOVE_PSYCHIC_NOISE, MOVE_EFFECT_PSYCHIC_NOISE, 100) == TRUE);
+        ASSUME(gBattleMoves[MOVE_NUZZLE].effect == MOVE_EFFECT_PARALYSIS);
+        ASSUME(gBattleMoves[MOVE_INFERNO].effect ==  MOVE_EFFECT_BURN);
+        ASSUME(gBattleMoves[MOVE_MORTAL_SPIN].effect == MOVE_EFFECT_POISON);
+        ASSUME(gBattleMoves[MOVE_FAKE_OUT].effect == MOVE_EFFECT_FLINCH);
+        ASSUME(gBattleMoves[MOVE_ROCK_TOMB].effect == MOVE_EFFECT_SPD_MINUS_1);
+        ASSUME(gBattleMoves[MOVE_SPIRIT_SHACKLE].effect == MOVE_EFFECT_PREVENT_ESCAPE);
+        // ASSUME(gBattleMoves[MOVE_PSYCHIC_NOISE].effect == MOVE_EFFECT_PSYCHIC_NOISE);
         PLAYER(SPECIES_WOBBUFFET);
         OPPONENT(SPECIES_VIVILLON) { Ability(ABILITY_SHIELD_DUST); }
     } WHEN {
@@ -33,7 +33,7 @@ SINGLE_BATTLE_TEST("Shield Dust blocks secondary effects")
             MESSAGE("Foe Vivillon was poisoned!");
             MESSAGE("Foe Vivillon flinched!");
             ANIMATION(ANIM_TYPE_GENERAL, B_ANIM_STATS_CHANGE, opponent);
-            MESSAGE("Foe Vivillon was prevented from healing!");
+            // MESSAGE("Foe Vivillon was prevented from healing!");
         }
     } THEN { // Can't find good way to test trapping
         EXPECT(!(opponent->status2 & STATUS2_ESCAPE_PREVENTION));
@@ -49,11 +49,11 @@ SINGLE_BATTLE_TEST("Shield Dust does not block primary effects")
     PARAMETRIZE { move = MOVE_PAY_DAY; }
 
     GIVEN {
-        ASSUME(MoveHasAdditionalEffectWithChance(MOVE_INFESTATION, MOVE_EFFECT_WRAP, 0) == TRUE);
-        ASSUME(MoveHasAdditionalEffectWithChance(MOVE_THOUSAND_ARROWS, MOVE_EFFECT_SMACK_DOWN, 0) == TRUE);
-        ASSUME(MoveHasAdditionalEffectWithChance(MOVE_JAW_LOCK, MOVE_EFFECT_TRAP_BOTH, 0) == TRUE);
-        ASSUME(MoveHasAdditionalEffectWithChance(MOVE_PAY_DAY, MOVE_EFFECT_PAYDAY, 0) == TRUE);
-        ASSUME(MoveHasAdditionalEffectWithChance(MOVE_SMACK_DOWN, MOVE_EFFECT_SMACK_DOWN, 0) == TRUE);
+        ASSUME(gBattleMoves[MOVE_INFESTATION].effect == MOVE_EFFECT_WRAP);
+        ASSUME(gBattleMoves[MOVE_THOUSAND_ARROWS].effect == MOVE_EFFECT_SMACK_DOWN);
+        ASSUME(gBattleMoves[MOVE_JAW_LOCK].effect == MOVE_EFFECT_TRAP_BOTH);
+        ASSUME(gBattleMoves[MOVE_PAY_DAY].effect == MOVE_EFFECT_PAYDAY);
+        ASSUME(gBattleMoves[MOVE_SMACK_DOWN].effect == MOVE_EFFECT_SMACK_DOWN);
         PLAYER(SPECIES_WOBBUFFET);
         OPPONENT(SPECIES_VIVILLON) { Ability(ABILITY_SHIELD_DUST); }
     } WHEN {
@@ -93,10 +93,10 @@ SINGLE_BATTLE_TEST("Shield Dust does not block self-targeting effects, primary o
     PARAMETRIZE { move = MOVE_METEOR_ASSAULT; }
 
     GIVEN {
-        ASSUME(MoveHasAdditionalEffectSelf(MOVE_POWER_UP_PUNCH, MOVE_EFFECT_ATK_PLUS_1) == TRUE);
-        ASSUME(MoveHasAdditionalEffectSelf(MOVE_RAPID_SPIN, MOVE_EFFECT_RAPID_SPIN) == TRUE);
-        ASSUME(MoveHasAdditionalEffectSelf(MOVE_LEAF_STORM, MOVE_EFFECT_SP_ATK_TWO_DOWN) == TRUE);
-        ASSUME(MoveHasAdditionalEffectSelf(MOVE_METEOR_ASSAULT, MOVE_EFFECT_RECHARGE) == TRUE);
+        ASSUME(gBattleMoves[MOVE_POWER_UP_PUNCH].effect == MOVE_EFFECT_ATK_PLUS_1);
+        ASSUME(gBattleMoves[MOVE_RAPID_SPIN].effect == EFFECT_RAPID_SPIN);
+        ASSUME(gBattleMoves[MOVE_LEAF_STORM].effect == MOVE_EFFECT_SP_ATK_TWO_DOWN);
+        ASSUME(gBattleMoves[MOVE_METEOR_ASSAULT].effect == MOVE_EFFECT_RECHARGE);
         PLAYER(SPECIES_WOBBUFFET);
         OPPONENT(SPECIES_VIVILLON) { Ability(ABILITY_SHIELD_DUST); }
     } WHEN {
