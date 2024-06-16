@@ -1072,3 +1072,5 @@ EventScript_VsSeekerChargingDone::
 	.include "data/text/birch_speech.inc"
 
 	.include "data/maps/ResearchOutpost/scripts.inc"
+
+	.include "data/maps/MountainPass/scripts.inc"

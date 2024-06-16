@@ -4415,11 +4415,21 @@
       "id": "LAYOUT_RESEARCH_OUTPOST",
       "name": "ResearchOutpost_Layout",
       "width": 53,
-      "height": 47,
+      "height": 100,
       "primary_tileset": "gTileset_GeneralLeoBSnow",
       "secondary_tileset": "gTileset_PetalburgLeoBSnow",
       "border_filepath": "data/layouts/ResearchOutpost/border.bin",
       "blockdata_filepath": "data/layouts/ResearchOutpost/map.bin"
+    },
+    {
+      "id": "LAYOUT_MOUNTAIN_PASS",
+      "name": "MountainPass_Layout",
+      "width": 47,
+      "height": 80,
+      "primary_tileset": "gTileset_GeneralLeoBSnow",
+      "secondary_tileset": "gTileset_PetalburgLeoBSnow",
+      "border_filepath": "data/layouts/MountainPass/border.bin",
+      "blockdata_filepath": "data/layouts/MountainPass/map.bin"
     }
   ]
 }
