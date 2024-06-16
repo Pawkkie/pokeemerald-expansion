@@ -17,6 +17,11 @@
       "map": "MAP_MOUNTAIN_PASS",
       "offset": 0,
       "direction": "left"
+    },
+    {
+      "map": "MAP_SVEALUND",
+      "offset": -20,
+      "direction": "down"
     }
   ],
   "object_events": [

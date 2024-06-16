@@ -1074,3 +1074,5 @@ EventScript_VsSeekerChargingDone::
 	.include "data/maps/ResearchOutpost/scripts.inc"
 
 	.include "data/maps/MountainPass/scripts.inc"
+
+	.include "data/maps/Svealund/scripts.inc"

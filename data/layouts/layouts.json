@@ -4415,7 +4415,7 @@
       "id": "LAYOUT_RESEARCH_OUTPOST",
       "name": "ResearchOutpost_Layout",
       "width": 53,
-      "height": 100,
+      "height": 80,
       "primary_tileset": "gTileset_GeneralLeoBSnow",
       "secondary_tileset": "gTileset_PetalburgLeoBSnow",
       "border_filepath": "data/layouts/ResearchOutpost/border.bin",
@@ -4430,6 +4430,16 @@
       "secondary_tileset": "gTileset_PetalburgLeoBSnow",
       "border_filepath": "data/layouts/MountainPass/border.bin",
       "blockdata_filepath": "data/layouts/MountainPass/map.bin"
+    },
+    {
+      "id": "LAYOUT_SVEALUND",
+      "name": "Svealund_Layout",
+      "width": 20,
+      "height": 20,
+      "primary_tileset": "gTileset_GeneralLeoBSnow",
+      "secondary_tileset": "gTileset_PetalburgLeoBSnow",
+      "border_filepath": "data/layouts/Svealund/border.bin",
+      "blockdata_filepath": "data/layouts/Svealund/map.bin"
     }
   ]
 }

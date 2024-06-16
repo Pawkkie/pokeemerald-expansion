@@ -7373,7 +7373,7 @@ static void GetGroundEffectFlags_JumpLanding(struct ObjectEvent *objEvent, u32 *
         MetatileBehavior_IsPuddle,
         MetatileBehavior_IsSurfableWaterOrUnderwater,
         MetatileBehavior_IsShallowFlowingWater,
-        MetatileBehavior_IsSnowGrass,
+        MetatileBehavior_IsSnow,
         MetatileBehavior_IsSnowTallGrass,
         MetatileBehavior_IsATile,
     };
