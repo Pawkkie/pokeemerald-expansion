@@ -5277,23 +5277,52 @@ static s32 AI_PowerfulStatus(u32 battlerAtk, u32 battlerDef, u32 move, s32 score
 // AI_FLAG_FIXED_ACTIONS logic
 static s32 AI_FixedActions(u32 battlerAtk, u32 battlerDef, u32 move, s32 score)
 {
-    // Force scoring for specified moves based on turn
-    switch (gBattleStruct->battleTurnNum)
+    // Doubles case for tests
+    if (gBattleTypeFlags & BATTLE_TYPE_DOUBLE)
     {
-    case 1:
-        ADJUST_SCORE(move == MOVE_LEER ? 50 : -50);
-        break;
-    case 2:
-        ADJUST_SCORE(move == MOVE_STEALTH_ROCK ? 50 : -50);
-        break;
-    case 3:
-        ADJUST_SCORE(move == MOVE_TACKLE ? 50 : -50);
-        break;
-    case 4:
-        break;
-    case 5:
-        ADJUST_SCORE(move == MOVE_EXPLOSION ? 50 : -50);
+        // Force scoring for specified moves based on turn
+        switch (gBattleStruct->battleTurnNum)
+        {
+        case 1:
+            ADJUST_SCORE(move == MOVE_LICK && GetBattlerPosition(battlerDef) == B_POSITION_PLAYER_LEFT ? 50 : -50);
+            break;
+        case 2:
+            ADJUST_SCORE(move == MOVE_LICK && GetBattlerPosition(battlerDef) == B_POSITION_PLAYER_RIGHT ? 50 : -50);
+            break;
+        case 3:
+            ADJUST_SCORE((move == MOVE_LICK && GetBattlerPosition(battlerDef) == B_POSITION_PLAYER_LEFT && GetBattlerPosition(battlerAtk) == B_POSITION_OPPONENT_LEFT)
+                        ||(move == MOVE_LICK && GetBattlerPosition(battlerDef) == B_POSITION_PLAYER_RIGHT && GetBattlerPosition(battlerAtk) == B_POSITION_OPPONENT_RIGHT)
+                        ? 50 : -50);
+            break;
+        case 4:
+            break;
+        case 5:
+            ADJUST_SCORE(move == MOVE_EXPLOSION ? 50 : -50);
+        }
     }
+
+    // Singles case for tests
+    else
+    {
+        // Force scoring for specified moves based on turn
+        switch (gBattleStruct->battleTurnNum)
+        {
+        case 1:
+            ADJUST_SCORE(move == MOVE_LEER ? 50 : -50);
+            break;
+        case 2:
+            ADJUST_SCORE(move == MOVE_STEALTH_ROCK ? 50 : -50);
+            break;
+        case 3:
+            ADJUST_SCORE(move == MOVE_TACKLE ? 50 : -50);
+            break;
+        case 4:
+            break;
+        case 5:
+            ADJUST_SCORE(move == MOVE_EXPLOSION ? 50 : -50);
+        }
+    }
+
     return score;
 }
 

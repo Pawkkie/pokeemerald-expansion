@@ -1026,21 +1026,53 @@ static bool32 ShouldSwitchIfFixedAction(u32 battler, bool32 emitResult)
         if (i == gBattleStruct->monToSwitchIntoId[battlerIn2])
             continue;
 
-        switch(gBattleStruct->battleTurnNum)
+        // Doubles case for tests
+        if (gBattleTypeFlags & BATTLE_TYPE_DOUBLE)
         {
-            case 1:
-            case 2:
-            case 3:
-                return FALSE;
-            case 4:
-                if (GetMonData(&party[i], MON_DATA_SPECIES) == SPECIES_MAGIKARP) // AI_FLAG_FIXED_ACTIONS
-                {
-                    gBattleStruct->AI_monToSwitchIntoId[battler] = i;
-                    if (emitResult)
-                        BtlController_EmitTwoReturnValues(battler, 1, B_ACTION_SWITCH, 0);
-                    return TRUE;
-                }
+            switch(gBattleStruct->battleTurnNum)
+            {
+                case 1:
+                case 2:
+                case 3:
+                    return FALSE;
+                case 4:
+                    if (GetBattlerPosition(battler) == B_POSITION_OPPONENT_LEFT && GetMonData(&party[i], MON_DATA_SPECIES) == SPECIES_GYARADOS) // AI_FLAG_FIXED_ACTIONS
+                    {
+                        gBattleStruct->AI_monToSwitchIntoId[battler] = i;
+                        if (emitResult)
+                            BtlController_EmitTwoReturnValues(battler, 1, B_ACTION_SWITCH, 0);
+                        return TRUE;
+                    }
+                    if (GetBattlerPosition(battler) == B_POSITION_OPPONENT_RIGHT && GetMonData(&party[i], MON_DATA_SPECIES) == SPECIES_MAGIKARP)
+                    {
+                        gBattleStruct->AI_monToSwitchIntoId[battler] = i;
+                        if (emitResult)
+                            BtlController_EmitTwoReturnValues(battler, 1, B_ACTION_SWITCH, 0);
+                        return TRUE;
+                    }
+                    
             }
+        }
+
+        // Singles case for tests
+        else
+        {
+            switch(gBattleStruct->battleTurnNum)
+            {
+                case 1:
+                case 2:
+                case 3:
+                    return FALSE;
+                case 4:
+                    if (GetMonData(&party[i], MON_DATA_SPECIES) == SPECIES_MAGIKARP) // AI_FLAG_FIXED_ACTIONS
+                    {
+                        gBattleStruct->AI_monToSwitchIntoId[battler] = i;
+                        if (emitResult)
+                            BtlController_EmitTwoReturnValues(battler, 1, B_ACTION_SWITCH, 0);
+                        return TRUE;
+                    }
+            }
+        }
     }
     return FALSE;
 }
@@ -2043,7 +2075,7 @@ static u32 GetBestMonIntegrated(struct Pokemon *party, int firstId, int lastId, 
     return PARTY_SIZE;
 }
 
-static u32 GetNextMonFixedActions(struct Pokemon *party, int firstId, int lastId, u32 battlerIn1, u32 battlerIn2)
+static u32 GetNextMonFixedActions(u32 battler, struct Pokemon *party, int firstId, int lastId, u32 battlerIn1, u32 battlerIn2)
 {
     u32 i;
     // Iterate through mons
@@ -2058,15 +2090,37 @@ static u32 GetNextMonFixedActions(struct Pokemon *party, int firstId, int lastId
         {
             continue;
         }
-        switch(gBattleStruct->battleTurnNum)
+
+        // Doubles case for tests
+        if (gBattleTypeFlags & BATTLE_TYPE_DOUBLE)
         {
-            case 1:
-            case 2:
-            case 3:
-                return PARTY_SIZE;
-            case 4:
-                if (GetMonData(&party[i], MON_DATA_SPECIES) == SPECIES_CASTFORM) // AI_FLAG_FIXED_ACTIONS
-                    return i;
+            switch(gBattleStruct->battleTurnNum)
+            {
+                case 1:
+                case 2:
+                case 3:
+                    return PARTY_SIZE;
+                case 4:
+                    if (GetBattlerPosition(battler) == B_POSITION_OPPONENT_LEFT && GetMonData(&party[i], MON_DATA_SPECIES) == SPECIES_CASTFORM) // AI_FLAG_FIXED_ACTIONS
+                        return i;
+                    if (GetBattlerPosition(battler) == B_POSITION_OPPONENT_RIGHT && GetMonData(&party[i], MON_DATA_SPECIES) == SPECIES_ZIGZAGOON)
+                        return i;
+            }
+        }
+
+        // Singles case for tests
+        else
+        {
+            switch(gBattleStruct->battleTurnNum)
+            {
+                case 1:
+                case 2:
+                case 3:
+                    return PARTY_SIZE;
+                case 4:
+                    if (GetMonData(&party[i], MON_DATA_SPECIES) == SPECIES_CASTFORM) // AI_FLAG_FIXED_ACTIONS
+                        return i;
+            }
         }
     }
     return PARTY_SIZE;
@@ -2114,7 +2168,7 @@ u8 GetMostSuitableMonToSwitchInto(u32 battler, bool32 switchAfterMonKOd)
 
     if (AI_THINKING_STRUCT->aiFlags[battler] & AI_FLAG_FIXED_ACTIONS && switchAfterMonKOd)
     {
-        bestMonId = GetNextMonFixedActions(party, firstId, lastId, battlerIn1, battlerIn2);
+        bestMonId = GetNextMonFixedActions(battler, party, firstId, lastId, battlerIn1, battlerIn2);
         return bestMonId;
     }
 
