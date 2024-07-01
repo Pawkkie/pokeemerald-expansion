@@ -5277,51 +5277,136 @@ static s32 AI_PowerfulStatus(u32 battlerAtk, u32 battlerDef, u32 move, s32 score
 // AI_FLAG_FIXED_ACTIONS logic
 static s32 AI_FixedActions(u32 battlerAtk, u32 battlerDef, u32 move, s32 score)
 {
-    // Doubles case for tests
+    // Long Turn Battle
     if (gBattleTypeFlags & BATTLE_TYPE_DOUBLE)
     {
         // Force scoring for specified moves based on turn
         switch (gBattleStruct->battleTurnNum)
         {
-        case 1:
-            ADJUST_SCORE(move == MOVE_LICK && GetBattlerPosition(battlerDef) == B_POSITION_PLAYER_LEFT ? 50 : -50);
-            break;
-        case 2:
-            ADJUST_SCORE(move == MOVE_LICK && GetBattlerPosition(battlerDef) == B_POSITION_PLAYER_RIGHT ? 50 : -50);
-            break;
-        case 3:
-            ADJUST_SCORE((move == MOVE_LICK && GetBattlerPosition(battlerDef) == B_POSITION_PLAYER_LEFT && GetBattlerPosition(battlerAtk) == B_POSITION_OPPONENT_LEFT)
-                        ||(move == MOVE_LICK && GetBattlerPosition(battlerDef) == B_POSITION_PLAYER_RIGHT && GetBattlerPosition(battlerAtk) == B_POSITION_OPPONENT_RIGHT)
+        case 1: // Deoxys S uses Spikes, Hippowdown uses Substitute
+            ADJUST_SCORE((move == MOVE_SPIKES && GetBattlerPosition(battlerAtk) == B_POSITION_OPPONENT_LEFT)
+                        ||(move == MOVE_SUBSTITUTE && GetBattlerPosition(battlerAtk) == B_POSITION_OPPONENT_RIGHT)
                         ? 50 : -50);
             break;
-        case 4:
+        case 2: // Deoxys S uses Stealth Rock, Hippowdown uses Substitute
+            ADJUST_SCORE((move == MOVE_STEALTH_ROCK && GetBattlerPosition(battlerAtk) == B_POSITION_OPPONENT_LEFT)
+                        ||(move == MOVE_SUBSTITUTE && GetBattlerPosition(battlerAtk) == B_POSITION_OPPONENT_RIGHT)
+                        ? 50 : -50);
             break;
-        case 5:
-            ADJUST_SCORE(move == MOVE_EXPLOSION ? 50 : -50);
+        case 3: // Switch in Eevee for Deoxys S and Goodra for Hippowdon
+            break;
+        case 4: // Eevee uses Double Kick on friendly Gardevoir, Gardevoir uses Wish
+            ADJUST_SCORE((move == MOVE_DOUBLE_KICK && GetBattlerPosition(battlerAtk) == B_POSITION_OPPONENT_LEFT && GetBattlerPosition(battlerDef) == B_POSITION_OPPONENT_RIGHT)
+                        ||(move == MOVE_WISH && GetBattlerPosition(battlerAtk) == B_POSITION_OPPONENT_RIGHT)
+                        ? 50 : -50);
+            break;
+        case 5: // Eevee uses Wish, switch in Shiny Smeargle for Gardevoir
+            ADJUST_SCORE(move == MOVE_WISH && GetBattlerPosition(battlerAtk) == B_POSITION_PLAYER_LEFT ? 50 : -50);
+            break;
+        case 6: // Eevee uses Double Kick on opposing Deoxys S, Shiny Smeargle uses Doodle on Goodra
+            ADJUST_SCORE((move == MOVE_DOUBLE_KICK && GetBattlerPosition(battlerAtk) == B_POSITION_OPPONENT_LEFT && GetBattlerPosition(battlerDef) == B_POSITION_PLAYER_LEFT)
+                        ||(move == MOVE_DOODLE && GetBattlerPosition(battlerAtk) == B_POSITION_OPPONENT_RIGHT && GetBattlerPosition(battlerDef) == B_POSITION_OPPONENT_RIGHT)
+                        ? 50 : -50);
+            break;
+        case 7: // Switch Gardevoir in for Eevee, Shiny Smeargle's Attract fails on Gardevoir
+            ADJUST_SCORE(move == MOVE_ATTRACT && GetBattlerPosition(battlerAtk) == B_POSITION_OPPONENT_RIGHT && GetBattlerPosition(battlerDef) == B_POSITION_OPPONENT_LEFT ? 50 : -50);
+            break;
+        case 8: // Switch Eevee in for Gardevoir, Shiny Smeargle's Attract fails on Eevee
+            ADJUST_SCORE(move == MOVE_ATTRACT && GetBattlerPosition(battlerAtk) == B_POSITION_OPPONENT_RIGHT && GetBattlerPosition(battlerDef) == B_POSITION_OPPONENT_LEFT ? 50 : -50);
+            break;
+        case 9: // Switch Gardevoir in for Eevee, Shiny Smeargle's Attract fails on Gardevoir
+            ADJUST_SCORE(move == MOVE_ATTRACT && GetBattlerPosition(battlerAtk) == B_POSITION_OPPONENT_RIGHT && GetBattlerPosition(battlerDef) == B_POSITION_OPPONENT_LEFT ? 50 : -50);
+            break;
+        case 10: // Switch Eevee in for Gardevoir, Shiny Smeargle's Attract fails on Eevee
+            ADJUST_SCORE(move == MOVE_ATTRACT && GetBattlerPosition(battlerAtk) == B_POSITION_OPPONENT_RIGHT && GetBattlerPosition(battlerDef) == B_POSITION_OPPONENT_LEFT ? 50 : -50);
+            break;
+        case 11: // Switch Gardevoir in for Eevee, Shiny Smeargle's Attract fails on Gardevoir
+            ADJUST_SCORE(move == MOVE_ATTRACT && GetBattlerPosition(battlerAtk) == B_POSITION_OPPONENT_RIGHT && GetBattlerPosition(battlerDef) == B_POSITION_OPPONENT_LEFT ? 50 : -50);
+            break;
+        case 12: // Switch Eevee in for Gardevoir, Shiny Smeargle's Attract fails on Eevee
+            ADJUST_SCORE(move == MOVE_ATTRACT && GetBattlerPosition(battlerAtk) == B_POSITION_OPPONENT_RIGHT && GetBattlerPosition(battlerDef) == B_POSITION_OPPONENT_LEFT ? 50 : -50);
+            break;
+        case 13: // Shiny Smeargle's Attract fails on Eevee, Eevee uses Wish
+            ADJUST_SCORE((move == MOVE_ATTRACT && GetBattlerPosition(battlerAtk) == B_POSITION_OPPONENT_RIGHT && GetBattlerPosition(battlerDef) == B_POSITION_OPPONENT_LEFT)
+                        || (move == MOVE_WISH && GetBattlerPosition(battlerAtk) == B_POSITION_OPPONENT_LEFT)
+                        ? 50 : -50);
+            break;
+        case 14: // Switch Smeargle in for Eevee, Shiny Smeargle's Attract fails on Smeargle
+            ADJUST_SCORE(move == MOVE_ATTRACT && GetBattlerPosition(battlerAtk) == B_POSITION_OPPONENT_RIGHT && GetBattlerPosition(battlerDef) == B_POSITION_OPPONENT_LEFT ? 50 : -50);
+            break;
+        case 15: // Smeargle uses Sticky Web, Shiny Smeargle uses Reflect
+            ADJUST_SCORE((move == MOVE_STICKY_WEB && GetBattlerPosition(battlerAtk) == B_POSITION_OPPONENT_LEFT)
+                ||(move == MOVE_REFLECT && GetBattlerPosition(battlerAtk) == B_POSITION_OPPONENT_RIGHT)
+                ? 50 : -50);
+            break;
+        case 16: // Shiny Smeargle uses Reflect and fails, Smeargle uses Toxic Spikes
+            ADJUST_SCORE((move == MOVE_TOXIC_SPIKES && GetBattlerPosition(battlerAtk) == B_POSITION_OPPONENT_LEFT)
+                ||(move == MOVE_REFLECT && GetBattlerPosition(battlerAtk) == B_POSITION_OPPONENT_RIGHT)
+                ? 50 : -50);
+            break;
+        case 17: // Smeargle uses Toxic Spikes, Shiny Smeargle uses Reflect and fails
+            ADJUST_SCORE((move == MOVE_TOXIC_SPIKES && GetBattlerPosition(battlerAtk) == B_POSITION_OPPONENT_LEFT)
+                ||(move == MOVE_REFLECT && GetBattlerPosition(battlerAtk) == B_POSITION_OPPONENT_RIGHT)
+                ? 50 : -50);
+            break;
+        case 18: // Smeargle uses Sticky Web and fails, Shiny Smeargle uses Reflect and fails
+            ADJUST_SCORE((move == MOVE_TOXIC_SPIKES && GetBattlerPosition(battlerAtk) == B_POSITION_OPPONENT_LEFT)
+                ||(move == MOVE_REFLECT && GetBattlerPosition(battlerAtk) == B_POSITION_OPPONENT_RIGHT)
+                ? 50 : -50);
+            break;
+        case 19: // Shiny Smeargle Tera Rock, both Smeargle Population Bomb on player's left Smeargle (which has also Tera Rock'd)
+                ADJUST_SCORE((move == MOVE_POPULATION_BOMB && GetBattlerPosition(battlerAtk) == B_POSITION_OPPONENT_LEFT && GetBattlerPosition(battlerDef) == B_POSITION_PLAYER_LEFT)
+                ||(move == MOVE_POPULATION_BOMB && GetBattlerPosition(battlerAtk) == B_POSITION_OPPONENT_RIGHT && GetBattlerPosition(battlerDef) == B_POSITION_PLAYER_LEFT)
+                ? 50 : -50);
+            break;
         }
     }
 
-    // Singles case for tests
-    else
-    {
-        // Force scoring for specified moves based on turn
-        switch (gBattleStruct->battleTurnNum)
-        {
-        case 1:
-            ADJUST_SCORE(move == MOVE_LEER ? 50 : -50);
-            break;
-        case 2:
-            ADJUST_SCORE(move == MOVE_STEALTH_ROCK ? 50 : -50);
-            break;
-        case 3:
-            ADJUST_SCORE(move == MOVE_TACKLE ? 50 : -50);
-            break;
-        case 4:
-            break;
-        case 5:
-            ADJUST_SCORE(move == MOVE_EXPLOSION ? 50 : -50);
-        }
-    }
+    // Doubles case for tests
+    // if (gBattleTypeFlags & BATTLE_TYPE_DOUBLE)
+    // {
+    //     // Force scoring for specified moves based on turn
+    //     switch (gBattleStruct->battleTurnNum)
+    //     {
+    //     case 1:
+    //         ADJUST_SCORE(move == MOVE_LICK && GetBattlerPosition(battlerDef) == B_POSITION_PLAYER_LEFT ? 50 : -50);
+    //         break;
+    //     case 2:
+    //         ADJUST_SCORE(move == MOVE_LICK && GetBattlerPosition(battlerDef) == B_POSITION_PLAYER_RIGHT ? 50 : -50);
+    //         break;
+    //     case 3:
+    //         ADJUST_SCORE((move == MOVE_LICK && GetBattlerPosition(battlerDef) == B_POSITION_PLAYER_LEFT && GetBattlerPosition(battlerAtk) == B_POSITION_OPPONENT_LEFT)
+    //                     ||(move == MOVE_LICK && GetBattlerPosition(battlerDef) == B_POSITION_PLAYER_RIGHT && GetBattlerPosition(battlerAtk) == B_POSITION_OPPONENT_RIGHT)
+    //                     ? 50 : -50);
+    //         break;
+    //     case 4:
+    //         break;
+    //     case 5:
+    //         ADJUST_SCORE(move == MOVE_EXPLOSION ? 50 : -50);
+    //     }
+    // }
+
+    // // Singles case for tests
+    // else
+    // {
+    //     // Force scoring for specified moves based on turn
+    //     switch (gBattleStruct->battleTurnNum)
+    //     {
+    //     case 1:
+    //         ADJUST_SCORE(move == MOVE_LEER ? 50 : -50);
+    //         break;
+    //     case 2:
+    //         ADJUST_SCORE(move == MOVE_STEALTH_ROCK ? 50 : -50);
+    //         break;
+    //     case 3:
+    //         ADJUST_SCORE(move == MOVE_TACKLE ? 50 : -50);
+    //         break;
+    //     case 4:
+    //         break;
+    //     case 5:
+    //         ADJUST_SCORE(move == MOVE_EXPLOSION ? 50 : -50);
+    //     }
+    // }
 
     return score;
 }
