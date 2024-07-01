@@ -981,6 +981,70 @@ static bool32 AreAttackingStatsLowered(u32 battler, bool32 emitResult)
     return FALSE;
 }
 
+static bool32 ShouldSwitchIfFixedAction(u32 battler, bool32 emitResult)
+{
+    u8 battlerIn1, battlerIn2;
+    s32 firstId;
+    s32 lastId; // + 1
+    struct Pokemon *party;
+    s32 i;
+
+    if (gBattleTypeFlags & BATTLE_TYPE_DOUBLE)
+    {
+        battlerIn1 = battler;
+        if (gAbsentBattlerFlags & gBitTable[GetBattlerAtPosition(BATTLE_PARTNER(GetBattlerPosition(battler)))])
+            battlerIn2 = battler;
+        else
+            battlerIn2 = GetBattlerAtPosition(BATTLE_PARTNER(GetBattlerPosition(battler)));
+    }
+    else
+    {
+        battlerIn1 = battler;
+        battlerIn2 = battler;
+    }
+
+    GetAIPartyIndexes(battler, &firstId, &lastId);
+
+    if (GetBattlerSide(battler) == B_SIDE_PLAYER)
+        party = gPlayerParty;
+    else
+        party = gEnemyParty;
+
+    if ((AI_THINKING_STRUCT->aiFlags[battler] & AI_FLAG_FIXED_ACTIONS))
+    {
+        for (i = firstId; i < lastId; i++)
+        {
+            if (!IsValidForBattle(&party[i]))
+                continue;
+            if (i == gBattlerPartyIndexes[battlerIn1])
+                continue;
+            if (i == gBattlerPartyIndexes[battlerIn2])
+                continue;
+            if (i == gBattleStruct->monToSwitchIntoId[battlerIn1])
+                continue;
+            if (i == gBattleStruct->monToSwitchIntoId[battlerIn2])
+                continue;
+
+            switch(gBattleStruct->battleTurnNum)
+            {
+                case 1:
+                case 2:
+                case 3:
+                    return FALSE;
+                case 4:
+                    if (GetMonData(&party[i], MON_DATA_SPECIES) == SPECIES_MAGIKARP) // AI_FLAG_FIXED_ACTIONS
+                    {
+                        gBattleStruct->AI_monToSwitchIntoId[battler] = i;
+                        if (emitResult)
+                            BtlController_EmitTwoReturnValues(battler, 1, B_ACTION_SWITCH, 0);
+                        return TRUE;
+                    }
+                }
+        }
+    }
+    return FALSE;
+}
+
 bool32 ShouldSwitch(u32 battler, bool32 emitResult)
 {
     u32 battlerIn1, battlerIn2;
@@ -990,6 +1054,9 @@ bool32 ShouldSwitch(u32 battler, bool32 emitResult)
     s32 i;
     s32 availableToSwitch;
     bool32 hasAceMon = FALSE;
+
+    if (ShouldSwitchIfFixedAction(battler, emitResult))
+        return TRUE;
 
     if (gBattleMons[battler].status2 & (STATUS2_WRAPPED | STATUS2_ESCAPE_PREVENTION))
         return FALSE;
@@ -1977,6 +2044,35 @@ static u32 GetBestMonIntegrated(struct Pokemon *party, int firstId, int lastId, 
     return PARTY_SIZE;
 }
 
+static u32 GetNextMonFixedActions(struct Pokemon *party, int firstId, int lastId, u32 battlerIn1, u32 battlerIn2)
+{
+    u32 i;
+    // Iterate through mons
+    for (i = firstId; i < lastId; i++)
+    {
+        // Check mon validity
+        if (!IsValidForBattle(&party[i])
+            || gBattlerPartyIndexes[battlerIn1] == i
+            || gBattlerPartyIndexes[battlerIn2] == i
+            || i == gBattleStruct->monToSwitchIntoId[battlerIn1]
+            || i == gBattleStruct->monToSwitchIntoId[battlerIn2])
+        {
+            continue;
+        }
+        switch(gBattleStruct->battleTurnNum)
+        {
+            case 1:
+            case 2:
+            case 3:
+                return PARTY_SIZE;
+            case 4:
+                if (GetMonData(&party[i], MON_DATA_SPECIES) == SPECIES_CASTFORM) // AI_FLAG_FIXED_ACTIONS
+                    return i;
+        }
+    }
+    return PARTY_SIZE;
+}
+
 u8 GetMostSuitableMonToSwitchInto(u32 battler, bool32 switchAfterMonKOd)
 {
     u32 opposingBattler = 0;
@@ -2016,6 +2112,12 @@ u8 GetMostSuitableMonToSwitchInto(u32 battler, bool32 switchAfterMonKOd)
         party = gPlayerParty;
     else
         party = gEnemyParty;
+
+    if (AI_THINKING_STRUCT->aiFlags[battler] & AI_FLAG_FIXED_ACTIONS && switchAfterMonKOd)
+    {
+        bestMonId = GetNextMonFixedActions(party, firstId, lastId, battlerIn1, battlerIn2);
+        return bestMonId;
+    }
 
     // Split ideal mon decision between after previous mon KO'd (prioritize offensive options) and after switching active mon out (prioritize defensive options), and expand the scope of both.
     // Only use better mon selection if AI_FLAG_SMART_MON_CHOICES is set for the trainer.

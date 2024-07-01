@@ -54,6 +54,7 @@ static s32 AI_Safari(u32 battlerAtk, u32 battlerDef, u32 move, s32 score);
 static s32 AI_FirstBattle(u32 battlerAtk, u32 battlerDef, u32 move, s32 score);
 static s32 AI_DoubleBattle(u32 battlerAtk, u32 battlerDef, u32 move, s32 score);
 static s32 AI_PowerfulStatus(u32 battlerAtk, u32 battlerDef, u32 move, s32 score);
+static s32 AI_FixedActions(u32 battlerAtk, u32 battlerDef, u32 move, s32 score);
 
 
 static s32 (*const sBattleAiFuncTable[])(u32, u32, u32, s32) =
@@ -78,7 +79,7 @@ static s32 (*const sBattleAiFuncTable[])(u32, u32, u32, s32) =
     [17] = NULL,                     // Unused
     [18] = NULL,                     // Unused
     [19] = NULL,                     // Unused
-    [20] = NULL,                     // Unused
+    [20] = AI_FixedActions,          // AI_FLAG_FIXED_ACTIONS
     [21] = NULL,                     // Unused
     [22] = NULL,                     // Unused
     [23] = NULL,                     // Unused
@@ -5270,6 +5271,29 @@ static s32 AI_PowerfulStatus(u32 battlerAtk, u32 battlerDef, u32 move, s32 score
             ADJUST_SCORE(POWERFUL_STATUS_MOVE);
     }
 
+    return score;
+}
+
+// AI_FLAG_FIXED_ACTIONS logic
+static s32 AI_FixedActions(u32 battlerAtk, u32 battlerDef, u32 move, s32 score)
+{
+    // Force scoring for specified moves based on turn
+    switch (gBattleStruct->battleTurnNum)
+    {
+    case 1:
+        ADJUST_SCORE(move == MOVE_LEER ? 50 : -50);
+        break;
+    case 2:
+        ADJUST_SCORE(move == MOVE_STEALTH_ROCK ? 50 : -50);
+        break;
+    case 3:
+        ADJUST_SCORE(move == MOVE_TACKLE ? 50 : -50);
+        break;
+    case 4:
+        break;
+    case 5:
+        ADJUST_SCORE(move == MOVE_EXPLOSION ? 50 : -50);
+    }
     return score;
 }
 
