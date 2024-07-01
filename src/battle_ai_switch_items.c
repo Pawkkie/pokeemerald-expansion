@@ -989,6 +989,9 @@ static bool32 ShouldSwitchIfFixedAction(u32 battler, bool32 emitResult)
     struct Pokemon *party;
     s32 i;
 
+    if (!(AI_THINKING_STRUCT->aiFlags[battler] & AI_FLAG_FIXED_ACTIONS))
+        return FALSE;
+
     if (gBattleTypeFlags & BATTLE_TYPE_DOUBLE)
     {
         battlerIn1 = battler;
@@ -1010,37 +1013,34 @@ static bool32 ShouldSwitchIfFixedAction(u32 battler, bool32 emitResult)
     else
         party = gEnemyParty;
 
-    if ((AI_THINKING_STRUCT->aiFlags[battler] & AI_FLAG_FIXED_ACTIONS))
+    for (i = firstId; i < lastId; i++)
     {
-        for (i = firstId; i < lastId; i++)
-        {
-            if (!IsValidForBattle(&party[i]))
-                continue;
-            if (i == gBattlerPartyIndexes[battlerIn1])
-                continue;
-            if (i == gBattlerPartyIndexes[battlerIn2])
-                continue;
-            if (i == gBattleStruct->monToSwitchIntoId[battlerIn1])
-                continue;
-            if (i == gBattleStruct->monToSwitchIntoId[battlerIn2])
-                continue;
+        if (!IsValidForBattle(&party[i]))
+            continue;
+        if (i == gBattlerPartyIndexes[battlerIn1])
+            continue;
+        if (i == gBattlerPartyIndexes[battlerIn2])
+            continue;
+        if (i == gBattleStruct->monToSwitchIntoId[battlerIn1])
+            continue;
+        if (i == gBattleStruct->monToSwitchIntoId[battlerIn2])
+            continue;
 
-            switch(gBattleStruct->battleTurnNum)
-            {
-                case 1:
-                case 2:
-                case 3:
-                    return FALSE;
-                case 4:
-                    if (GetMonData(&party[i], MON_DATA_SPECIES) == SPECIES_MAGIKARP) // AI_FLAG_FIXED_ACTIONS
-                    {
-                        gBattleStruct->AI_monToSwitchIntoId[battler] = i;
-                        if (emitResult)
-                            BtlController_EmitTwoReturnValues(battler, 1, B_ACTION_SWITCH, 0);
-                        return TRUE;
-                    }
+        switch(gBattleStruct->battleTurnNum)
+        {
+            case 1:
+            case 2:
+            case 3:
+                return FALSE;
+            case 4:
+                if (GetMonData(&party[i], MON_DATA_SPECIES) == SPECIES_MAGIKARP) // AI_FLAG_FIXED_ACTIONS
+                {
+                    gBattleStruct->AI_monToSwitchIntoId[battler] = i;
+                    if (emitResult)
+                        BtlController_EmitTwoReturnValues(battler, 1, B_ACTION_SWITCH, 0);
+                    return TRUE;
                 }
-        }
+            }
     }
     return FALSE;
 }
@@ -1054,9 +1054,6 @@ bool32 ShouldSwitch(u32 battler, bool32 emitResult)
     s32 i;
     s32 availableToSwitch;
     bool32 hasAceMon = FALSE;
-
-    if (ShouldSwitchIfFixedAction(battler, emitResult))
-        return TRUE;
 
     if (gBattleMons[battler].status2 & (STATUS2_WRAPPED | STATUS2_ESCAPE_PREVENTION))
         return FALSE;
@@ -1123,6 +1120,8 @@ bool32 ShouldSwitch(u32 battler, bool32 emitResult)
     //Since the order is sequencial, and some of these functions prompt switch to specific party members.
 
     //These Functions can prompt switch to specific party members
+    if (ShouldSwitchIfFixedAction(battler, emitResult))
+        return TRUE;
     if (ShouldSwitchIfWonderGuard(battler, emitResult))
         return TRUE;
     if (ShouldSwitchIfGameStatePrompt(battler, emitResult))
