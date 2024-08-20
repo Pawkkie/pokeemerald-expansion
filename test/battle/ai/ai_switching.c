@@ -375,3 +375,22 @@ AI_SINGLE_BATTLE_TEST("AI_FLAG_SMART_SWITCHING: AI will switch out if mon would 
         TURN { MOVE(player, MOVE_THUNDERBOLT) ; EXPECT_SWITCH(opponent, 1); }
     }
 }
+
+TO_DO_BATTLE_TEST("Switch AI: AI will switch out if it can't deal damage to a mon with Wonder Guard 66% of the time");
+TO_DO_BATTLE_TEST("AI_FLAG_SMART_SWITCHING: AI will switch out if it has been Yawn'd with more than 1/3 HP remaining");
+TO_DO_BATTLE_TEST("AI_FLAG_SMART_SWITCHING: AI will switch out if it has been Curse'd 50%  of the time");
+TO_DO_BATTLE_TEST("AI_FLAG_SMART_SWITCHING: AI will switch out if it has been Toxic'd for at least two turns 50%  of the time");
+TO_DO_BATTLE_TEST("AI_FLAG_SMART_SWITCHING: AI will switch out if it has been Nightmare'd 33%  of the time");
+TO_DO_BATTLE_TEST("AI_FLAG_SMART_SWITCHING: AI will switch out if it has been Leech Seed'd 25%  of the time");
+TO_DO_BATTLE_TEST("AI_FLAG_SMART_SWITCHING: AI will switch out if it has been infatuated");
+TO_DO_BATTLE_TEST("AI_FLAG_SMART_SWITCHING: AI will switch out if player's mon is semi-invulernable and it has a good switchin");
+TO_DO_BATTLE_TEST("Switch AI: AI will stay in 33% of the time even if it can switch in an absorber if it has an effective move");
+TO_DO_BATTLE_TEST("Switch AI: AI will switch in an absorber if one exists 50% of the time");
+TO_DO_BATTLE_TEST("Switch AI: AI will switch out if all its moves are bad");
+TO_DO_BATTLE_TEST("ShouldSwitchIfAbilityBenefit");
+TO_DO_BATTLE_TEST("HasBadOdds");
+TO_DO_BATTLE_TEST("ShouldSwitchIfEncored");
+TO_DO_BATTLE_TEST("ShouldSwitchIfBadChoiceLock");
+TO_DO_BATTLE_TEST("AreAttackingStatsLowered");
+TO_DO_BATTLE_TEST("HasSuperEffectiveMoveAgainstOpponents");
+TO_DO_BATTLE_TEST("AreStatsRaised");
