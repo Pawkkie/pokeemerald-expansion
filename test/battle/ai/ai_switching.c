@@ -376,11 +376,60 @@ AI_SINGLE_BATTLE_TEST("AI_FLAG_SMART_SWITCHING: AI will switch out if mon would 
     }
 }
 
-TO_DO_BATTLE_TEST("AI_FLAG_SMART_SWITCHING: AI will switch out if it has been Yawn'd with more than 1/3 HP remaining");
-TO_DO_BATTLE_TEST("AI_FLAG_SMART_SWITCHING: AI will switch out if it has been Curse'd 50%  of the time");
-TO_DO_BATTLE_TEST("AI_FLAG_SMART_SWITCHING: AI will switch out if it has been Toxic'd for at least two turns 50%  of the time");
-TO_DO_BATTLE_TEST("AI_FLAG_SMART_SWITCHING: AI will switch out if it has been Nightmare'd 33%  of the time");
-TO_DO_BATTLE_TEST("AI_FLAG_SMART_SWITCHING: AI will switch out if it has been Leech Seed'd 25%  of the time");
+AI_SINGLE_BATTLE_TEST("AI_FLAG_SMART_SWITCHING: AI will switch out if it has been Yawn'd with more than 1/3 HP remaining")
+{
+    u32 hp;
+    PARAMETRIZE { hp = 30; }
+    PARAMETRIZE { hp = 10; }
+    GIVEN {
+        ASSUME(gMovesInfo[MOVE_YAWN].effect == EFFECT_YAWN);
+        AI_FLAGS(AI_FLAG_CHECK_BAD_MOVE | AI_FLAG_CHECK_VIABILITY | AI_FLAG_TRY_TO_FAINT | AI_FLAG_SMART_SWITCHING);
+        PLAYER(SPECIES_SLAKOTH) { Moves(MOVE_TACKLE, MOVE_YAWN); }
+        OPPONENT(SPECIES_ZIGZAGOON) { Moves(MOVE_TACKLE); HP(hp); MaxHP(30); }
+        OPPONENT(SPECIES_ZIGZAGOON) { Moves(MOVE_TACKLE); }
+    } WHEN {
+        TURN { MOVE(player, MOVE_YAWN) ; EXPECT_MOVE(opponent, MOVE_TACKLE); }
+        if (hp == 30)
+            TURN { MOVE(player, MOVE_YAWN) ; EXPECT_SWITCH(opponent, 1); }
+        else
+            TURN { MOVE(player, MOVE_YAWN) ; EXPECT_MOVE(opponent, MOVE_TACKLE); }
+    }
+}
+
+AI_SINGLE_BATTLE_TEST("AI_FLAG_SMART_SWITCHING: AI will switch out if it has been Curse'd 50% of the time")
+{
+    PASSES_RANDOMLY(50, 100);
+    GIVEN {
+        ASSUME(gMovesInfo[MOVE_CURSE].effect == EFFECT_CURSE);
+        AI_FLAGS(AI_FLAG_CHECK_BAD_MOVE | AI_FLAG_CHECK_VIABILITY | AI_FLAG_TRY_TO_FAINT | AI_FLAG_SMART_SWITCHING);
+        PLAYER(SPECIES_DUSCLOPS) { Moves(MOVE_FIRE_PUNCH, MOVE_CURSE); }
+        PLAYER(SPECIES_MILOTIC) { Moves(MOVE_WATER_GUN); }
+        OPPONENT(SPECIES_DUSCLOPS) { Moves(MOVE_SHADOW_BALL); }
+        OPPONENT(SPECIES_DUSCLOPS) { Moves(MOVE_SHADOW_BALL); }
+    } WHEN {
+        TURN { MOVE(player, MOVE_CURSE) ; EXPECT_MOVE(opponent, MOVE_SHADOW_BALL); }
+        TURN { MOVE(player, MOVE_FIRE_PUNCH); EXPECT_SWITCH(opponent, 1); }
+    }
+}
+
+AI_SINGLE_BATTLE_TEST("AI_FLAG_SMART_SWITCHING: AI will switch out if it has been Toxic'd for at least two turns 50% of the time with more than 1/3 HP remaining")
+{
+    PASSES_RANDOMLY(50, 100, RNG_AI_HASBADODDS);
+    GIVEN {
+        ASSUME(gMovesInfo[MOVE_TOXIC].effect == EFFECT_TOXIC);
+        AI_FLAGS(AI_FLAG_CHECK_BAD_MOVE | AI_FLAG_CHECK_VIABILITY | AI_FLAG_TRY_TO_FAINT | AI_FLAG_SMART_SWITCHING);
+        PLAYER(SPECIES_ZIGZAGOON) { Moves(MOVE_TACKLE, MOVE_CELEBRATE, MOVE_TOXIC); }
+        OPPONENT(SPECIES_ZIGZAGOON) { Moves(MOVE_TACKLE); }
+        OPPONENT(SPECIES_ZIGZAGOON) { Moves(MOVE_TACKLE); }
+    } WHEN {
+        TURN { MOVE(player, MOVE_TOXIC) ; EXPECT_MOVE(opponent, MOVE_TACKLE); }
+        TURN { MOVE(player, MOVE_TACKLE) ; EXPECT_MOVE(opponent, MOVE_TACKLE); }
+        TURN { MOVE(player, MOVE_TACKLE) ; EXPECT_SWITCH(opponent, 1); }
+    }
+}
+
+TO_DO_BATTLE_TEST("AI_FLAG_SMART_SWITCHING: AI will switch out if it has been Nightmare'd 33% of the time");
+TO_DO_BATTLE_TEST("AI_FLAG_SMART_SWITCHING: AI will switch out if it has been Leech Seed'd 25% of the time");
 TO_DO_BATTLE_TEST("AI_FLAG_SMART_SWITCHING: AI will switch out if it has been infatuated");
 TO_DO_BATTLE_TEST("AI_FLAG_SMART_SWITCHING: AI will switch out if player's mon is semi-invulernable and it has a good switchin");
 TO_DO_BATTLE_TEST("Switch AI: AI will stay in 33% of the time even if it can switch in an absorber if it has an effective move");

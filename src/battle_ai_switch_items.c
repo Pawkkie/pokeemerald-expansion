@@ -576,7 +576,7 @@ static bool32 ShouldSwitchIfGameStatePrompt(u32 battler, bool32 emitResult)
             //Cursed
             moduloChance = 2; //50%
             if (gBattleMons[battler].status2 & STATUS2_CURSED
-                && (Random() % (moduloChance*chanceReducer)) == 0)
+                && (Random() % (moduloChance)) == 0)
                 switchMon = TRUE;
 
             //Nightmare
