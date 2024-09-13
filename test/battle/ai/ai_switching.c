@@ -376,7 +376,6 @@ AI_SINGLE_BATTLE_TEST("AI_FLAG_SMART_SWITCHING: AI will switch out if mon would 
     }
 }
 
-TO_DO_BATTLE_TEST("Switch AI: AI will switch out if it can't deal damage to a mon with Wonder Guard 66% of the time");
 TO_DO_BATTLE_TEST("AI_FLAG_SMART_SWITCHING: AI will switch out if it has been Yawn'd with more than 1/3 HP remaining");
 TO_DO_BATTLE_TEST("AI_FLAG_SMART_SWITCHING: AI will switch out if it has been Curse'd 50%  of the time");
 TO_DO_BATTLE_TEST("AI_FLAG_SMART_SWITCHING: AI will switch out if it has been Toxic'd for at least two turns 50%  of the time");
