@@ -43,6 +43,7 @@
 #include "roamer.h"
 #include "safari_zone.h"
 #include "scanline_effect.h"
+#include "script.h"
 #include "sound.h"
 #include "sprite.h"
 #include "string_util.h"
@@ -3755,7 +3756,7 @@ static void DoBattleIntro(void)
                 gBattleStruct->startingStatus = GetTrainerStartingStatusFromId(gTrainerBattleOpponent_B);
                 gBattleStruct->startingStatusTimer = 0; // infinite
             }
-            else if (GetTrainerStartingStatusFromId(gTrainerBattleOpponent_A))
+            else if (gBattleTypeFlags & BATTLE_TYPE_TRAINER && GetTrainerStartingStatusFromId(gTrainerBattleOpponent_A))
             {
                 gBattleStruct->startingStatus = GetTrainerStartingStatusFromId(gTrainerBattleOpponent_A);
                 gBattleStruct->startingStatusTimer = 0; // infinite
@@ -5624,9 +5625,14 @@ static void FreeResetData_ReturnToOvOrDoEvolutions(void)
     }
 
     FreeAllWindowBuffers();
-    if (gBattleStruct != NULL && !(gBattleTypeFlags & BATTLE_TYPE_LINK))
+    if (!(gBattleTypeFlags & BATTLE_TYPE_LINK))
     {
-        ZeroEnemyPartyMons();
+        // To account for Battle Factory and Slateport Battle Tent, enemy parties are zeroed out in the facilitites respective src/xxx.c files
+        // The ZeroEnemyPartyMons() call happens in SaveXXXChallenge function (eg. SaveFactoryChallenge)
+        if (!(gBattleTypeFlags & BATTLE_TYPE_FRONTIER))
+        {
+            ZeroEnemyPartyMons();
+        }
         ResetDynamicAiFunc();
         FreeMonSpritesGfx();
         FreeBattleResources();
@@ -5746,8 +5752,10 @@ bool32 TrySetAteType(u32 move, u32 battlerAtk, u32 attackerAbility)
         break;
     case EFFECT_HIDDEN_POWER:
     case EFFECT_WEATHER_BALL:
-    case EFFECT_CHANGE_TYPE_ON_ITEM:
     case EFFECT_NATURAL_GIFT:
+    case EFFECT_CHANGE_TYPE_ON_ITEM:
+    case EFFECT_REVELATION_DANCE:
+    case EFFECT_TERRAIN_PULSE:
         return FALSE;
     }
 
@@ -5928,21 +5936,20 @@ void SetTypeBeforeUsingMove(u32 move, u32 battlerAtk)
     }
 }
 
-// special to set a field's totem boost(s)
-// inputs:
-//  var8000: battler
-//  var8001 - var8007: stat changes
-void SetTotemBoost(void)
+// Queues stat boosts for a given battler for totem battles
+void ScriptSetTotemBoost(struct ScriptContext *ctx)
 {
-    u32 battler = gSpecialVar_0x8000;
+    u32 battler = VarGet(ScriptReadHalfword(ctx));
+    u32 stat;
     u32 i;
 
     for (i = 0; i < (NUM_BATTLE_STATS - 1); i++)
     {
-        if (*(&gSpecialVar_0x8001 + i))
+        stat = VarGet(ScriptReadHalfword(ctx));
+        if (stat)
         {
             gQueuedStatBoosts[battler].stats |= (1 << i);
-            gQueuedStatBoosts[battler].statChanges[i] = *(&gSpecialVar_0x8001 + i);
+            gQueuedStatBoosts[battler].statChanges[i] = stat;
             gQueuedStatBoosts[battler].stats |= 0x80;  // used as a flag for the "totem flared to life" script
         }
     }
