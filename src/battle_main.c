@@ -4174,6 +4174,28 @@ enum
     STATE_SELECTION_SCRIPT_MAY_RUN
 };
 
+void SetupAiSwitchingData(u32 battler)
+{
+    s32 opposingBattler = GetBattlerAtPosition(BATTLE_OPPOSITE(GetBattlerPosition(battler)));
+
+    // AI's data
+    if (ShouldSwitch(battler, FALSE))
+        AI_DATA->shouldSwitch |= (1u << battler);
+
+    if (AI_THINKING_STRUCT->aiFlags[battler] & AI_FLAG_RISKY) // Risky AI switches aggressively even mid battle
+        AI_DATA->mostSuitableMonId[battler] = GetMostSuitableMonToSwitchInto(battler, TRUE, FALSE);
+    else
+        AI_DATA->mostSuitableMonId[battler] = GetMostSuitableMonToSwitchInto(battler, FALSE, FALSE);
+
+    // AI's prediction data
+    if (AI_THINKING_STRUCT->aiFlags[battler] & AI_FLAG_PREDICT_SWITCH)
+    {
+        if (ShouldSwitch(opposingBattler, FALSE))
+            AI_DATA->shouldSwitch |= (1u << opposingBattler);
+        AI_DATA->mostSuitableMonId[opposingBattler] = GetMostSuitableMonToSwitchInto(opposingBattler, FALSE, TRUE);
+    }
+}
+
 static void HandleTurnActionSelectionState(void)
 {
     s32 i, battler;
@@ -4192,12 +4214,7 @@ static void HandleTurnActionSelectionState(void)
             if ((gBattleTypeFlags & BATTLE_TYPE_HAS_AI || IsWildMonSmart())
                     && (BattlerHasAi(battler) && !(gBattleTypeFlags & BATTLE_TYPE_PALACE)))
             {
-                if (ShouldSwitch(battler, FALSE))
-                    AI_DATA->shouldSwitch |= (1u << battler);
-                if (AI_THINKING_STRUCT->aiFlags[battler] & AI_FLAG_RISKY) // Risky AI switches aggressively even mid battle
-                    AI_DATA->mostSuitableMonId[battler] = GetMostSuitableMonToSwitchInto(battler, TRUE);
-                else
-                    AI_DATA->mostSuitableMonId[battler] = GetMostSuitableMonToSwitchInto(battler, FALSE);
+                SetupAiSwitchingData(battler);
                 gBattleStruct->aiMoveOrAction[battler] = ComputeBattleAiScores(battler);
             }
             // fallthrough

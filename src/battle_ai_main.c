@@ -3981,6 +3981,8 @@ static u32 AI_CalcMoveEffectScore(u32 battlerAtk, u32 battlerDef, u32 move)
             //ADJUST_SCORE(8);
         break;
     case EFFECT_PURSUIT:
+        if (AI_DATA->shouldSwitch & (1u << battlerDef))
+            ADJUST_SCORE(BEST_EFFECT);
         // TODO
         // if (IsPredictedToSwitch(battlerDef, battlerAtk))
         //     ADJUST_SCORE(GOOD_EFFECT);
@@ -4816,7 +4818,8 @@ static s32 AI_CheckViability(u32 battlerAtk, u32 battlerDef, u32 move, s32 score
 
     if (gMovesInfo[move].power)
     {
-        if (GetNoOfHitsToKOBattler(battlerAtk, battlerDef, AI_THINKING_STRUCT->movesetIndex) == 0)
+        if ((GetNoOfHitsToKOBattler(battlerAtk, battlerDef, AI_THINKING_STRUCT->movesetIndex) == 0)
+            && !(AI_DATA->shouldSwitch & (1u << battlerDef))) // Don't return early if predicting switch
             ADJUST_AND_RETURN_SCORE(NO_DAMAGE_OR_FAILS); // No point in checking the move further so return early
         else
         {
