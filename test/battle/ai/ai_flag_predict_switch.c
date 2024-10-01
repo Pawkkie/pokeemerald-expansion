@@ -32,3 +32,35 @@ AI_SINGLE_BATTLE_TEST("AI_FLAG_PREDICT_SWITCH: AI would switch out in Pursuit sc
         TURN { MOVE(player, MOVE_PURSUIT); EXPECT_SWITCH(opponent, 1); }
     }
 }
+
+
+AI_SINGLE_BATTLE_TEST("AI_FLAG_PREDICT_SWITCH: AI will predict switches with Wonder Guard")
+{
+    u32 predictionFlag;
+
+    PARAMETRIZE { predictionFlag = 0; }
+    PARAMETRIZE { predictionFlag = AI_FLAG_PREDICT_SWITCH; }
+    GIVEN {
+        AI_FLAGS(AI_FLAG_SMART_TRAINER | predictionFlag);
+        PLAYER(SPECIES_BRONZONG) { Moves(MOVE_PSYCHIC); }
+        PLAYER(SPECIES_SWELLOW) { Moves(MOVE_PECK); }
+        OPPONENT(SPECIES_SHEDINJA) { Moves(MOVE_PURSUIT, MOVE_CRUNCH); }
+    } WHEN {
+        if (predictionFlag == 0)
+            TURN { SWITCH(player, 1); EXPECT_MOVE(opponent, MOVE_CRUNCH); }
+        else
+            TURN { SWITCH(player, 1); EXPECT_MOVE(opponent, MOVE_PURSUIT); }
+    }
+}
+
+AI_SINGLE_BATTLE_TEST("AI_FLAG_PREDICT_SWITCH: AI would switch out in Wonder Guard scenario")
+{
+    GIVEN {
+        AI_FLAGS(AI_FLAG_SMART_TRAINER);
+        PLAYER(SPECIES_SHEDINJA) { Moves(MOVE_PURSUIT, MOVE_CRUNCH); }
+        OPPONENT(SPECIES_BRONZONG) { Moves(MOVE_PSYCHIC); }
+        OPPONENT(SPECIES_SWELLOW) { Moves(MOVE_PECK); }
+    } WHEN {
+        TURN { MOVE(player, MOVE_PURSUIT); EXPECT_SWITCH(opponent, 1); }
+    }
+}

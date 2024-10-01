@@ -4183,16 +4183,16 @@ void SetupAiSwitchingData(u32 battler)
         AI_DATA->shouldSwitch |= (1u << battler);
 
     if (AI_THINKING_STRUCT->aiFlags[battler] & AI_FLAG_RISKY) // Risky AI switches aggressively even mid battle
-        AI_DATA->mostSuitableMonId[battler] = GetMostSuitableMonToSwitchInto(battler, TRUE, FALSE);
+        AI_DATA->mostSuitableMonId[battler] = GetMostSuitableMonToSwitchInto(battler, TRUE);
     else
-        AI_DATA->mostSuitableMonId[battler] = GetMostSuitableMonToSwitchInto(battler, FALSE, FALSE);
+        AI_DATA->mostSuitableMonId[battler] = GetMostSuitableMonToSwitchInto(battler, FALSE);
 
     // AI's prediction data
     if (AI_THINKING_STRUCT->aiFlags[battler] & AI_FLAG_PREDICT_SWITCH)
     {
         if (ShouldSwitch(opposingBattler, FALSE))
             AI_DATA->shouldSwitch |= (1u << opposingBattler);
-        AI_DATA->mostSuitableMonId[opposingBattler] = GetMostSuitableMonToSwitchInto(opposingBattler, FALSE, TRUE);
+        AI_DATA->mostSuitableMonId[opposingBattler] = GetMostSuitableMonToSwitchInto(opposingBattler, FALSE);
     }
 }
 
