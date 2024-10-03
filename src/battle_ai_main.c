@@ -771,6 +771,13 @@ static inline bool32 ShouldConsiderMoveForBattler(u32 battlerAi, u32 battlerDef,
 
 static inline void BattleAI_DoAIProcessing(struct AI_ThinkingStruct *aiThink, u32 battlerAi, u32 battlerDef)
 {
+    // If predicting switch, decide action against predicted incoming mon instead
+    if (AI_DATA->shouldSwitch & (1u << battlerDef))
+    {
+        // PokemonToBattleMon(&gPlayerParty[AI_DATA->mostSuitableMonId[battlerDef]], &gBattleMons[battlerDef]);
+        // SetBattlerAiData(battlerDef, AI_DATA);
+    }
+
     do
     {
         if (gBattleMons[battlerAi].pp[aiThink->movesetIndex] == 0)
@@ -3981,9 +3988,8 @@ static u32 AI_CalcMoveEffectScore(u32 battlerAtk, u32 battlerDef, u32 move)
             //ADJUST_SCORE(8);
         break;
     case EFFECT_PURSUIT:
-        // TODO
-        // if (IsPredictedToSwitch(battlerDef, battlerAtk))
-        //     ADJUST_SCORE(GOOD_EFFECT);
+        if (AI_DATA->shouldSwitch & (1u << battlerDef))
+            ADJUST_SCORE(GOOD_EFFECT);
         // else if (IsPredictedToUsePursuitableMove(battlerDef, battlerAtk) && !MoveWouldHitFirst(move, battlerAtk, battlerDef)) //Pursuit against fast U-Turn
         //     ADJUST_SCORE(GOOD_EFFECT);
         // break;
