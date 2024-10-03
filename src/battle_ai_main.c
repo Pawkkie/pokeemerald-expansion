@@ -771,13 +771,6 @@ static inline bool32 ShouldConsiderMoveForBattler(u32 battlerAi, u32 battlerDef,
 
 static inline void BattleAI_DoAIProcessing(struct AI_ThinkingStruct *aiThink, u32 battlerAi, u32 battlerDef)
 {
-    // If predicting switch, decide action against predicted incoming mon instead
-    if (AI_DATA->shouldSwitch & (1u << battlerDef))
-    {
-        // PokemonToBattleMon(&gPlayerParty[AI_DATA->mostSuitableMonId[battlerDef]], &gBattleMons[battlerDef]);
-        // SetBattlerAiData(battlerDef, AI_DATA);
-    }
-
     do
     {
         if (gBattleMons[battlerAi].pp[aiThink->movesetIndex] == 0)

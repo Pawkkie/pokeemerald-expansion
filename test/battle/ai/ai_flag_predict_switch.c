@@ -47,6 +47,7 @@ AI_SINGLE_BATTLE_TEST("AI_FLAG_PREDICT_SWITCH: AI will predict switches with Won
             TURN { SWITCH(player, 1); EXPECT_MOVE(opponent, MOVE_PURSUIT); }
     }
 }
+
 AI_SINGLE_BATTLE_TEST("AI_FLAG_PREDICT_SWITCH: AI would switch out in Wonder Guard scenario")
 {
     GIVEN {
@@ -59,38 +60,22 @@ AI_SINGLE_BATTLE_TEST("AI_FLAG_PREDICT_SWITCH: AI would switch out in Wonder Gua
     }
 }
 
-AI_SINGLE_BATTLE_TEST("AI_FLAG_PREDICT_SWITCH: AI will score against predicted incoming mon when switch predicted")
+AI_SINGLE_BATTLE_TEST("AI_FLAG_PREDICT_SWITCH: AI favours Focus Punch when predicting switch")
 {
-    PASSES_RANDOMLY(50, 100, RNG_AI_SWITCH_HASBADODDS);
+    u32 predictionFlag;
+    PARAMETRIZE { predictionFlag = 0; }
+    PARAMETRIZE { predictionFlag = AI_FLAG_PREDICT_SWITCH; }
     GIVEN {
-        ASSUME(gSpeciesInfo[SPECIES_RHYDON].types[0] == TYPE_GROUND);
-        ASSUME(gSpeciesInfo[SPECIES_PELIPPER].types[0] == TYPE_WATER);
-        ASSUME(gSpeciesInfo[SPECIES_PELIPPER].types[1] == TYPE_FLYING);
-        ASSUME(gMovesInfo[MOVE_THUNDERBOLT].type == TYPE_ELECTRIC);
-        ASSUME(gMovesInfo[MOVE_EARTHQUAKE].type == TYPE_GROUND);
-        AI_FLAGS(AI_FLAG_SMART_TRAINER | AI_FLAG_PREDICT_SWITCH);
-        PLAYER(SPECIES_PELIPPER) { Moves(MOVE_EARTHQUAKE); }
-        PLAYER(SPECIES_RHYDON) { Moves(MOVE_EARTHQUAKE); Ability(ABILITY_ROCK_HEAD); }
-        OPPONENT(SPECIES_ELECTRODE) { Moves(MOVE_THUNDERBOLT, MOVE_ABSORB); }
+        AI_FLAGS(AI_FLAG_SMART_TRAINER | predictionFlag);
+        PLAYER(SPECIES_WAILORD) { Moves(MOVE_WATER_GUN); }
+        PLAYER(SPECIES_SKARMORY) {Moves(MOVE_PECK); }
+        OPPONENT(SPECIES_BRELOOM) { Moves(MOVE_SEED_BOMB, MOVE_FOCUS_PUNCH); }
     } WHEN {
-        TURN { SWITCH(player, 1) ; EXPECT_MOVE(opponent, MOVE_ABSORB); }
+        if (predictionFlag == 0)
+            TURN { SWITCH(player, 1); EXPECT_MOVE(opponent, MOVE_SEED_BOMB); }
+        else
+            TURN { SWITCH(player, 1); EXPECT_MOVE(opponent, MOVE_FOCUS_PUNCH); }
     }
 }
-
-AI_SINGLE_BATTLE_TEST("AI_FLAG_PREDICT_SWITCH: AI would switch out in incoming mons scenario 50% of the time")
-{
-    PASSES_RANDOMLY(50, 100, RNG_AI_SWITCH_HASBADODDS);
-    GIVEN {
-        ASSUME(gSpeciesInfo[SPECIES_RHYDON].types[0] == TYPE_GROUND);
-        ASSUME(gSpeciesInfo[SPECIES_PELIPPER].types[0] == TYPE_WATER);
-        ASSUME(gSpeciesInfo[SPECIES_PELIPPER].types[1] == TYPE_FLYING);
-        ASSUME(gMovesInfo[MOVE_THUNDERBOLT].type == TYPE_ELECTRIC);
-        ASSUME(gMovesInfo[MOVE_EARTHQUAKE].type == TYPE_GROUND);
-        AI_FLAGS(AI_FLAG_SMART_TRAINER);
-        PLAYER(SPECIES_ELECTRODE) { Moves(MOVE_THUNDERBOLT, MOVE_ABSORB); }
-        OPPONENT(SPECIES_PELIPPER) { Moves(MOVE_EARTHQUAKE); }
-        OPPONENT(SPECIES_RHYDON) { Moves(MOVE_EARTHQUAKE); Ability(ABILITY_ROCK_HEAD); }
-    } WHEN {
-        TURN { MOVE(player, MOVE_THUNDERBOLT) ; EXPECT_SWITCH(opponent, 1); }
-    }
-}
+TO_DO_BATTLE_TEST("AI_FLAG_PREDICT_SWITCH: AI favours Pivot moves when predicting switch");
+TO_DO_BATTLE_TEST("AI_FLAG_PREDICT_SWITCH: AI favours Substitute when predicting switch");
