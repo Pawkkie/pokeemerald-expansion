@@ -2826,7 +2826,11 @@ u8 DoBattlerEndTurnEffects(void)
                             gBattleMons[battler].status1 |= ((Random() % 4) + 3);
 
                         if (B_SLEEP_CLAUSE)
+                        {
                             gBattleStruct->sleepClause.isActive[GetBattlerSide(gBattlerTarget)] = TRUE;
+                            gBattleStruct->sleepClause.isCausingSleepClause[GetBattlerSide(gBattlerTarget)][gBattlerPartyIndexes[gBattlerTarget]] = TRUE;
+                        }
+
                         BtlController_EmitSetMonData(battler, BUFFER_A, REQUEST_STATUS_BATTLE, 0, 4, &gBattleMons[battler].status1);
                         MarkBattlerForControllerExec(battler);
                         BattleScriptExecute(BattleScript_YawnMakesAsleep);
@@ -3298,8 +3302,12 @@ u8 AtkCanceller_UnableToUseMove(u32 moveType)
                     }
                     else
                     {
-                        if (B_SLEEP_CLAUSE)
+                        if (B_SLEEP_CLAUSE && gBattleStruct->sleepClause.isCausingSleepClause[GetBattlerSide(gBattlerAttacker)][gBattlerPartyIndexes[gBattlerAttacker]])
+                        {
                             gBattleStruct->sleepClause.isActive[GetBattlerSide(gBattlerAttacker)] = FALSE;
+                            gBattleStruct->sleepClause.isCausingSleepClause[GetBattlerSide(gBattlerAttacker)][gBattlerPartyIndexes[gBattlerAttacker]] = FALSE;
+                        }
+
                         gBattleMons[gBattlerAttacker].status2 &= ~STATUS2_NIGHTMARE;
                         BattleScriptPushCursor();
                         gBattleCommunication[MULTISTRING_CHOOSER] = B_MSG_WOKE_UP;
@@ -4969,7 +4977,15 @@ u32 AbilityBattleEffects(u32 caseID, u32 battler, u32 ability, u32 special, u32 
                     if (gBattleMons[battler].status1 & (STATUS1_POISON | STATUS1_TOXIC_POISON))
                         StringCopy(gBattleTextBuff1, gStatusConditionString_PoisonJpn);
                     if (gBattleMons[battler].status1 & STATUS1_SLEEP)
+                    {
                         StringCopy(gBattleTextBuff1, gStatusConditionString_SleepJpn);
+                        if (B_SLEEP_CLAUSE && gBattleStruct->sleepClause.isActive[GetBattlerSide(battler)] && gBattleStruct->sleepClause.isCausingSleepClause[GetBattlerSide(battler)][gBattlerPartyIndexes[battler]])
+                        {
+                            gBattleStruct->sleepClause.isActive[GetBattlerSide(battler)] = FALSE;
+                            gBattleStruct->sleepClause.isCausingSleepClause[GetBattlerSide(battler)][gBattlerPartyIndexes[battler]] = FALSE;
+                        }
+                    }
+                        
                     if (gBattleMons[battler].status1 & STATUS1_PARALYSIS)
                         StringCopy(gBattleTextBuff1, gStatusConditionString_ParalysisJpn);
                     if (gBattleMons[battler].status1 & STATUS1_BURN)
@@ -7214,6 +7230,11 @@ static u8 ItemEffectMoveEnd(u32 battler, u16 holdEffect)
             BattleScriptPushCursor();
             gBattlescriptCurrInstr = BattleScript_BerryCureSlpRet;
             effect = ITEM_STATUS_CHANGE;
+            if (B_SLEEP_CLAUSE && gBattleStruct->sleepClause.isActive[GetBattlerSide(battler)] && gBattleStruct->sleepClause.isCausingSleepClause[GetBattlerSide(battler)][gBattlerPartyIndexes[battler]])
+            {
+                gBattleStruct->sleepClause.isActive[GetBattlerSide(battler)] = FALSE;
+                gBattleStruct->sleepClause.isCausingSleepClause[GetBattlerSide(battler)][gBattlerPartyIndexes[battler]] = FALSE;
+            }
         }
         break;
     case HOLD_EFFECT_CURE_CONFUSION:
@@ -7455,6 +7476,11 @@ u8 ItemBattleEffects(u8 caseID, u32 battler, bool32 moveTurn)
                     gBattleMons[battler].status2 &= ~STATUS2_NIGHTMARE;
                     BattleScriptExecute(BattleScript_BerryCureSlpEnd2);
                     effect = ITEM_STATUS_CHANGE;
+                    if (B_SLEEP_CLAUSE && gBattleStruct->sleepClause.isActive[GetBattlerSide(battler)] && gBattleStruct->sleepClause.isCausingSleepClause[GetBattlerSide(battler)][gBattlerPartyIndexes[battler]])
+                    {
+                        gBattleStruct->sleepClause.isActive[GetBattlerSide(battler)] = FALSE;
+                        gBattleStruct->sleepClause.isCausingSleepClause[GetBattlerSide(battler)][gBattlerPartyIndexes[battler]] = FALSE;
+                    }
                 }
                 break;
             case HOLD_EFFECT_CURE_STATUS:
@@ -7761,6 +7787,11 @@ u8 ItemBattleEffects(u8 caseID, u32 battler, bool32 moveTurn)
                     gBattleMons[battler].status2 &= ~STATUS2_NIGHTMARE;
                     BattleScriptExecute(BattleScript_BerryCureSlpEnd2);
                     effect = ITEM_STATUS_CHANGE;
+                    if (B_SLEEP_CLAUSE && gBattleStruct->sleepClause.isActive[GetBattlerSide(battler)] && gBattleStruct->sleepClause.isCausingSleepClause[GetBattlerSide(battler)][gBattlerPartyIndexes[battler]])
+                    {
+                        gBattleStruct->sleepClause.isActive[GetBattlerSide(battler)] = FALSE;
+                        gBattleStruct->sleepClause.isCausingSleepClause[GetBattlerSide(battler)][gBattlerPartyIndexes[battler]] = FALSE;
+                    }
                 }
                 break;
             case HOLD_EFFECT_CURE_CONFUSION:

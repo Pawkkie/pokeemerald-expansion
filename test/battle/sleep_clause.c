@@ -392,3 +392,19 @@ TO_DO_BATTLE_TEST("Sleep Clause: sleep clause is deactivated when a sleeping mon
     // lumiose galett, miracle berry?, old gateau, pewter Crunchies, rage candy bar, shalour sable
     // idk wtf half these items even are and id imagine a lot of them share effects so i doubt a test will be needed for all of them
 
+TO_DO_BATTLE_TEST("Sleep Clause: sleep clause is deactivated when a sleeping mon is woken up by gaining the ability Insomnia");
+
+TO_DO_BATTLE_TEST("Sleep Clause: sleep clause is deactivated when a sleeping mon is woken up by gaining the ability Vital Spirit");
+
+TO_DO_BATTLE_TEST("Sleep Clause: sleep clause is deactivated when a sleeping mon faints");
+
+TO_DO_BATTLE_TEST("Sleep Clause: sleep clause is deactivated when a sleeping uses sleep talk -> explosion"); // holy fuck if this requires special handling im uninstalling
+
+TO_DO_BATTLE_TEST("Sleep Clause: sleep clause is deactivated when a sleeping uses sleep talk -> move that KOs a mon that has used destiny bond");
+
+TO_DO_BATTLE_TEST("Sleep Clause: sleep clause is deactivated when a sleeping uses sleep talk -> role play/skill swap");
+
+
+TO_DO_BATTLE_TEST("Sleep Clause: sleep clause is deactivated when a sleeping is sent out, has trace, and traces insomnia/vital spirit");
+
+TO_DO_BATTLE_TEST("Sleep Clause: sleep clause is deactivated when a sleeping mon is woken up by a held item, like chesto");

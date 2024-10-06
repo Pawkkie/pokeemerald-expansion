@@ -4184,13 +4184,35 @@ bool8 PokemonUseItemEffects(struct Pokemon *mon, u16 item, u8 partyIndex, u8 mov
 bool8 HealStatusConditions(struct Pokemon *mon, u32 healMask, u8 battlerId)
 {
     u32 status = GetMonData(mon, MON_DATA_STATUS, 0);
-
+    u32 i = 0;
+    u32 battlerSide = GetBattlerSide(battlerId);
+    
     if (status & healMask)
     {
         status &= ~healMask;
         SetMonData(mon, MON_DATA_STATUS, &status);
         if (gMain.inBattle && battlerId != MAX_BATTLERS_COUNT)
+        {
             gBattleMons[battlerId].status1 &= ~healMask;
+            if((healMask & STATUS1_SLEEP) && B_SLEEP_CLAUSE && gBattleStruct->sleepClause.isActive[battlerSide])
+            {
+                struct Pokemon *party;
+                if (battlerSide == B_SIDE_PLAYER)
+                    party = gPlayerParty;
+                else
+                    party = gEnemyParty;
+
+                for (i = 0; i < PARTY_SIZE; i++)
+                {
+                    if (&party[i] == mon && gBattleStruct->sleepClause.isCausingSleepClause[battlerSide][i])
+                    {
+                        gBattleStruct->sleepClause.isActive[battlerSide] = FALSE;
+                        gBattleStruct->sleepClause.isCausingSleepClause[battlerSide][i] = FALSE;
+                        break;
+                    }
+                }
+            }
+        }
         return FALSE;
     }
     else

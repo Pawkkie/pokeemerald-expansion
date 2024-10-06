@@ -598,6 +598,7 @@ struct SleepClauseData
 {
     u8 isActive[NUM_BATTLE_SIDES]; // Stores sleep clause state for each battle side
     bool8 effectExempt; // Stores whether effect should be exempt from triggering sleep clause (Effect Spore)
+    bool8 isCausingSleepClause[NUM_BATTLE_SIDES][PARTY_SIZE]; // When a Pokemon falls asleep, need to know if it should deactivate sleep clause upon waking
 };
 
 struct LostItem

@@ -3086,6 +3086,7 @@ void SetMoveEffect(bool32 primary, bool32 certain)
                 if (B_SLEEP_CLAUSE && !gBattleStruct->sleepClause.effectExempt)
                 {
                     gBattleStruct->sleepClause.isActive[GetBattlerSide(gEffectBattler)] = TRUE;
+                    gBattleStruct->sleepClause.isCausingSleepClause[GetBattlerSide(gEffectBattler)][gBattlerPartyIndexes[gEffectBattler]] = TRUE;
                     gBattleStruct->sleepClause.effectExempt = FALSE;
                 }
             }
@@ -4006,6 +4007,11 @@ static void Cmd_tryfaintmon(void)
                 MarkBattlerForControllerExec(gBattlerAttacker);
 
                 PREPARE_MOVE_BUFFER(gBattleTextBuff1, gBattleMons[gBattlerAttacker].moves[moveIndex])
+            }
+            if (B_SLEEP_CLAUSE && gBattleStruct->sleepClause.isActive[GetBattlerSide(battler)] && gBattleStruct->sleepClause.isCausingSleepClause[GetBattlerSide(battler)][gBattlerPartyIndexes[battler]])
+            {
+                gBattleStruct->sleepClause.isActive[GetBattlerSide(battler)] = FALSE;
+                gBattleStruct->sleepClause.isCausingSleepClause[GetBattlerSide(battler)][gBattlerPartyIndexes[battler]] = FALSE;
             }
         }
         else
@@ -13173,6 +13179,7 @@ static void Cmd_tryspiteppreduce(void)
 
 static void Cmd_healpartystatus(void)
 {
+    // TODO sleep clause: add code here for heal bell/armoatherapy/sparkly swirl (??)
     CMD_ARGS();
 
     u32 zero = 0;
