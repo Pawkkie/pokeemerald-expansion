@@ -4196,6 +4196,18 @@ enum
     STATE_SELECTION_SCRIPT_MAY_RUN
 };
 
+void SetupBattlerSwitchingData(u32 battler, u32 isAiRisky)
+{
+    // Setup battler data
+    sBattler_AI = battler;
+    BattleAI_SetupAIData(0xF, sBattler_AI);
+
+    // Setup switching data
+    AI_DATA->mostSuitableMonId[battler] = GetMostSuitableMonToSwitchInto(battler, isAiRisky);
+    if (ShouldSwitch(battler))
+        AI_DATA->shouldSwitch |= (1u << battler);
+}
+
 static void HandleTurnActionSelectionState(void)
 {
     s32 i, battler;
@@ -4217,14 +4229,10 @@ static void HandleTurnActionSelectionState(void)
             {
                 AI_DATA->aiCalcInProgress = TRUE;
 
-                // Setup battler data
-                sBattler_AI = battler;
-                BattleAI_SetupAIData(0xF, sBattler_AI);
-
-                // Setup switching data
-                AI_DATA->mostSuitableMonId[battler] = GetMostSuitableMonToSwitchInto(battler, isAiRisky);
-                if (ShouldSwitch(battler))
-                    AI_DATA->shouldSwitch |= (1u << battler);
+                // Setup battler switching data
+                if (AI_THINKING_STRUCT->aiFlags[battler] & AI_FLAG_PREDICT_SWITCH)
+                    SetupBattlerSwitchingData(GetBattlerAtPosition(BATTLE_OPPOSITE(GetBattlerPosition(battler))), FALSE);
+                SetupBattlerSwitchingData(battler, isAiRisky);
 
                 // Do scoring
                 gBattleStruct->aiMoveOrAction[battler] = BattleAI_ChooseMoveOrAction();
