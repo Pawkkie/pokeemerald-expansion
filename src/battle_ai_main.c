@@ -468,6 +468,8 @@ void SetAiLogicDataForTurn(struct AiLogicData *aiData)
     // get/assume all battler data and simulate AI damage
     battlersCount = gBattlersCount;
 
+    gBattleStruct->predictingSwitch = RandomPercentage(RNG_AI_PREDICT_SWITCH, 50);
+
     AI_DATA->aiCalcInProgress = TRUE;
     for (battlerAtk = 0; battlerAtk < battlersCount; battlerAtk++)
     {

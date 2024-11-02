@@ -4230,7 +4230,7 @@ static void HandleTurnActionSelectionState(void)
                 AI_DATA->aiCalcInProgress = TRUE;
 
                 // Setup battler switching data
-                if (AI_THINKING_STRUCT->aiFlags[battler] & AI_FLAG_PREDICT_SWITCH)
+                if ((AI_THINKING_STRUCT->aiFlags[battler] & AI_FLAG_PREDICT_SWITCH) && gBattleStruct->predictingSwitch)
                     SetupBattlerSwitchingData(GetBattlerAtPosition(BATTLE_OPPOSITE(GetBattlerPosition(battler))), FALSE);
                 SetupBattlerSwitchingData(battler, isAiRisky);
 

@@ -828,7 +828,8 @@ struct BattleStruct
     u32 stellarBoostFlags[NUM_BATTLE_SIDES]; // stored as a bitfield of flags for all types for each side
     u8 fickleBeamBoosted:1;
     u8 obedienceResult:3;
-    u8 padding:4;
+    u8 padding:3;
+    u8 predictingSwitch:1;
     u8 usedEjectItem;
     u8 usedMicleBerry;
 };
