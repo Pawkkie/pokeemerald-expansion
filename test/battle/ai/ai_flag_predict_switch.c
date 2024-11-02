@@ -4,19 +4,14 @@
 
 AI_SINGLE_BATTLE_TEST("AI_FLAG_PREDICT_SWITCH: AI will predict switches with Pursuit")
 {
-    u32 predictionFlag;
-    PARAMETRIZE { predictionFlag = 0; }
-    PARAMETRIZE { predictionFlag = AI_FLAG_PREDICT_SWITCH; }
+    PASSES_RANDOMLY(5, 10, RNG_AI_PREDICT_SWITCH);
     GIVEN {
-        AI_FLAGS(AI_FLAG_SMART_TRAINER | predictionFlag);
+        AI_FLAGS(AI_FLAG_SMART_TRAINER | AI_FLAG_PREDICT_SWITCH);
         PLAYER(SPECIES_BRONZONG) { Moves(MOVE_PSYCHIC); }
         PLAYER(SPECIES_CONKELDURR) { Moves(MOVE_HAMMER_ARM); }
         OPPONENT(SPECIES_TYRANITAR) { Moves(MOVE_PURSUIT, MOVE_CRUNCH); }
     } WHEN {
-        if (predictionFlag == 0)
-            TURN { SWITCH(player, 1); EXPECT_MOVE(opponent, MOVE_CRUNCH); }
-        else
-            TURN { SWITCH(player, 1); EXPECT_MOVE(opponent, MOVE_PURSUIT); }
+        TURN { SWITCH(player, 1); EXPECT_MOVE(opponent, MOVE_PURSUIT); }
     }
 }
 
@@ -34,19 +29,14 @@ AI_SINGLE_BATTLE_TEST("AI_FLAG_PREDICT_SWITCH: AI would switch out in Pursuit sc
 
 AI_SINGLE_BATTLE_TEST("AI_FLAG_PREDICT_SWITCH: AI will predict switches with Wonder Guard")
 {
-    u32 predictionFlag;
-    PARAMETRIZE { predictionFlag = 0; }
-    PARAMETRIZE { predictionFlag = AI_FLAG_PREDICT_SWITCH; }
+    PASSES_RANDOMLY(5, 10, RNG_AI_PREDICT_SWITCH);
     GIVEN {
-        AI_FLAGS(AI_FLAG_SMART_TRAINER | predictionFlag);
+        AI_FLAGS(AI_FLAG_SMART_TRAINER | AI_FLAG_PREDICT_SWITCH);
         PLAYER(SPECIES_BRONZONG) { Moves(MOVE_PSYCHIC); }
         PLAYER(SPECIES_SWELLOW) { Moves(MOVE_PECK); }
         OPPONENT(SPECIES_SHEDINJA) { Moves(MOVE_PURSUIT, MOVE_CRUNCH); }
     } WHEN {
-        if (predictionFlag == 0)
-            TURN { SWITCH(player, 1); EXPECT_MOVE(opponent, MOVE_CRUNCH); }
-        else
-            TURN { SWITCH(player, 1); EXPECT_MOVE(opponent, MOVE_PURSUIT); }
+        TURN { SWITCH(player, 1); EXPECT_MOVE(opponent, MOVE_PURSUIT); }
     }
 }
 
@@ -74,9 +64,6 @@ AI_SINGLE_BATTLE_TEST("AI_FLAG_PREDICT_SWITCH: AI can use Focus Punch on predict
         TURN { MOVE(player, MOVE_DISCHARGE); EXPECT_MOVE(opponent, MOVE_FOCUS_PUNCH); }
     }
 }
-
-TO_DO_BATTLE_TEST("AI_FLAG_PREDICT_SWITCH: AI will predict switches with hit escape moves");
-TO_DO_BATTLE_TEST("AI_FLAG_PREDICT_SWITCH: AI will use Substitute on predicted switches");
 
 AI_SINGLE_BATTLE_TEST("AI_FLAG_PREDICT_SWITCH: AI will score against predicted incoming mon when switch predicted")
 {
@@ -113,3 +100,6 @@ AI_SINGLE_BATTLE_TEST("AI_FLAG_PREDICT_SWITCH: AI would switch out in incoming m
         TURN { MOVE(player, MOVE_THUNDERBOLT) ; EXPECT_SWITCH(opponent, 1); }
     }
 }
+
+TO_DO_BATTLE_TEST("AI_FLAG_PREDICT_SWITCH: AI will predict switches with hit escape moves");
+TO_DO_BATTLE_TEST("AI_FLAG_PREDICT_SWITCH: AI will use Substitute on predicted switches");
