@@ -3656,6 +3656,10 @@ static u32 IncreaseStatUpScoreInternal(u32 battlerAtk, u32 battlerDef, u32 statI
     if (AI_DATA->abilities[battlerDef] == ABILITY_OPPORTUNIST)
         return NO_INCREASE;
 
+    // If predicting switch, stat increases are great momentum
+    if ((AI_THINKING_STRUCT->aiFlags[battlerAtk] & AI_FLAG_PREDICT_SWITCH) && gBattleStruct->predictingSwitch)
+        tempScore += WEAK_EFFECT;
+
     switch (statId)
     {
     case STAT_CHANGE_ATK:

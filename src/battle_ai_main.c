@@ -5269,7 +5269,7 @@ static s32 AI_PredictSwitch(u32 battlerAtk, u32 battlerDef, u32 move, s32 score)
             ADJUST_SCORE(GOOD_EFFECT);
         // else if (IsPredictedToUsePursuitableMove(battlerDef, battlerAtk) && !MoveWouldHitFirst(move, battlerAtk, battlerDef)) //Pursuit against fast U-Turn
         //     ADJUST_SCORE(GOOD_EFFECT);
-        // break;
+        break;
 
     // Free setup (U-Turn etc. handled in Check Viability by ShouldPivot)
     case EFFECT_BOLT_BEAK:
@@ -5281,6 +5281,7 @@ static s32 AI_PredictSwitch(u32 battlerAtk, u32 battlerDef, u32 move, s32 score)
     case EFFECT_SPIKES:
     case EFFECT_TOXIC_SPIKES:
         ADJUST_SCORE(BEST_EFFECT);
+        break;
     case EFFECT_FUTURE_SIGHT:
     case EFFECT_TELEKINESIS:
     case EFFECT_GRAVITY:
@@ -5295,25 +5296,31 @@ static s32 AI_PredictSwitch(u32 battlerAtk, u32 battlerDef, u32 move, s32 score)
     case EFFECT_GRASSY_TERRAIN:
     case EFFECT_MISTY_TERRAIN:
         ADJUST_SCORE(GOOD_EFFECT);
+        break;
     case EFFECT_HIT_SWITCH_TARGET:
         if (opposingHazardFlags != 0)
             ADJUST_SCORE(BEST_EFFECT);
         else
             ADJUST_SCORE(GOOD_EFFECT);
+        break;
     case EFFECT_ROAR:
         if (opposingHazardFlags != 0)
             ADJUST_SCORE(GOOD_EFFECT);
+        break;
     case EFFECT_DEFOG:
         if (aiHazardFlags != 0)
             ADJUST_SCORE(GOOD_EFFECT);
+        break;
     case EFFECT_WISH:
     case EFFECT_HEAL_BELL:
         if (ShouldUseWishAromatherapy(battlerAtk, battlerDef, move))
             ADJUST_SCORE(DECENT_EFFECT);
+        break;
     case EFFECT_RESTORE_HP:
         if (AI_DATA->hpPercents[battlerAtk] < 60)
             ADJUST_SCORE(GOOD_EFFECT);
-
+        break;
+        
     // Fails if opponent switches
     case EFFECT_PROTECT:
     case EFFECT_COUNTER:
@@ -5334,6 +5341,7 @@ static s32 AI_PredictSwitch(u32 battlerAtk, u32 battlerDef, u32 move, s32 score)
     case EFFECT_MAGIC_COAT:
     case EFFECT_SNATCH:
         ADJUST_SCORE(-BEST_EFFECT);
+        break;
 
     // Get stuck in bad matchup
     case EFFECT_IMPRISON:
@@ -5343,27 +5351,30 @@ static s32 AI_PredictSwitch(u32 battlerAtk, u32 battlerDef, u32 move, s32 score)
     case EFFECT_NO_RETREAT:
     case EFFECT_MEAN_LOOK:
         ADJUST_SCORE(-GOOD_EFFECT);
+        break;
     }
+    
+    // Additional effects
     for (i = 0; i < gMovesInfo[move].numAdditionalEffects; i++)
     {
         switch (gMovesInfo[move].additionalEffects[i].moveEffect)
         {
             case MOVE_EFFECT_WRAP:
                 ADJUST_SCORE(-GOOD_EFFECT);
+                break;
             case MOVE_EFFECT_RAPID_SPIN:
                 if (aiHazardFlags != 0)
                     ADJUST_SCORE(BEST_EFFECT);
+                    break;
             case MOVE_EFFECT_FEINT:
                 ADJUST_SCORE(-BEST_EFFECT);
+                break;
         }
     }
 
     // Take advantage of ability damage bonus
     if ((ability == ABILITY_STAKEOUT || ability == ABILITY_ANALYTIC) && IS_MOVE_STATUS(move))
         ADJUST_SCORE(-WEAK_EFFECT);
-
-    if (IsStatRaisingEffect(moveEffect)) // Scale this increase with power level of stat move potentially
-        ADJUST_SCORE(WEAK_EFFECT);
 
     // This must be last or the player can gauge whether the AI is predicting based on how long it thinks
     if (gBattleStruct->predictingSwitch)
