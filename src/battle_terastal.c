@@ -16,6 +16,7 @@
 #include "constants/abilities.h"
 #include "constants/hold_effects.h"
 #include "constants/rgb.h"
+#include "battle_ai_util.h"
 
 // Sets flags and variables upon a battler's Terastallization.
 void ActivateTera(u32 battler)
@@ -61,6 +62,8 @@ void ApplyBattlerVisualsForTeraAnim(u32 battler)
 // Returns whether a battler can Terastallize.
 bool32 CanTerastallize(u32 battler)
 {
+    if (BattlerHasAi(battler))
+        return FALSE;
     // u32 holdEffect = GetBattlerHoldEffect(battler, FALSE);
 
     // // Check if Player has Tera Orb and has charge.
