@@ -5278,86 +5278,102 @@ static s32 AI_PowerfulStatus(u32 battlerAtk, u32 battlerDef, u32 move, s32 score
 static s32 AI_FixedActions(u32 battlerAtk, u32 battlerDef, u32 move, s32 score)
 {
     // Long Turn Battle
-    if (gBattleTypeFlags & BATTLE_TYPE_DOUBLE)
+    if (IsDoubleBattle())
     {
         // Force scoring for specified moves based on turn
         switch (gBattleStruct->battleTurnNum)
         {
         case 1: // Deoxys S uses Spikes, Hippowdown uses Substitute
-            ADJUST_SCORE((move == MOVE_SPIKES && GetBattlerPosition(battlerAtk) == B_POSITION_OPPONENT_LEFT)
-                        ||(move == MOVE_SUBSTITUTE && GetBattlerPosition(battlerAtk) == B_POSITION_OPPONENT_RIGHT)
-                        ? 50 : -50);
+            if(move == MOVE_SPIKES)
+                ADJUST_SCORE(20);
             break;
         case 2: // Deoxys S uses Stealth Rock, Hippowdown uses Substitute
-            ADJUST_SCORE((move == MOVE_STEALTH_ROCK && GetBattlerPosition(battlerAtk) == B_POSITION_OPPONENT_LEFT)
-                        ||(move == MOVE_SUBSTITUTE && GetBattlerPosition(battlerAtk) == B_POSITION_OPPONENT_RIGHT)
-                        ? 50 : -50);
+            if(move == MOVE_STEALTH_ROCK)
+                ADJUST_SCORE(20);
             break;
         case 3: // Switch in Eevee for Deoxys S and Goodra for Hippowdon
             break;
         case 4: // Eevee uses Double Kick on friendly Gardevoir, Gardevoir uses Wish
-            ADJUST_SCORE((move == MOVE_DOUBLE_KICK && GetBattlerPosition(battlerAtk) == B_POSITION_OPPONENT_LEFT && GetBattlerPosition(battlerDef) == B_POSITION_OPPONENT_RIGHT)
-                        ||(move == MOVE_WISH && GetBattlerPosition(battlerAtk) == B_POSITION_OPPONENT_RIGHT)
-                        ? 50 : -50);
+            if(move == MOVE_DOUBLE_KICK && GetBattlerSide(battlerDef) == B_SIDE_OPPONENT)
+                ADJUST_SCORE(50);
+            if(gBattleMons[battlerAtk].species == SPECIES_EEVEE && move == MOVE_WISH)
+                ADJUST_SCORE(-50);
+            if(gBattleMons[battlerAtk].species == SPECIES_GARDEVOIR && move == MOVE_WISH)
+                ADJUST_SCORE(20);
             break;
         case 5: // Eevee uses Wish, switch in Shiny Smeargle for Gardevoir
-            ADJUST_SCORE(move == MOVE_WISH && GetBattlerPosition(battlerAtk) == B_POSITION_PLAYER_LEFT ? 50 : -50);
+            if(gBattleMons[battlerAtk].species == SPECIES_EEVEE && move == MOVE_WISH)
+                ADJUST_SCORE(20);
             break;
         case 6: // Eevee uses Double Kick on opposing Deoxys S, Shiny Smeargle uses Doodle on Goodra
-            ADJUST_SCORE((move == MOVE_DOUBLE_KICK && GetBattlerPosition(battlerAtk) == B_POSITION_OPPONENT_LEFT && GetBattlerPosition(battlerDef) == B_POSITION_PLAYER_LEFT)
-                        ||(move == MOVE_DOODLE && GetBattlerPosition(battlerAtk) == B_POSITION_OPPONENT_RIGHT && GetBattlerPosition(battlerDef) == B_POSITION_OPPONENT_RIGHT)
-                        ? 50 : -50);
+            if(move == MOVE_DOUBLE_KICK && gBattleMons[battlerDef].species == SPECIES_DEOXYS_SPEED)
+                ADJUST_SCORE(50);
+            if(move == MOVE_DOODLE && gBattleMons[battlerDef].species == SPECIES_GARDEVOIR)
+                ADJUST_SCORE(50);
+            if(move == MOVE_POPULATION_BOMB)
+                ADJUST_SCORE(-50);
             break;
         case 7: // Switch Gardevoir in for Eevee, Shiny Smeargle's Attract fails on Gardevoir
-            ADJUST_SCORE(move == MOVE_ATTRACT && GetBattlerPosition(battlerAtk) == B_POSITION_OPPONENT_RIGHT && GetBattlerPosition(battlerDef) == B_POSITION_OPPONENT_LEFT ? 50 : -50);
+            if(move == MOVE_ATTRACT && gBattleMons[battlerDef].species == SPECIES_EEVEE && GetBattlerSide(battlerDef) == B_SIDE_OPPONENT)
+                ADJUST_SCORE(50);
             break;
         case 8: // Switch Eevee in for Gardevoir, Shiny Smeargle's Attract fails on Eevee
-            ADJUST_SCORE(move == MOVE_ATTRACT && GetBattlerPosition(battlerAtk) == B_POSITION_OPPONENT_RIGHT && GetBattlerPosition(battlerDef) == B_POSITION_OPPONENT_LEFT ? 50 : -50);
+            if(move == MOVE_ATTRACT && gBattleMons[battlerDef].species == SPECIES_GARDEVOIR && GetBattlerSide(battlerDef) == B_SIDE_OPPONENT)
+                ADJUST_SCORE(50);
             break;
         case 9: // Switch Gardevoir in for Eevee, Shiny Smeargle's Attract fails on Gardevoir
-            ADJUST_SCORE(move == MOVE_ATTRACT && GetBattlerPosition(battlerAtk) == B_POSITION_OPPONENT_RIGHT && GetBattlerPosition(battlerDef) == B_POSITION_OPPONENT_LEFT ? 50 : -50);
+            if(move == MOVE_ATTRACT && gBattleMons[battlerDef].species == SPECIES_EEVEE && GetBattlerSide(battlerDef) == B_SIDE_OPPONENT)
+                ADJUST_SCORE(50);
             break;
         case 10: // Switch Eevee in for Gardevoir, Shiny Smeargle's Attract fails on Eevee
-            ADJUST_SCORE(move == MOVE_ATTRACT && GetBattlerPosition(battlerAtk) == B_POSITION_OPPONENT_RIGHT && GetBattlerPosition(battlerDef) == B_POSITION_OPPONENT_LEFT ? 50 : -50);
+            if(move == MOVE_ATTRACT && gBattleMons[battlerDef].species == SPECIES_GARDEVOIR && GetBattlerSide(battlerDef) == B_SIDE_OPPONENT)
+                ADJUST_SCORE(50);
             break;
         case 11: // Switch Gardevoir in for Eevee, Shiny Smeargle's Attract fails on Gardevoir
-            ADJUST_SCORE(move == MOVE_ATTRACT && GetBattlerPosition(battlerAtk) == B_POSITION_OPPONENT_RIGHT && GetBattlerPosition(battlerDef) == B_POSITION_OPPONENT_LEFT ? 50 : -50);
+            if(move == MOVE_ATTRACT && gBattleMons[battlerDef].species == SPECIES_EEVEE && GetBattlerSide(battlerDef) == B_SIDE_OPPONENT)
+                ADJUST_SCORE(50);
             break;
         case 12: // Switch Eevee in for Gardevoir, Shiny Smeargle's Attract fails on Eevee
-            ADJUST_SCORE(move == MOVE_ATTRACT && GetBattlerPosition(battlerAtk) == B_POSITION_OPPONENT_RIGHT && GetBattlerPosition(battlerDef) == B_POSITION_OPPONENT_LEFT ? 50 : -50);
+            if(move == MOVE_ATTRACT && gBattleMons[battlerDef].species == SPECIES_GARDEVOIR && GetBattlerSide(battlerDef) == B_SIDE_OPPONENT)
+                ADJUST_SCORE(50);
             break;
         case 13: // Shiny Smeargle's Attract fails on Eevee, Eevee uses Wish
-            ADJUST_SCORE((move == MOVE_ATTRACT && GetBattlerPosition(battlerAtk) == B_POSITION_OPPONENT_RIGHT && GetBattlerPosition(battlerDef) == B_POSITION_OPPONENT_LEFT)
-                        || (move == MOVE_WISH && GetBattlerPosition(battlerAtk) == B_POSITION_OPPONENT_LEFT)
-                        ? 50 : -50);
+            if(move == MOVE_ATTRACT && gBattleMons[battlerDef].species == SPECIES_EEVEE && GetBattlerSide(battlerDef) == B_SIDE_OPPONENT)
+                ADJUST_SCORE(50);
+            if(move == MOVE_WISH)
+                ADJUST_SCORE(50);
             break;
         case 14: // Switch Smeargle in for Eevee, Shiny Smeargle's Attract fails on Smeargle
-            ADJUST_SCORE(move == MOVE_ATTRACT && GetBattlerPosition(battlerAtk) == B_POSITION_OPPONENT_RIGHT && GetBattlerPosition(battlerDef) == B_POSITION_OPPONENT_LEFT ? 50 : -50);
+            if(move == MOVE_ATTRACT && gBattleMons[battlerDef].species == SPECIES_SMEARGLE && GetBattlerSide(battlerDef) == B_SIDE_OPPONENT)
+                ADJUST_SCORE(50);
             break;
         case 15: // Smeargle uses Sticky Web, Shiny Smeargle uses Reflect
-            ADJUST_SCORE((move == MOVE_STICKY_WEB && GetBattlerPosition(battlerAtk) == B_POSITION_OPPONENT_LEFT)
-                ||(move == MOVE_REFLECT && GetBattlerPosition(battlerAtk) == B_POSITION_OPPONENT_RIGHT)
-                ? 50 : -50);
+            if(move == MOVE_STICKY_WEB)
+                ADJUST_SCORE(50);
+            if(move == MOVE_REFLECT)
+                ADJUST_SCORE(50);
             break;
         case 16: // Shiny Smeargle uses Reflect and fails, Smeargle uses Toxic Spikes
-            ADJUST_SCORE((move == MOVE_TOXIC_SPIKES && GetBattlerPosition(battlerAtk) == B_POSITION_OPPONENT_LEFT)
-                ||(move == MOVE_REFLECT && GetBattlerPosition(battlerAtk) == B_POSITION_OPPONENT_RIGHT)
-                ? 50 : -50);
+            if(move == MOVE_TOXIC_SPIKES)
+                ADJUST_SCORE(50);
+            if(move == MOVE_REFLECT)
+                ADJUST_SCORE(50);
             break;
         case 17: // Smeargle uses Toxic Spikes, Shiny Smeargle uses Reflect and fails
-            ADJUST_SCORE((move == MOVE_TOXIC_SPIKES && GetBattlerPosition(battlerAtk) == B_POSITION_OPPONENT_LEFT)
-                ||(move == MOVE_REFLECT && GetBattlerPosition(battlerAtk) == B_POSITION_OPPONENT_RIGHT)
-                ? 50 : -50);
+            if(move == MOVE_TOXIC_SPIKES)
+                ADJUST_SCORE(50);
+            if(move == MOVE_REFLECT)
+                ADJUST_SCORE(50);
             break;
         case 18: // Smeargle uses Sticky Web and fails, Shiny Smeargle uses Reflect and fails
-            ADJUST_SCORE((move == MOVE_TOXIC_SPIKES && GetBattlerPosition(battlerAtk) == B_POSITION_OPPONENT_LEFT)
-                ||(move == MOVE_REFLECT && GetBattlerPosition(battlerAtk) == B_POSITION_OPPONENT_RIGHT)
-                ? 50 : -50);
+            if(move == MOVE_STICKY_WEB)
+                ADJUST_SCORE(50);
+            if(move == MOVE_REFLECT)
+                ADJUST_SCORE(50);
             break;
         case 19: // Shiny Smeargle Tera Rock, both Smeargle Population Bomb on player's left Smeargle (which has also Tera Rock'd)
-                ADJUST_SCORE((move == MOVE_POPULATION_BOMB && GetBattlerPosition(battlerAtk) == B_POSITION_OPPONENT_LEFT && GetBattlerPosition(battlerDef) == B_POSITION_PLAYER_LEFT)
-                ||(move == MOVE_POPULATION_BOMB && GetBattlerPosition(battlerAtk) == B_POSITION_OPPONENT_RIGHT && GetBattlerPosition(battlerDef) == B_POSITION_PLAYER_LEFT)
-                ? 50 : -50);
+            if(move == MOVE_POPULATION_BOMB && GetBattlerPosition(battlerDef) == B_POSITION_PLAYER_LEFT)
+                ADJUST_SCORE(50);
             break;
         }
     }

@@ -8524,13 +8524,41 @@ Music: Girl
 Double Battle: Yes
 AI: Fixed Actions
 
-Marill
-Level: 18
-IVs: 0 HP / 0 Atk / 0 Def / 0 SpA / 0 SpD / 0 Spe
+Hippowdon (M) @ Eject Pack  
+Ability: Sand Stream  
+IVs: 0 Atk  
+- Substitute  
 
-Lombre
-Level: 18
-IVs: 0 HP / 0 Atk / 0 Def / 0 SpA / 0 SpD / 0 Spe
+Deoxys-Speed @ Eject Pack  
+Ability: Pressure  
+IVs: 0 Atk  
+- Spikes  
+- Stealth Rock 
+
+Smeargle (M) @ Aguav Berry  
+Ability: Technician  
+Shiny: Yes  
+Tera Type: Rock  
+- Doodle  
+- Attract  
+- Reflect  
+- Population Bomb  
+
+Smeargle (M) @ Aguav Berry  
+Ability: Technician  
+- Sticky Web  
+- Toxic Spikes  
+- Population Bomb   
+
+Gardevoir (M) @ Eject Pack  
+Ability: Trace  
+IVs: 0 Atk  
+- Wish  
+
+Eevee (M) @ Eject Pack  
+Ability: Anticipation  
+- Double Kick  
+- Wish  
 
 === TRAINER_MARTHA ===
 Name: MARTHA

@@ -73,6 +73,12 @@ Route114_EventScript_MeteorFallsSign::
 
 Route114_EventScript_FossilManiacsHouseSign::
 	msgbox Route114_Text_FossilManiacsHouseSign, MSGBOX_SIGN
+	givemon SPECIES_SMEARGLE, 100, item=ITEM_ROCKY_HELMET, abilityNum=1, move1=MOVE_DOODLE, move2=MOVE_ATTRACT, move3=MOVE_GRAVITY, move4=MOVE_POPULATION_BOMB, isShiny=TRUE, teraType=TYPE_ROCK
+	givemon SPECIES_SMEARGLE, 100, item=ITEM_AGUAV_BERRY, abilityNum=1, move1=MOVE_STICKY_WEB, move2=MOVE_TOXIC_SPIKES, move3=MOVE_POPULATION_BOMB
+	givemon SPECIES_DEOXYS_SPEED, 100, item=ITEM_EJECT_PACK, abilityNum=0, move1=MOVE_SPIKES, move2=MOVE_STEALTH_ROCK
+	givemon SPECIES_GOODRA, 100, item=ITEM_EJECT_PACK, abilityNum=0, move1=MOVE_COUNTER
+	givemon SPECIES_GARDEVOIR, 100, item=ITEM_EJECT_PACK, abilityNum=1, move1=MOVE_HYPER_VOICE, move2=MOVE_HEAL_PULSE, move3=MOVE_WISH
+	givemon SPECIES_EEVEE, 100, item=ITEM_EJECT_PACK, abilityNum=2, move1=MOVE_CELEBRATE
 	end
 
 Route114_EventScript_LanettesHouseSign::
