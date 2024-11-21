@@ -228,32 +228,32 @@ const struct SpeciesInfo gSpeciesInfoGen7[] =
         .pokemonOffset = 1,
         .trainerScale = 296,
         .trainerOffset = 1,
-        .frontPic = gMonFrontPic_DecidueyeHisuian,
+        .frontPic = gMonFrontPic_DecidueyeHisui,
         .frontPicSize = MON_COORDS_SIZE(64, 64),
         .frontPicYOffset = 0,
-        .frontAnimFrames = sAnims_DecidueyeHisuian,
+        .frontAnimFrames = sAnims_DecidueyeHisui,
         //.frontAnimId = ANIM_V_SQUISH_AND_BOUNCE,
-        .backPic = gMonBackPic_DecidueyeHisuian,
+        .backPic = gMonBackPic_DecidueyeHisui,
         .backPicSize = MON_COORDS_SIZE(64, 64),
         .backPicYOffset = 0,
         //.backAnimId = BACK_ANIM_NONE,
-        .palette = gMonPalette_DecidueyeHisuian,
-        .shinyPalette = gMonShinyPalette_DecidueyeHisuian,
-        .iconSprite = gMonIcon_DecidueyeHisuian,
+        .palette = gMonPalette_DecidueyeHisui,
+        .shinyPalette = gMonShinyPalette_DecidueyeHisui,
+        .iconSprite = gMonIcon_DecidueyeHisui,
         .iconPalIndex = 0,
         SHADOW(-1, 14, SHADOW_SIZE_L)
         FOOTPRINT(Decidueye)
         OVERWORLD(
-            sPicTable_DecidueyeHisuian,
+            sPicTable_DecidueyeHisui,
             SIZE_32x32,
             SHADOW_SIZE_M,
             TRACKS_FOOT,
-            gOverworldPalette_DecidueyeHisuian,
-            gShinyOverworldPalette_DecidueyeHisuian
+            gOverworldPalette_DecidueyeHisui,
+            gShinyOverworldPalette_DecidueyeHisui
         )
         .isHisuianForm = TRUE,
-        .levelUpLearnset = sDecidueyeHisuianLevelUpLearnset,
-        .teachableLearnset = sDecidueyeHisuianTeachableLearnset,
+        .levelUpLearnset = sDecidueyeHisuiLevelUpLearnset,
+        .teachableLearnset = sDecidueyeHisuiTeachableLearnset,
         .formSpeciesIdTable = sDecidueyeFormSpeciesIdTable,
     },
 #endif //P_HISUIAN_FORMS
@@ -5493,7 +5493,7 @@ const struct SpeciesInfo gSpeciesInfoGen7[] =
         .palette = gMonPalette_TapuFini,
         .shinyPalette = gMonShinyPalette_TapuFini,
         .iconSprite = gMonIcon_TapuFini,
-        .iconPalIndex = 0,
+        .iconPalIndex = 2,
         SHADOW(1, 15, SHADOW_SIZE_M)
         FOOTPRINT(TapuFini)
         OVERWORLD(
@@ -5694,7 +5694,7 @@ const struct SpeciesInfo gSpeciesInfoGen7[] =
         .palette = gMonPalette_Solgaleo,
         .shinyPalette = gMonShinyPalette_Solgaleo,
         .iconSprite = gMonIcon_Solgaleo,
-        .iconPalIndex = 0,
+        .iconPalIndex = 2,
         SHADOW(-1, 11, SHADOW_SIZE_XL_BATTLE_ONLY)
         FOOTPRINT(Solgaleo)
         OVERWORLD(
@@ -5826,7 +5826,7 @@ const struct SpeciesInfo gSpeciesInfoGen7[] =
         .palette = gMonPalette_Nihilego,
         .shinyPalette = gMonShinyPalette_Nihilego,
         .iconSprite = gMonIcon_Nihilego,
-        .iconPalIndex = 0,
+        .iconPalIndex = 2,
         SHADOW(-2, 14, SHADOW_SIZE_S)
         FOOTPRINT(Nihilego)
         OVERWORLD(
@@ -6220,7 +6220,7 @@ const struct SpeciesInfo gSpeciesInfoGen7[] =
         .palette = gMonPalette_Guzzlord,
         .shinyPalette = gMonShinyPalette_Guzzlord,
         .iconSprite = gMonIcon_Guzzlord,
-        .iconPalIndex = 0,
+        .iconPalIndex = 2,
         SHADOW(4, 10, SHADOW_SIZE_XL_BATTLE_ONLY)
         FOOTPRINT(Guzzlord)
         OVERWORLD(
@@ -6288,7 +6288,7 @@ const struct SpeciesInfo gSpeciesInfoGen7[] =
         .palette = gMonPalette_Necrozma,
         .shinyPalette = gMonShinyPalette_Necrozma,
         .iconSprite = gMonIcon_Necrozma,
-        .iconPalIndex = 0,
+        .iconPalIndex = 1,
         SHADOW(-1, 15, SHADOW_SIZE_M)
         FOOTPRINT(Necrozma)
         OVERWORLD(
@@ -6611,28 +6611,28 @@ const struct SpeciesInfo gSpeciesInfoGen7[] =
         .pokemonOffset = 7,
         .trainerScale = 257,
         .trainerOffset = 0,
-        .frontPic = gMonFrontPic_MagearnaOriginalColor,
+        .frontPic = gMonFrontPic_MagearnaOriginal,
         .frontPicSize = MON_COORDS_SIZE(56, 64),
         .frontPicYOffset = 0,
         .frontAnimFrames = sAnims_Magearna,
         .frontAnimId = ANIM_H_SLIDE_SLOW,
-        .backPic = gMonBackPic_MagearnaOriginalColor,
+        .backPic = gMonBackPic_MagearnaOriginal,
         .backPicSize = MON_COORDS_SIZE(64, 56),
         .backPicYOffset = 4,
         /*.backAnimId = BACK_ANIM_NONE,*/
-        .palette = gMonPalette_MagearnaOriginalColor,
-        .shinyPalette = gMonShinyPalette_MagearnaOriginalColor,
-        .iconSprite = gMonIcon_MagearnaOriginalColor,
+        .palette = gMonPalette_MagearnaOriginal,
+        .shinyPalette = gMonShinyPalette_MagearnaOriginal,
+        .iconSprite = gMonIcon_MagearnaOriginal,
         .iconPalIndex = 0,
         SHADOW(-2, 14, SHADOW_SIZE_M)
         FOOTPRINT(Magearna)
         OVERWORLD(
-            sPicTable_MagearnaOriginalColor,
+            sPicTable_MagearnaOriginal,
             SIZE_32x32,
             SHADOW_SIZE_M,
             TRACKS_FOOT,
-            gOverworldPalette_MagearnaOriginalColor,
-            gShinyOverworldPalette_MagearnaOriginalColor
+            gOverworldPalette_MagearnaOriginal,
+            gShinyOverworldPalette_MagearnaOriginal
         )
         .isMythical = TRUE,
         .isFrontierBanned = TRUE,
@@ -7199,18 +7199,18 @@ const struct SpeciesInfo gSpeciesInfoGen7[] =
         .pokemonOffset = 10,
         .trainerScale = 423,
         .trainerOffset = 8,
-        .frontPic = gMonFrontPic_MelmetalGigantamax,
+        .frontPic = gMonFrontPic_MelmetalGmax,
         .frontPicSize = MON_COORDS_SIZE(64, 64),
         .frontPicYOffset = 1,
-        .frontAnimFrames = sAnims_MelmetalGigantamax,
+        .frontAnimFrames = sAnims_MelmetalGmax,
         //.frontAnimId = ANIM_V_SQUISH_AND_BOUNCE,
-        .backPic = gMonBackPic_MelmetalGigantamax,
+        .backPic = gMonBackPic_MelmetalGmax,
         .backPicSize = MON_COORDS_SIZE(64, 64),
         .backPicYOffset = 14,
         //.backAnimId = BACK_ANIM_NONE,
-        .palette = gMonPalette_MelmetalGigantamax,
-        .shinyPalette = gMonShinyPalette_MelmetalGigantamax,
-        .iconSprite = gMonIcon_MelmetalGigantamax,
+        .palette = gMonPalette_MelmetalGmax,
+        .shinyPalette = gMonShinyPalette_MelmetalGmax,
+        .iconSprite = gMonIcon_MelmetalGmax,
         .iconPalIndex = 0,
         SHADOW(2, 13, SHADOW_SIZE_XL_BATTLE_ONLY)
         FOOTPRINT(Melmetal)

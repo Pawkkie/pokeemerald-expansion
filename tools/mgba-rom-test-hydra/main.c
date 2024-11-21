@@ -106,6 +106,28 @@ static const struct Symbol *lookup_address(uint32_t address)
     return NULL;
 }
 
+#ifndef _GNU_SOURCE
+// Very naive implementation of 'memmem' for systems which don't make it
+// available by default.
+void *memmem(const void *haystack, size_t haystacklen, const void *needle, size_t needlelen)
+{
+    const char *haystack_ = haystack;
+    const char *needle_ = needle;
+    for (size_t i = 0; i < haystacklen - needlelen; i++)
+    {
+        size_t j;
+        for (j = 0; j < needlelen; j++)
+        {
+            if (haystack_[i+j] != needle_[j])
+                break;
+        }
+        if (j == needlelen)
+            return (void *)&haystack_[i];
+    }
+    return NULL;
+}
+#endif
+
 // Similar to 'fwrite(buffer, 1, size, f)' except that anything which
 // looks like the output of '%p' (i.e. '<0x\d{7}>') is translated into
 // the name of a symbol (if it represents one).
@@ -790,7 +812,9 @@ int main(int argc, char *argv[])
                     fprintf(stdout, "  - \e[31mand %d more...\e[0m\n", fails - MAX_SUMMARY_TESTS_TO_LIST);
                     break;
                 }
-                fprintf(stdout, "  - \e[31m%s\e[0m - %s.\n", failed_TestFilenameLine[i], failed_TestNames[i]);
+                fprintf(stdout, "  - \e[31m");
+                fprint_buffer(stdout, failed_TestFilenameLine[i], strlen(failed_TestFilenameLine[i]));
+                fprintf(stdout, "\e[0m - %s.\n", failed_TestNames[i]);
             }
         }
 
@@ -804,7 +828,9 @@ int main(int argc, char *argv[])
                     fprintf(stdout, "  - \e[33mand %d more...\e[0m\n", assumptionFails - MAX_SUMMARY_TESTS_TO_LIST);
                     break;
                 }
-                fprintf(stdout, "  - \e[33m%s\e[0m - %s.\n", assumeFailed_FilenameLine[i], assumeFailed_TestNames[i]);
+                fprintf(stdout, "  - \e[33m");
+                fprint_buffer(stdout, assumeFailed_FilenameLine[i], strlen(assumeFailed_FilenameLine[i]));
+                fprintf(stdout, "\e[0m - %s.\n", assumeFailed_TestNames[i]);
             }
         }
 
@@ -818,7 +844,9 @@ int main(int argc, char *argv[])
                     fprintf(stdout, "  - \e[32mand %d more...\e[0m\n", knownFailsPassing - MAX_SUMMARY_TESTS_TO_LIST);
                     break;
                 }
-                fprintf(stdout, "  - \e[32m%s\e[0m - %s.\n", knownFailingPassed_FilenameLine[i], knownFailingPassed_TestNames[i]);
+                fprintf(stdout, "  - \e[32m");
+                fprint_buffer(stdout, knownFailingPassed_FilenameLine[i], strlen(knownFailingPassed_FilenameLine[i]));
+                fprintf(stdout, "\e[0m - %s.\n", knownFailingPassed_TestNames[i]);
             }
         }
 

@@ -443,7 +443,7 @@ BattleScript_EffectTakeHeart::
 	attackcanceler
 	attackstring
 	ppreduce
-	cureifburnedparalysedorpoisoned BattleScript_CalmMindTryToRaiseStats
+	curestatuswithmove BattleScript_CalmMindTryToRaiseStats
 	attackanimation
 	waitanimation
 	updatestatusicon BS_ATTACKER
@@ -670,7 +670,7 @@ BattleScript_EffectCourtChange::
 	goto BattleScript_MoveEnd
 
 BattleScript_BeakBlastSetUp::
-	setbeakblast BS_ATTACKER
+	setbeakblast
 	flushtextbox
 	playanimation BS_ATTACKER, B_ANIM_BEAK_BLAST_SETUP, NULL
 	printstring STRINGID_HEATUPBEAK
@@ -891,7 +891,7 @@ BattleScript_EffectTarShot::
 	attackcanceler
 	jumpifsubstituteblocks BattleScript_FailedFromAtkString
 	accuracycheck BattleScript_PrintMoveMissed, ACC_CURR_MOVE
-	cantarshotwork BS_TARGET, BattleScript_FailedFromAtkString
+	cantarshotwork BattleScript_FailedFromAtkString
 	attackstring
 	ppreduce
 	setstatchanger STAT_SPEED, 1, TRUE
@@ -3012,30 +3012,17 @@ BattleScript_CantMakeAsleep::
 	orhalfword gMoveResultFlags, MOVE_RESULT_FAILED
 	goto BattleScript_MoveEnd
 
-BattleScript_EffectAbsorb::
-	call BattleScript_EffectHit_Ret
-	jumpifstatus3 BS_ATTACKER, STATUS3_HEAL_BLOCK, BattleScript_AbsorbHealBlock
-	setdrainedhp
-	manipulatedamage DMG_BIG_ROOT
-	orword gHitMarker, HITMARKER_IGNORE_SUBSTITUTE | HITMARKER_IGNORE_DISGUISE
-	jumpifability BS_TARGET, ABILITY_LIQUID_OOZE, BattleScript_AbsorbLiquidOoze
-	setbyte cMULTISTRING_CHOOSER, B_MSG_ABSORB
-	goto BattleScript_AbsorbUpdateHp
-BattleScript_AbsorbLiquidOoze::
+BattleScript_EffectAbsorbLiquidOoze::
 	call BattleScript_AbilityPopUpTarget
-	manipulatedamage DMG_CHANGE_SIGN
-	setbyte cMULTISTRING_CHOOSER, B_MSG_ABSORB_OOZE
-BattleScript_AbsorbUpdateHp::
+	goto BattleScript_EffectAbsorb
+
+BattleScript_EffectAbsorb::
 	healthbarupdate BS_ATTACKER
 	datahpupdate BS_ATTACKER
-	jumpifmovehadnoeffect BattleScript_AbsorbTryFainting
 	printfromtable gAbsorbDrainStringIds
 	waitmessage B_WAIT_TIME_LONG
-BattleScript_AbsorbTryFainting::
 	tryfaintmon BS_ATTACKER
-BattleScript_AbsorbHealBlock::
-	tryfaintmon BS_TARGET
-	goto BattleScript_MoveEnd
+	return
 
 BattleScript_EffectExplosion::
 	attackcanceler
@@ -4160,6 +4147,7 @@ BattleScript_EffectMinimize::
 BattleScript_EffectCurse::
 	jumpiftype BS_ATTACKER, TYPE_GHOST, BattleScript_GhostCurse
 	attackcanceler
+	jumpiftype BS_ATTACKER, TYPE_GHOST, BattleScript_DoGhostCurse
 	attackstring
 	ppreduce
 	jumpifstat BS_ATTACKER, CMP_GREATER_THAN, STAT_SPEED, MIN_STAT_STAGE, BattleScript_CurseTrySpeed
@@ -5230,7 +5218,7 @@ BattleScript_EffectRefresh::
 	attackcanceler
 	attackstring
 	ppreduce
-	cureifburnedparalysedorpoisoned BattleScript_ButItFailed
+	curestatuswithmove BattleScript_ButItFailed
 	attackanimation
 	waitanimation
 	printstring STRINGID_PKMNSTATUSNORMAL
@@ -6044,33 +6032,34 @@ BattleScript_SafeguardEnds::
 	waitmessage B_WAIT_TIME_LONG
 	end2
 
-BattleScript_LeechSeedTurnDrain::
-	playanimation BS_ATTACKER, B_ANIM_LEECH_SEED_DRAIN, sB_ANIM_ARG1
-	orword gHitMarker, HITMARKER_IGNORE_SUBSTITUTE | HITMARKER_PASSIVE_DAMAGE
-	healthbarupdate BS_ATTACKER
-	datahpupdate BS_ATTACKER
-	copyword gBattleMoveDamage, gHpDealt
-	jumpifability BS_ATTACKER, ABILITY_LIQUID_OOZE, BattleScript_LeechSeedTurnPrintLiquidOoze
-	setbyte cMULTISTRING_CHOOSER, B_MSG_LEECH_SEED_DRAIN
-	jumpifstatus3 BS_TARGET, STATUS3_HEAL_BLOCK, BattleScript_LeechSeedHealBlock
-	manipulatedamage DMG_BIG_ROOT
-	goto BattleScript_LeechSeedTurnPrintAndUpdateHp
-BattleScript_LeechSeedTurnPrintLiquidOoze::
+BattleScript_LeechSeedTurnDrainLiquidOoze::
+	call BattleScript_LeechSeedTurnDrain
+	manipulatedamage DMG_CHANGE_SIGN
 	copybyte gBattlerAbility, gBattlerAttacker
 	call BattleScript_AbilityPopUp
-	setbyte cMULTISTRING_CHOOSER, B_MSG_LEECH_SEED_OOZE
-BattleScript_LeechSeedTurnPrintAndUpdateHp::
-	orword gHitMarker, HITMARKER_IGNORE_SUBSTITUTE | HITMARKER_PASSIVE_DAMAGE
+	goto BattleScript_LeechSeedTurnDrainGainHp
+
+BattleScript_LeechSeedTurnDrainHealBlock::
+	call BattleScript_LeechSeedTurnDrain
+	end2
+
+BattleScript_LeechSeedTurnDrainRecovery::
+	call BattleScript_LeechSeedTurnDrain
+BattleScript_LeechSeedTurnDrainGainHp:
+	manipulatedamage DMG_BIG_ROOT
 	healthbarupdate BS_TARGET
 	datahpupdate BS_TARGET
 	printfromtable gLeechSeedStringIds
 	waitmessage B_WAIT_TIME_LONG
-	tryfaintmon BS_ATTACKER
 	tryfaintmon BS_TARGET
 	end2
-BattleScript_LeechSeedHealBlock:
-	setword gBattleMoveDamage, 0
-	goto BattleScript_LeechSeedTurnPrintAndUpdateHp
+
+BattleScript_LeechSeedTurnDrain:
+	playanimation BS_ATTACKER, B_ANIM_LEECH_SEED_DRAIN, sB_ANIM_ARG1
+	healthbarupdate BS_ATTACKER
+	datahpupdate BS_ATTACKER
+	tryfaintmon BS_ATTACKER
+	return
 
 BattleScript_BideStoringEnergy::
 	printstring STRINGID_PKMNSTORINGENERGY
@@ -6891,25 +6880,34 @@ BattleScript_GrudgeTakesPp::
 	waitmessage B_WAIT_TIME_LONG
 	return
 
-BattleScript_MagicCoatBounce::
+BattleScript_MagicBounce::
 	attackstring
 	ppreduce
 	pause B_WAIT_TIME_SHORT
-	jumpifbyte CMP_EQUAL, cMULTISTRING_CHOOSER, 0, BattleScript_MagicCoatBounce_Print
 	call BattleScript_AbilityPopUp
-BattleScript_MagicCoatBounce_Print:
-	printfromtable gMagicCoatBounceStringIds
+	printstring STRINGID_PKMNMOVEBOUNCEDABILITY
+	waitmessage B_WAIT_TIME_LONG
+	setmagiccoattarget
+	orword gHitMarker, HITMARKER_ATTACKSTRING_PRINTED | HITMARKER_NO_PPDEDUCT | HITMARKER_ALLOW_NO_PP
+	bicword gHitMarker, HITMARKER_NO_ATTACKSTRING
+	return
+
+BattleScript_MagicCoat::
+	attackstring
+	ppreduce
+	pause B_WAIT_TIME_SHORT
+	setmagiccoattarget
+	printstring STRINGID_PKMNMOVEBOUNCED
 	waitmessage B_WAIT_TIME_LONG
 	orword gHitMarker, HITMARKER_ATTACKSTRING_PRINTED | HITMARKER_NO_PPDEDUCT | HITMARKER_ALLOW_NO_PP
 	bicword gHitMarker, HITMARKER_NO_ATTACKSTRING
-	setmagiccoattarget BS_ATTACKER
 	return
 
-BattleScript_MagicCoatBouncePrankster::
+BattleScript_MagicCoatPrankster::
 	attackstring
 	ppreduce
 	pause B_WAIT_TIME_SHORT
-	printfromtable gMagicCoatBounceStringIds
+	printstring STRINGID_PKMNMOVEBOUNCED
 	waitmessage B_WAIT_TIME_LONG
 	printstring STRINGID_ITDOESNTAFFECT
 	waitmessage B_WAIT_TIME_LONG
@@ -6979,26 +6977,17 @@ BattleScript_WishMegaEvolution::
 	goto BattleScript_MegaEvolutionAfterString
 
 BattleScript_PrimalReversion::
-	call BattleScript_PrimalReversionRet
-	end3
-
-BattleScript_PrimalReversionRestoreAttacker::
-	call BattleScript_PrimalReversionRet
-	copybyte gBattlerAttacker, sSAVED_BATTLER
-	end3
-
-BattleScript_PrimalReversionRet::
 	flushtextbox
 	setbyte gIsCriticalHit, 0
-	handleprimalreversion BS_ATTACKER, 0
-	handleprimalreversion BS_ATTACKER, 1
-	playanimation BS_ATTACKER, B_ANIM_PRIMAL_REVERSION
+	handleprimalreversion BS_SCRIPTING, 0
+	handleprimalreversion BS_SCRIPTING, 1
+	playanimation BS_SCRIPTING, B_ANIM_PRIMAL_REVERSION
 	waitanimation
-	handleprimalreversion BS_ATTACKER, 2
+	handleprimalreversion BS_SCRIPTING, 2
 	printstring STRINGID_PKMNREVERTEDTOPRIMAL
 	waitmessage B_WAIT_TIME_LONG
-	switchinabilities BS_ATTACKER
-	return
+	switchinabilities BS_SCRIPTING
+	end3
 
 BattleScript_UltraBurst::
 	flushtextbox
@@ -9670,6 +9659,13 @@ BattleScript_EjectPackActivate_End2::
 BattleScript_EjectPackActivates::
 	jumpifcantswitch BS_SCRIPTING, BattleScript_EjectButtonEnd
 	goto BattleScript_EjectPackActivate_Ret
+
+BattleScript_EjectPackMissesTiming::
+	playanimation BS_SCRIPTING, B_ANIM_HELD_ITEM_EFFECT
+	printstring STRINGID_EJECTBUTTONACTIVATE
+	waitmessage B_WAIT_TIME_LONG
+	removeitem BS_SCRIPTING
+	return
 
 BattleScript_DarkTypePreventsPrankster::
 	attackstring
