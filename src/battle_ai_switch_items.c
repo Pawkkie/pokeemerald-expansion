@@ -1247,12 +1247,18 @@ static u32 GetBestMonDmg(struct Pokemon *party, int firstId, int lastId, u8 inva
 
 bool32 IsMonGrounded(u16 heldItemEffect, u32 ability, u8 type1, u8 type2)
 {
+    bool32 heldEffectDisabled;
+    if (ability == ABILITY_KLUTZ || (gFieldStatuses & STATUS_FIELD_MAGIC_ROOM))
+        heldEffectDisabled = TRUE;
+    else
+        heldEffectDisabled = FALSE;
+
     // List that makes mon not grounded
     if (type1 == TYPE_FLYING || type2 == TYPE_FLYING || ability == ABILITY_LEVITATE
-         || (heldItemEffect == HOLD_EFFECT_AIR_BALLOON && ability != ABILITY_KLUTZ))
+         || (heldItemEffect == HOLD_EFFECT_AIR_BALLOON && !heldEffectDisabled))
     {
         // List that overrides being off the ground
-        if ((heldItemEffect == HOLD_EFFECT_IRON_BALL && ability != ABILITY_KLUTZ) || (gFieldStatuses & STATUS_FIELD_GRAVITY) || (gFieldStatuses & STATUS_FIELD_MAGIC_ROOM))
+        if ((heldItemEffect == HOLD_EFFECT_IRON_BALL && !heldEffectDisabled) || (gFieldStatuses & STATUS_FIELD_GRAVITY))
             return TRUE;
         else
             return FALSE;
