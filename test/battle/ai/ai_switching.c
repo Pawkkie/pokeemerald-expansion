@@ -1173,7 +1173,7 @@ AI_SINGLE_BATTLE_TEST("AI_FLAG_SMART_MON_CHOICES: Parting Shot will send out Ace
     }
 }
 
-AI_SINGLE_BATTLE_TEST("AI_FLAG_SMART_MON_CHOICES: Parting Shot will send out Ace Mon if it's the only one remaining")
+AI_SINGLE_BATTLE_TEST("AI_FLAG_SMART_MON_CHOICES: Shed Tail will send out Ace Mon if it's the only one remaining")
 {
     GIVEN {
         ASSUME(GetMoveEffect(MOVE_SHED_TAIL) == EFFECT_SHED_TAIL);
