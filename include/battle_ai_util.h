@@ -104,6 +104,7 @@ enum ItemHoldEffect AI_DecideHoldEffectForTurn(u32 battlerId);
 bool32 DoesBattlerIgnoreAbilityChecks(u32 battlerAtk, u32 atkAbility, u32 move);
 u32 AI_GetWeather(void);
 u32 AI_GetSwitchinWeather(struct BattlePokemon battleMon);
+void AI_SetSwitchinTerrain(struct BattlePokemon battleMon);
 enum WeatherState IsWeatherActive(u32 flags);
 bool32 CanAIFaintTarget(u32 battlerAtk, u32 battlerDef, u32 numHits);
 bool32 CanIndexMoveFaintTarget(u32 battlerAtk, u32 battlerDef, u32 index, enum DamageCalcContext calcContext);

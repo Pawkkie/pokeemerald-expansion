@@ -1672,6 +1672,44 @@ u32 AI_GetSwitchinWeather(struct BattlePokemon battleMon)
     }
 }
 
+void AI_SetSwitchinTerrain(struct BattlePokemon battleMon)
+{
+    u32 ability = battleMon.ability;
+    u32 terrain = 0;
+
+    // Switchin will introduce new terrain
+    switch (ability)
+    {
+    case ABILITY_ELECTRIC_SURGE:
+    case ABILITY_HADRON_ENGINE:
+        terrain = STATUS_FIELD_ELECTRIC_TERRAIN;
+        break;
+    case ABILITY_GRASSY_SURGE:
+        terrain = STATUS_FIELD_GRASSY_TERRAIN;
+        break;
+    case ABILITY_MISTY_SURGE:
+        terrain = STATUS_FIELD_MISTY_TERRAIN;
+        break;
+    case ABILITY_PSYCHIC_SURGE:
+        terrain = STATUS_FIELD_PSYCHIC_TERRAIN;
+        break;
+    default:
+        break;
+    }
+
+    // If not, keep same as before
+    if (terrain == 0)
+        return;
+
+    // If so, use new terrain in calcs
+    if ((!(gFieldStatuses & terrain) && (!gBattleStruct->isSkyBattle)))
+    {
+        gFieldStatuses &= ~STATUS_FIELD_TERRAIN_ANY;
+        gFieldStatuses |= terrain;
+    }
+    return; 
+}
+
 enum WeatherState IsWeatherActive(u32 flags)
 {
     enum WeatherState state = WEATHER_INACTIVE;
@@ -3995,6 +4033,7 @@ s32 AI_CalcPartyMonDamage(u32 move, u32 battlerAtk, u32 battlerDef, struct Battl
     struct SimulatedDamage dmg;
     uq4_12_t effectiveness;
     struct BattlePokemon *savedBattleMons = AllocSaveBattleMons();
+    u32 battleStatuses = gFieldStatuses;
 
     if (calcContext == AI_ATTACKING)
     {
@@ -4011,8 +4050,11 @@ s32 AI_CalcPartyMonDamage(u32 move, u32 battlerAtk, u32 battlerDef, struct Battl
         gAiThinkingStruct->saved[battlerAtk].saved = FALSE;
     }
 
+    AI_SetSwitchinTerrain(switchinCandidate);
     dmg = AI_CalcDamage(move, battlerAtk, battlerDef, &effectiveness, NO_GIMMICK, NO_GIMMICK, AI_GetSwitchinWeather(switchinCandidate));
+
     // restores original gBattleMon struct
+    gFieldStatuses = battleStatuses;
     FreeRestoreBattleMons(savedBattleMons);
 
     if (calcContext == AI_ATTACKING)
