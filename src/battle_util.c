@@ -1725,7 +1725,7 @@ u32 TrySetCantSelectMoveBattleScript(u32 battler)
     return limitations;
 }
 
-u32 CheckMoveLimitations(u32 battler, u8 unusableMoves, u16 check)
+u32 CheckMoveLimitations(u32 battler, u32 unusableMoves, u16 check)
 {
     enum Move move;
     enum BattleMoveEffects moveEffect;
@@ -1734,10 +1734,11 @@ u32 CheckMoveLimitations(u32 battler, u8 unusableMoves, u16 check)
     s32 i;
 
     gPotentialItemEffectBattler = battler;
+    const struct LevelUpMove *learnset = GetSpeciesLevelUpLearnset(gBattleMons[battler].species);
 
-    for (i = 0; i < MAX_MON_MOVES; i++)
+    for (i = 0; i < MAX_LEVEL_UP_MOVES && learnset[i].move != LEVEL_UP_MOVE_END; i++)
     {
-        move = gBattleMons[battler].moves[i];
+        move = learnset[i].move;
         moveEffect = GetMoveEffect(move);
         // No move
         if (check & MOVE_LIMITATION_ZEROMOVE && move == MOVE_NONE)
