@@ -247,6 +247,8 @@ struct AiThinkingStruct
     u64 aiFlags[MAX_BATTLERS_COUNT];
     u8 aiAction;
     u8 aiLogicId;
+    u32 partyScores[MAX_BATTLERS_COUNT][PARTY_SIZE];
+    u32 pawkkieTestMarker;
     struct AI_SavedBattleMon saved[MAX_BATTLERS_COUNT];
 };
 

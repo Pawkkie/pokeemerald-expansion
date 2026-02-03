@@ -6430,3 +6430,122 @@ bool32 IsPartyMonOnFieldOrChosenToSwitch(u32 partyIndex, enum BattlerId battlerI
         return TRUE;
     return FALSE;
 }
+
+inline bool32 CanBattlerWin1v1(u32 hitsToKOAI, u32 hitsToKOPlayer, bool32 isBattlerFirst)
+{
+    // Player's best move deals 0 damage
+    if (hitsToKOAI == 0 && hitsToKOPlayer > 0)
+        return TRUE;
+
+    // AI's best move deals 0 damage
+    if (hitsToKOPlayer == 0 && hitsToKOAI > 0)
+        return FALSE;
+
+    // Neither mon can damage the other
+    if (hitsToKOPlayer == 0 && hitsToKOAI == 0)
+        return FALSE;
+
+    // Different KO thresholds depending on who goes first
+    if (isBattlerFirst)
+    {
+        if (hitsToKOAI >= hitsToKOPlayer)
+            return TRUE;
+    }
+    else
+    {
+        if (hitsToKOAI > hitsToKOPlayer)
+            return TRUE;
+    }
+    return FALSE;
+}
+
+bool32 AI_DoesChoiceEffectBlockMove(enum BattlerId battler, enum Move move)
+{
+    // Choice locked into something else
+    if (gAiLogicData->lastUsedMove[battler] != MOVE_NONE && gAiLogicData->lastUsedMove[battler] != move
+    && (IsHoldEffectChoice(GetBattlerHoldEffect(battler) && IsBattlerItemEnabled(battler))
+        || gAiLogicData->abilities[battler] == ABILITY_GORILLA_TACTICS))
+        return TRUE;
+    return FALSE;
+}
+
+bool32 CanMonWin1v1(enum BattlerId battler, enum BattlerId opposingBattler)
+{
+    enum Move move, opposingMove, bestOpposingMove = MOVE_NONE, bestOpposingPriorityMove = MOVE_NONE, expectedMove = GetIncomingMove(battler, opposingBattler, gAiLogicData);
+    u32 hitsToKO = 0, hitsToKOOpponent = 0, minHitsToKO = gBattleMons[battler].hp, minHitsToKOPriority = gBattleMons[battler].hp;
+    bool32 canBattlerWin1v1 = FALSE, isBattlerFirst, isBattlerFirstPriority;
+
+    // Get max damage mon could take
+    for (u32 moveIndex = 0; moveIndex < MAX_MON_MOVES; moveIndex++)
+    {
+        opposingMove = gBattleMons[opposingBattler].moves[moveIndex];
+        if (opposingMove != MOVE_NONE && !IsBattleMoveStatus(opposingMove) && GetMoveEffect(opposingMove) != EFFECT_FOCUS_PUNCH && gBattleMons[opposingBattler].pp[moveIndex] > 0)
+        {
+            hitsToKO = GetNoOfHitsToKOBattler(opposingBattler, battler, moveIndex, AI_DEFENDING, CONSIDER_ENDURE);
+            if (hitsToKO < minHitsToKO && !AI_DoesChoiceEffectBlockMove(opposingBattler, opposingMove))
+            {
+                bestOpposingMove = opposingMove;
+                minHitsToKO = hitsToKO;
+            }
+            if (GetBattleMovePriority(opposingBattler, gAiLogicData->abilities[opposingBattler], opposingMove) > 0 && hitsToKO < minHitsToKOPriority && !AI_DoesChoiceEffectBlockMove(opposingBattler, opposingMove))
+            {
+                bestOpposingPriorityMove = opposingMove;
+                minHitsToKOPriority = hitsToKO;
+            }
+        }
+    }
+
+    expectedMove = bestOpposingMove;
+
+    for (u32 moveIndex = 0; moveIndex < MAX_MON_MOVES; moveIndex++)
+    {
+        move = gBattleMons[battler].moves[moveIndex];
+        if (move != MOVE_NONE && gBattleMons[battler].pp[moveIndex] > 0)
+        {
+            // Only check damage if it's a damaging move
+            if (!IsBattleMoveStatus(move) && !AI_DoesChoiceEffectBlockMove(battler, move))
+            {
+                // Check if can win 1v1
+                hitsToKOOpponent = GetNoOfHitsToKOBattler(battler, opposingBattler, moveIndex, AI_ATTACKING, CONSIDER_ENDURE);
+                if (!canBattlerWin1v1) // Once we can win a 1v1 we don't need to track this, but want to run the rest of the function to keep the runtime the same regardless of when we find the winning move
+                {
+                    isBattlerFirst = AI_IsFaster(battler, opposingBattler, move, expectedMove, CONSIDER_PRIORITY);
+                    isBattlerFirstPriority = AI_IsFaster(battler, opposingBattler, move, bestOpposingPriorityMove, CONSIDER_PRIORITY);
+                    canBattlerWin1v1 = CanBattlerWin1v1(minHitsToKO, hitsToKOOpponent, isBattlerFirst) && CanBattlerWin1v1(minHitsToKOPriority, hitsToKOOpponent, isBattlerFirstPriority);
+                }
+            }
+        }
+    }
+
+    return canBattlerWin1v1;
+}
+
+u32 GetBattlerTypeMatchup(enum BattlerId opposingBattler, enum BattlerId battler)
+{
+    // Check type matchup
+    uq4_12_t typeEffectiveness1 = UQ_4_12(1.0), typeEffectiveness2 = UQ_4_12(1.0);
+    enum Type atkType1 = gBattleMons[opposingBattler].types[0], atkType2 = gBattleMons[opposingBattler].types[1];
+    enum Type defType1 = gBattleMons[battler].types[0], defType2 = gBattleMons[battler].types[1];
+
+    // Add each independent defensive type matchup together
+    typeEffectiveness1 = uq4_12_multiply(typeEffectiveness1, (GetTypeModifier(atkType1, defType1)));
+    if (defType2 != defType1)
+        typeEffectiveness1 = uq4_12_multiply(typeEffectiveness1, (GetTypeModifier(atkType1, defType2)));
+    if (typeEffectiveness1 == 0) // Immunity
+        typeEffectiveness1 = UQ_4_12(0.1);
+
+    if (atkType2 != atkType1)
+    {
+        typeEffectiveness2 = uq4_12_multiply(typeEffectiveness2, (GetTypeModifier(atkType2, defType1)));
+        if (defType2 != defType1)
+            typeEffectiveness2 = uq4_12_multiply(typeEffectiveness2, (GetTypeModifier(atkType2, defType2)));
+        if (typeEffectiveness2 == 0) // Immunity
+            typeEffectiveness2 = UQ_4_12(0.1);
+    }
+    else
+    {
+        typeEffectiveness2 = typeEffectiveness1;
+    }
+
+    return typeEffectiveness1 + typeEffectiveness2;
+}

@@ -158,6 +158,7 @@ void DecideTerastal(enum BattlerId battler);
 bool32 CanEndureHit(enum BattlerId battler, enum BattlerId battlerTarget, enum Move move);
 bool32 ShouldFinalGambit(enum BattlerId battlerAtk, enum BattlerId battlerDef, bool32 aiIsFaster);
 bool32 ShouldConsiderSelfSacrificeDamageEffect(enum BattlerId battlerAtk, enum BattlerId battlerDef, enum Move move, bool32 aiIsFaster);
+u32 GetBattlerTypeMatchup(enum BattlerId opposingBattler, enum BattlerId battler);
 
 // stat stage checks
 bool32 AnyStatIsRaised(enum BattlerId battlerId);
@@ -238,6 +239,9 @@ bool32 IsHazardClearingMove(enum Move move);
 bool32 IsSubstituteEffect(enum BattleMoveEffects effect);
 bool32 IsSelfSacrificeEffect(enum Move move);
 u32 GetAIExplosionChanceFromHP(u32 hpPercent);
+bool32 AI_DoesChoiceEffectBlockMove(enum BattlerId battler, enum Move move);
+bool32 CanBattlerWin1v1(u32 hitsToKOAI, u32 hitsToKOPlayer, bool32 isBattlerFirst);
+bool32 CanMonWin1v1(enum BattlerId battler, enum BattlerId opposingBattler);
 
 // status checks
 bool32 AI_CanBeConfused(enum BattlerId battlerAtk, enum BattlerId battlerDef, enum Move move, enum Ability ability);

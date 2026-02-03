@@ -130,4 +130,10 @@
 #define Z_EFFECT_RESTORE_HP_LOWER_THRESHOLD   ENABLE_RECOVERY_THRESHOLD // threshold used for moves you could conceivably use more than once
 #define Z_EFFECT_RESTORE_HP_HIGHER_THRESHOLD  90                        // these moves are one-time use or drop your HP
 
+// Party scoring points
+#define DEFENSIVE_MATCHUP_POINTS    2
+#define OFFENSIVE_MATCHUP_POINTS    2
+#define OUTSPEED_MATCHUP_POINTS     1
+#define CAN_1V1_MATCHUP_POINTS      5
+
 #endif // GUARD_CONFIG_AI_H
