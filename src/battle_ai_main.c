@@ -433,7 +433,7 @@ void GetChosenPartyMons(enum BattlerId battler, u32 monArray[], u32 monCount)
 
     for (u32 i = 0; i < PARTY_SIZE; i++)
     {
-        if (i >=  monCount)
+        if (i >= monCount)
             monIndexes[i] = PARTY_SIZE;
     }
 
@@ -479,7 +479,7 @@ void ScorePartyMons(enum BattlerId battler, enum BattlerId opposingBattler, stru
                 gAiThinkingStruct->partyScores[battler][monIndex] += CAN_1V1_MATCHUP_POINTS;
             if (GetBattlerTypeMatchup(opposingBattler, battler) > UQ_4_12(2.0))
                 gAiThinkingStruct->partyScores[battler][monIndex] += DEFENSIVE_MATCHUP_POINTS;
-            // Need a new function to approximate offensive type effectiveness
+            // Need a new function to approximate offensive type effectiveness for OFFENSIVE_MATCHUP_POINTS;
             if (gSpeciesInfo[gBattleMons[battler].species].baseSpeed > gSpeciesInfo[gBattleMons[opposingBattler].species].baseSpeed)
                 gAiThinkingStruct->partyScores[battler][monIndex] += OUTSPEED_MATCHUP_POINTS;
             gAiThinkingStruct->pawkkieTestMarker += 1;
@@ -864,7 +864,6 @@ void SetAiLogicDataForTurn(struct AiLogicData *aiData)
     battlersCount = gBattlersCount;
 
     gAiLogicData->aiCalcInProgress = TRUE;
-
     if (DEBUG_AI_DELAY_TIMER)
         CycleCountStart();
     for (enum BattlerId battlerAtk = 0; battlerAtk < battlersCount; battlerAtk++)
