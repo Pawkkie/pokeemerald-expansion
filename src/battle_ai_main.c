@@ -491,6 +491,8 @@ void ComputeChosenPartyMons()
 {
     u32 battlersCount = gBattlersCount;
     s32 firstId = 0, lastId = 0, opposingFirstId = 0, opposingLastId = 0;
+    struct Pokemon *party;
+    struct Pokemon *opposingParty;
 
     // Save existing battler data
     // struct AiLogicData *savedAiLogicData = AllocSaveAiLogicData();
@@ -503,6 +505,7 @@ void ComputeChosenPartyMons()
             continue;
         DebugPrintf("Battler index: %d", battler);
         GetAIPartyIndexes(battler, &firstId, &lastId);
+        party = GetBattlerParty(battler);
         // Iterate through opposing slot
         for (enum BattlerId opposingBattler = 0; opposingBattler < battlersCount; opposingBattler++)
         {
@@ -512,7 +515,8 @@ void ComputeChosenPartyMons()
                 continue;
             DebugPrintf("Opposing index: %d", opposingBattler);
             GetAIPartyIndexes(opposingBattler, &opposingFirstId, &opposingLastId);
-            ScorePartyMons(battler, opposingBattler, GetBattlerParty(battler), GetBattlerParty(opposingBattler), firstId, lastId, opposingFirstId, opposingLastId);
+            opposingParty = GetBattlerParty(opposingBattler);
+            ScorePartyMons(battler, opposingBattler, party, opposingParty, firstId, lastId, opposingFirstId, opposingLastId);
         }
     }
 
