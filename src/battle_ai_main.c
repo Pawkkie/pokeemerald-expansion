@@ -460,7 +460,7 @@ void ScorePartyMons(enum BattlerId battler, enum BattlerId opposingBattler, stru
         // Check current mon against all player mons
         for (u32 opposingMonIndex = opposingFirstId; opposingMonIndex < opposingLastId; opposingMonIndex++)
         {
-            if (!IsValidForBattle(&party[opposingMonIndex]))
+            if (!IsValidForBattle(&opposingParty[opposingMonIndex]))
                 continue;
             // Convert party data to battler data
             PokemonToBattleMon(&opposingParty[opposingMonIndex], &gBattleMons[opposingBattler]);
