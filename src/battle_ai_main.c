@@ -525,15 +525,25 @@ void PawkkieTestFunction()
 {
     // Do scoring
     ComputeChosenPartyMons();
+
+    // Debug
+    s32 firstId = 0, lastId = 0;
     DebugPrintf("Checked Matchups: %d", gAiThinkingStruct->pawkkieTestMarker);
-    for (u32 i = 0; i < PARTY_SIZE; i++)
+    for (enum BattlerId battler = 0; battler < gBattlersCount; battler++)
     {
-        DebugPrintf("Party Mon Score: %d", gAiThinkingStruct->partyScores[1][i]);
+        DebugPrintf("BATTLER %d", battler);
+        GetAIPartyIndexes(battler, &firstId, &lastId);
+        for (u32 i = firstId; i < lastId; i++)
+        {
+            DebugPrintf("Party Mon Score: %d", gAiThinkingStruct->partyScores[battler][i]);
+        }
     }
 
     // Get and print array psf asked for
     u32 monArray[PARTY_SIZE];
     GetChosenPartyMons(1, monArray, 3);
+
+    // Debug
     for (u32 i = 0; i < PARTY_SIZE; i++)
     {
         DebugPrintf("Party Mon Index: %d", monArray[i]);
