@@ -491,7 +491,7 @@ void ComputeChosenPartyMons()
 {
     u32 battlersCount = gBattlersCount;
     s32 firstId = 0, lastId = 0, opposingFirstId = 0, opposingLastId = 0;
-    
+
     // Save existing battler data
     // struct AiLogicData *savedAiLogicData = AllocSaveAiLogicData();
     struct BattlePokemon *savedBattleMons = AllocSaveBattleMons();
@@ -499,14 +499,14 @@ void ComputeChosenPartyMons()
     // Iterate through each battler slot
     for (enum BattlerId battler = 0; battler < battlersCount; battler++)
     {
-        if (!BattlerHasAi(battler) || lastId == PARTY_SIZE) // If lastId is PARTY_SIZE, we've finished checking the party previously, ie. double battle with one big party; if it isn't, we have a 2nd battler with a separate party to check
+        if (!BattlerHasAi(battler))
             continue;
         DebugPrintf("Battler index: %d", battler);
         GetAIPartyIndexes(battler, &firstId, &lastId);
         // Iterate through opposing slot
         for (enum BattlerId opposingBattler = 0; opposingBattler < battlersCount; opposingBattler++)
         {
-            if (battler == opposingBattler || opposingLastId == PARTY_SIZE)
+            if (battler == opposingBattler)
                 continue;
             if (GetBattlerSide(battler) == GetBattlerSide(opposingBattler)) // Don't care about matchup against allies
                 continue;
