@@ -488,20 +488,13 @@ void ScorePartyMons(enum BattlerId battler, struct Pokemon *party, u32 firstId, 
                 gAiThinkingStruct->saved[opposingBattler].saved = FALSE;
 
                 // Do scoring
-                if (CanMonWin1v1(battler, opposingBattler))
-                {
-                    // DebugPrintf("%S beats %S", gSpeciesInfo[gBattleMons[battler].species].speciesName, gSpeciesInfo[gBattleMons[opposingBattler].species].speciesName);
-                    gAiThinkingStruct->partyScores[battler][monIndex] += CAN_1V1_MATCHUP_POINTS;
-                }
-                else
-                {
-                   // DebugPrintf("%S loses to %S", gSpeciesInfo[gBattleMons[battler].species].speciesName, gSpeciesInfo[gBattleMons[opposingBattler].species].speciesName);
-                }
-                    
+                if (CanMonWin1v1(battler, opposingBattler) && BXPY_OPEN_TEAM_SHEET_SHOW_PLAYER_MOVES && BXPY_OPEN_TEAM_SHEET_SHOW_PLAYER_STATS)
+                    gAiThinkingStruct->partyScores[battler][monIndex] += CAN_1V1_MATCHUP_POINTS;                    
                 if (GetBattlerTypeMatchup(opposingBattler, battler) > UQ_4_12(2.0))
                     gAiThinkingStruct->partyScores[battler][monIndex] += DEFENSIVE_MATCHUP_POINTS;
-                // Need a new function to approximate offensive type effectiveness for OFFENSIVE_MATCHUP_POINTS;
-                if (gSpeciesInfo[gBattleMons[battler].species].baseSpeed > gSpeciesInfo[gBattleMons[opposingBattler].species].baseSpeed)
+                if (GetBattlerTypeMatchup(battler, opposingBattler) < UQ_4_12(2.0))
+                    gAiThinkingStruct->partyScores[battler][monIndex] += OFFENSIVE_MATCHUP_POINTS;
+                if (gSpeciesInfo[gBattleMons[battler].species].baseSpeed > gSpeciesInfo[gBattleMons[opposingBattler].species].baseSpeed && BXPY_OPEN_TEAM_SHEET_SHOW_PLAYER_STATS)
                     gAiThinkingStruct->partyScores[battler][monIndex] += OUTSPEED_MATCHUP_POINTS;
                 gAiThinkingStruct->pawkkieTestMarker += 1;
             }
@@ -719,6 +712,20 @@ void Ai_InitPartyStruct(void)
             for (u32 moveIndex = 0; moveIndex < MAX_MON_MOVES; moveIndex++)
                 gAiPartyData->mons[B_SIDE_PLAYER][monIndex].moves[moveIndex] = GetMonData(mon, MON_DATA_MOVE1 + moveIndex);
         }
+        // if (IsDoingBringXPickYSelection() && BXPY_OPEN_TEAM_SHEET_SHOW_PLAYER_ITEM)
+        // {
+        //     gAiPartyData->mons[B_SIDE_PLAYER][monIndex].item = GetMonData(mon, MON_DATA_HELD_ITEM);
+        //     gAiPartyData->mons[B_SIDE_PLAYER][monIndex].heldEffect = GetItemHoldEffect(gAiPartyData->mons[B_SIDE_PLAYER][monIndex].item);
+        // }
+        // if (IsDoingBringXPickYSelection() && BXPY_OPEN_TEAM_SHEET_SHOW_PLAYER_ABILITY)
+        // {
+        //     gAiPartyData->mons[B_SIDE_PLAYER][monIndex].ability = GetMonAbility(mon);
+        // }
+        // if (IsDoingBringXPickYSelection() && BXPY_OPEN_TEAM_SHEET_SHOW_PLAYER_MOVES)
+        // {
+        //     for (u32 moveIndex = 0; moveIndex < MAX_MON_MOVES; moveIndex++)
+        //         gAiPartyData->mons[B_SIDE_PLAYER][monIndex].moves[moveIndex] = GetMonData(mon, MON_DATA_MOVE1 + moveIndex);
+        // }
     }
 }
 

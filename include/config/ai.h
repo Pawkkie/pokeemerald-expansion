@@ -130,10 +130,15 @@
 #define Z_EFFECT_RESTORE_HP_LOWER_THRESHOLD   ENABLE_RECOVERY_THRESHOLD // threshold used for moves you could conceivably use more than once
 #define Z_EFFECT_RESTORE_HP_HIGHER_THRESHOLD  90                        // these moves are one-time use or drop your HP
 
-// Party scoring points
-#define DEFENSIVE_MATCHUP_POINTS    2
-#define OFFENSIVE_MATCHUP_POINTS    2
-#define OUTSPEED_MATCHUP_POINTS     1
-#define CAN_1V1_MATCHUP_POINTS      5
+// Bring X Pick Y party scoring points
+#define DEFENSIVE_MATCHUP_POINTS                        2 // Score increase for having a positive defensive type matchup against an opposing party member
+#define OFFENSIVE_MATCHUP_POINTS                        2 // Score increase for having a positive offensive type matchup against an opposing party member
+#define OUTSPEED_MATCHUP_POINTS                         1 // Score increase for outspeeding against an opposing party member
+#define CAN_1V1_MATCHUP_POINTS                          5 // Score increase for winning a projected 1v1 against an opposing party member
+#define BXPY_OPEN_TEAM_SHEET_SHOW_PLAYER_ABILITY        TRUE // AI knows the player's ability when evaluating which mons to bring
+#define BXPY_OPEN_TEAM_SHEET_SHOW_PLAYER_ITEM           TRUE // AI knows the player's item when evaluating which mons to bring
+#define BXPY_OPEN_TEAM_SHEET_SHOW_PLAYER_MOVES          TRUE // AI knows the player's moves when evaluating which mons to bring; pragmatically, disabling this shuts off the 1v1 check
+#define BXPY_OPEN_TEAM_SHEET_SHOW_PLAYER_STATS          TRUE // AI knows the player's level and stats when evaluating which mons to bring; pragmatically, disabling this shuts off the 1v1 check and the speed check
+
 
 #endif // GUARD_CONFIG_AI_H
