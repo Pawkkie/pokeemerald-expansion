@@ -7599,8 +7599,11 @@ static inline uq4_12_t GetDefenderPartnerAbilitiesModifier(enum BattlerId battle
     switch (GetBattlerAbility(battlerPartnerDef))
     {
     case ABILITY_FRIEND_GUARD:
-        return UQ_4_12(0.75);
+    {
+        if (ctx->battlerAtk != ctx->battlerDef) // Friend Guard doesn't reduce Confusion damage
+            return UQ_4_12(0.75);
         break;
+    }
     default:
         break;
     }
