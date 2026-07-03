@@ -3392,14 +3392,14 @@ static void DoBattleIntro(void)
             for (battler = 0; battler < gBattlersCount; battler++)
                 GetBattlerPartyState(battler)->sentOut = TRUE;
 
-            InitializeStartingStatus();
+            InitializeStartingStatuses();
             gBattleMainFunc = TryDoEventsBeforeFirstTurn;
         }
         break;
     }
 }
 
-void InitializeStartingStatus()
+void InitializeStartingStatuses()
 {
     struct StartingStatuses statusesOpponentA = {0};
     struct StartingStatuses statusesOpponentB = {0};

@@ -28,7 +28,7 @@ void BXPY_SetupAIData()
     BXPY_InitializeAIStructs();
     BXPY_SetupBattlers();
     BXPY_SetupAIFlags();
-    InitializeStartingStatus();
+    InitializeStartingStatuses();
 }
 
 void BXPY_SetupBattlers()
